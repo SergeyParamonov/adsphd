@@ -1,6 +1,6 @@
 \documentclass[showinstructions,faculty=firw,department=cws,phddegree=cws]{adsphd}
-\input{packages}
-\input{sergey_macros}
+\input{auxilary_files/packages}
+\input{auxilary_files/sergey_macros}
 %\documentclass[showinstructions,showlabels,coverfontpercent=100,faculty=firw,department=cws,phddegree=cws]{adsphd}
 %\documentclass[croppedpdf,showinstructions,faculty=firw,department=cws,phddegree=cws]{adsphd}
 %\documentclass[online,faculty=firw,department=cws,phddegree=cws]{adsphd}
@@ -85,6 +85,7 @@
   \addcontentsline{toc}{chapter}{\glossname} %% comment to exclude from TOC
 }
 \makeglossaries%
+\input{auxilary_files/glossary}
 
 
 % BibLaTeX
@@ -148,7 +149,7 @@
 \instructionschapters\cleardoublepage
 
 \includechapter{introduction}
-\includechapter{background} % Remove this chapter
+\includechapter{background} 
 
 % Insert here your own chapters
 % Chapters are expected to be in a tex-file with the given name dot
