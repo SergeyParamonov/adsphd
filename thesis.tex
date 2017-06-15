@@ -89,15 +89,16 @@
 
 
 % BibLaTeX
-%\usepackage[utf8]{inputenc}
-%\usepackage{csquotes}
-%\usepackage[
-  %hyperref=auto,
-  %mincrossrefs=999,
-  %backend=biber,
-  %style=authoryear-icomp
-%]{biblatex}
-%\addbibresource{allpapers.bib}
+ \usepackage[utf8]{inputenc}
+ \usepackage{csquotes}
+ \usepackage[
+   hyperref=auto,
+   mincrossrefs=999,
+   backend=bibtex,
+   style=authoryear-icomp
+ ]{biblatex}
+ \addbibresource{allpapers.bib}
+\input{auxilary_files/citation_hack}
 
 % Fonts
 \usepackage{textcomp} % nice greek alphabet
@@ -110,6 +111,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{document}
+%\newtheorem[thm]{example}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -169,10 +172,10 @@
 
 \includebibliography
 % BibTex
-\bibliographystyle{acm}
-\bibliography{allpapers}
+%\bibliographystyle{acm}
+%\bibliography{allpapers}
 % BibLatex (comment lines above and comment out biblatex lines in preamble)
-%\printbibliography[title=\bibname]
+\printbibliography[title=\bibname]
 \instructionsbibliography
 
 \includecv{curriculum}
