@@ -2,7 +2,7 @@
 \epigraph{From now on you shall be called Brian that is called Brian.}{The Life of Brian}
 In this chapter, we introduce commonly used formalisms and definitions.
 
-\section{\acrlong{fol}}
+\section{First Order Logic}
 \begin{figure}[t]
   \centering
   \includegraphics[width=0.4\textwidth]{Petersen_graph_coloring.png}
@@ -12,22 +12,174 @@ In this chapter, we introduce commonly used formalisms and definitions.
 In this section, we describe the syntax and semantics of \acrshort{fol},
 for an extensive overview of \acrshort{fol}, we refer to \textcite{fo_overview}.
 
-A formal language is a triple: \textit{vocabulary}, \textit{syntax} and \textit{semantics}. Vocabulary is the set of symbols that can be used. Syntax is the set of rules on how these symbols can be combined together. And semantics is the way to interpret the statements.
+A formal language is a triple: \textit{vocabulary}, \textit{syntax} and \textit{semantics}. Vocabulary is the set of symbols that can be used. Syntax is the set of rules on how these symbols can be combined together. And semantics is the way to interpret the statements. We omit the vocabulary, if it is clear from the context.
 
 For each predicate $p$ and each function symbol $f$ in the vocabulary, we assume a natural number $n$ called \textit{arity} to be given, written as $p/n$ and $f/n$. This number indicates the number of parameters it takes, we often omit the arity if it is clear from the context. Propositional symbols are zero-arity predicates and constants are zero-arity functions. 
 We assume propositional symbols \textit{true}, $\top$ and \textit{false}, $\bot$ to be always in the vocabulary.
 
-\begin{example}[Predicates and functions]
+\begin{example}[Predicates and functions]\label{example:predicates_and_functions}
   Consider the famous problem of coloring a map, as in Figure \ref{fig:petersen_coloring}. The vocabulary would contain a predicate symbol \textit{border/2} and a function \textit{coloring/1}, together with a set of constants representing countries, such as \textit{belgium}, \textit{netherlands}, etc.
 \end{example}
 
+A \textit{structure} associates values with the predicates and functions from the vocabulary. A structure $I$ consists of
+
+\begin{itemize}
+  \item A domain $D^I$, which we also refer as the \textit{universe}. The domain defines what are the possible values to be used.
+  \item For each predicate $p/n$, the set of its values $p^I \subseteq \overbrace{D^I \times \dots \times D^I}^{n}$
+  \item For each function symbol $f/n$,  $f^I$ the mapping  $\overbrace{D^I \times \dots \times D^I}^{n} \mapsto D^I$
+\end{itemize}
+We call the set of values $p^I$ for a predicate $p$  and the mapping $f^I$ for a function $f$ an \textit{interpretation}.
+
+We assume the set of inequalities $\{ =, \neq, <, >, \leq, \geq \}$,  arithmethic $\{+, -, *, \div \}$ and true $\top$, false $\bot$ to be interpreted by any interpretation in a standard way.
+
+\begin{example}[Interpretaion of map coloring]
+  Consider the predicate and the function from Example \ref{example:predicates_and_functions}. Then, $I$ can be the following:
+  \begin{itemize}
+    \item Domain $D^I = \{ \textit{red, green, blue, belgium, netherlands, germany, france} \}$
+    \item The interpretation $\textit{border}^I = \{ (\textit{belgium, netherlands}), \dots \}$                                                                                     
+    \item The interpretation $\textit{coloring}^I = \{ \textit{belgium} \mapsto \textit{green}, \dots \}$                                                                                     
+  \end{itemize}
+\end{example}
+
+
 \paragraph{Syntax} 
+
+The syntax of \acrlong{fol}, such as valid terms and formulae, is defined inductively.
+
+A \textit{term} is defined as follows  
+\begin{itemize}
+  \item a \textit{variable} is a term
+  \item if $t_1,\dots,t_n$ are terms and $f/n$ is a function, then $f(t_1,\dots,t_n)$ is term
+\end{itemize}
+We say a term $t$ is a \textit{domain term}, if $t$ is in the domain.
+
+
+A \textit{formula} is defined as follows
+
+\begin{itemize}
+  \item if $p/n$ is a predicate and $t_1,\dots,t_n$ are terms, then $p(t_1,\dots,t_n)$ is a formula, called an \textit{atom}  
+  \item if $\phi$ is a formula, then $\lnot \phi$ is a formula
+  \item if $\phi$ is a formula and $x$ is a variable, then $\forall x: \phi$ and $\exists x: \phi$ are formulae 
+  \item if $\phi$ and $\psi$ are formulae, then $\phi \wedge \psi$ and $\phi \vee \psi$ are formulae
+\end{itemize}
+
+We call a \textit{literal} an atom or a negation of an atom. An expressions of the form $a \rightarrow b$ is a shorthand for $\lnot a \vee b$, and $a \leftrightarrow b$ is a shorthand for $a \rightarrow b \wedge b \rightarrow a$. A \textit{sentence} is a formula without free, i.e., non-quantified, variables. A set of sentences  is called a \textit{theory}.
+
+\begin{example}[Formula]\label{example:formula}
+  As in previous examples, we consider the problem of map coloring. The following formula:
+  \begin{equation*}
+    \forall X,Y{:}~\textit{border}(X,Y) \rightarrow \textit{coloring}(X) \neq \textit{coloring}(Y)
+  \end{equation*}
+has an indented meaning of enforcing the country colours to be different.
+\end{example}
 
 
 \paragraph{Semantics}
+The semantics is defined inductively over the structure of the terms and of the formulae.
+
+Let $I$ be a structure and $t$ be a domain term, then the \textit{value} of $t$ is $t^I = d$, where $d$ is the domain element. If $t$ is an expression of the form $f(t_1,\dots,t_n)$, then its value is $f^I(t_1^I,\dots,t_n^I)=d$, where $d$ is the domain element.
+
+The truth assignment of a structure $I$ over formulae is defined inductively as follows:
+
+\begin{itemize}
+  \item $p(t_1,\dots,t_n)^I$ is true, iff $p^I(t_1^I,\dots,t_n^I)$ is true
+  \item $(\lnot \phi)^I$ is true, iff $\phi^I$ is false
+  \item $(\phi \wedge \psi)^I$ are true, iff $\phi^I$ and $\psi^I$ are true
+  \item $(\phi \vee \psi)^I$ are true, iff $\phi^I$ or $\psi^I$ are true
+  \item $\forall X: \phi$ is true, iff for each $d$ in $D^I$, $\phi[X/d]^I$ is true\footnote{$\phi[X/d]$ is a formula $\phi$, where each occurrence of $X$ is substituted with $d$}
+  \item $\exists X: \phi$ is true, iff there is $d$ in $D^I$ such that $\phi[X/d]^I$ is true
+\end{itemize}
+
+We say that $I$ is a \textit{model} of or $I$ \textit{satisfies} a sentence $\phi$ iff $\phi^I$ is true, written as $I \models \phi$.
+
+\begin{example}[Formula evalution]
+  Assume, that domain contains only two countries \textit{belgium} and \textit{netherlands} and two colors \textit{green} and \textit{red}. Let us show that $I$ with $\textit{border}$ being true for $(\textit{belgium,netherlands})$ and \textit{coloring} mapping \textit{belgium} to \textit{green} and \textit{netherlands} to \textit{red} is a model of the formula in Example \ref{example:formula}.
+
+  \begin{tabular}{l r}
+$(\forall X,Y{:}~\textit{border}(X,Y) \rightarrow \textit{coloring}(X) \neq \textit{coloring}(Y))^I$  & iff \\
+for all $d_1,d_2 \in D$ holds $(\textit{border}(d_1,d_2))^I \rightarrow (\textit{coloring}(d_1) \neq \textit{coloring}(d_2))^I$ & iff \\
+$d_1 \neq \textit{belgium}$ and $d_2 \neq \textit{netherlands}$  the formula holds trivially & and if\\
+$d_1  = \textit{belgium}$ and $d_2 = \textit{netherlands}$, then $(\textit{belgium}, \textit{netherlands})$ in $\textit{border}^I$ & and\\ 
+$f(\textit{belgium})^I = \textit{green} \neq \textit{red} = f(\textit{netherlands})^I$ & holds since \\
+$\textit{green} \neq \textit{red}$  is true &
+  \end{tabular}
+\end{example}
 
 
-\section{\acrlong{asp}}
+\paragraph{Herbrant Interpretation} The \textit{Herbrant Universe} is the set of all terms over the vocabulary without variables. A \textit{Herbrant Interpretaion} has the Herbrant Universe as its domain and interprets each symbol and function by itself. Any model that contains \acrlong{una} (\acrshort{una}) \parencite{UNA} and \acrlong{dca} (\acrshort{dca}) \parencite{DCA} are equivalent to a Herbrant model.
+
+
+\section{Answer Set Programming}
+\acrlong{asp} (\acrshort{asp}) is a logic programming paradigm for solving combinatorial and constraint optimization problems \parencite{whatisasp}.
+
+Contrary to the programming language Prolog, which is based on a proof-theoretic approach to answer queries, ASP follows a model generation approach. It has been shown to be effective for a wide range of constraint satisfaction problems \parencite{aspbook}.
+
+The remainder of this section introduces the essentials of ASP in a rather informal way. ASP is a rich (and technical) research area, so we do not focus on technical issues as these would complicate the presentation, but rather refer the interested reader to \textcite{aspbook,eiter,leone,DBLP:conf/aaai/Lifschitz08} for more details on this. For the actual implementation, we will use the clasp system \parencite{aspbook,BrewkaCACM}.
+
+\begin{definition}[Disjunctive datalog program]
+  A disjunctive datalog program is a finite set of rules of the form: 
+  \begin{equation*}
+    a_1 \vee a_2 \vee \dots \vee a_n \leftarrow b_1, \dots, b_k, \textit{ not }c_1,\dots,\textit{ not }c_h 
+  \end{equation*}
+\end{definition}
+where $a_1, \dots, a_n, b_1, \dots, b_k,c_1, \dots c_h$ are atoms of a function-free First Order language $L$. Each atom is an expression of the form $p(t_1,\ldots,t_n)$, where $p$ is a predicate name and $t_i$ is either a constant or a variable. We refer to the head of rule $r$ as $H(r) = \{a_1,\dots,a_n\}$ and to the body as $B(r) = B^{+}(r) \cup B^{-}(r)$, where $B^{+}(r) = \{ b_1, \dots, b_k \}$ is the positive part of the body and $B^{-}(r) = \{ c_1, \dots, c_h \}$ the negative. 
+
+If a disjunctive datalog program $P$ has variables, then its semantics are considered to be the same as that of its grounded version, written as \textit{ground(P)}, i.e. all variables are substituted with constants from the Herbrand Universe $H_P$ (the constants occurring in the program). The semantics of a program with variables is defined by the semantics of the corresponding grounded version.
+
+An interpretation $I$ w.r.t. to a program $P$ is a set of ground atoms of $P$. Let $P$ be a positive disjunctive datalog program (i.e. without negation), then an interpretation $I$ is called closed under $P$, if for every $r \in \textit{ground}(P)$ it holds that $H(r) \cap I \ne \emptyset$ whenever $B(r) \subseteq I$. 
+\begin{definition}[Answer set of a positive program \parencite{eiter}]
+An answer set of a positive program $P$ is a minimal (under set inclusion) interpretation among all interpretations that are closed under $P$.
+\end{definition}
+
+Let us introduce the concept of a reduct \parencite{DBLP:conf/aaai/Lifschitz08}.
+\begin{definition}[Gelfond-Lifschitz reduct] 
+A reduct of a ground program $P$ w.r.t. an interpretation $I$, written as $P^I$, is  a positive ground program $P^I$ obtained by: 
+\begin{itemize}
+   \item removing all rules $r \in P$ for which $B^{-}(r) \cap I \ne \emptyset$;
+   \item removing the literals ``$\textit{not }a$'' from all remaining rules.
+ \end{itemize}
+\end{definition}
+Intuitively, the reduct of a program is a program where all rules with bodies contradicting $I$ are removed and in all non-contradicting all negative ones are ignored. The interpretation $I$ is a guess as to what is true and what is false.
+
+\begin{definition}[An answer set of a disjunctive program]
+An answer set of a disjunctive program $P$ is an interpretation $I$ such that $I$ is an answer set of positive ground program $\textit{ground}(P)^I$. 
+\end{definition}
+
+\begin{example} Consider the following disjunctive datalog program $P$.
+  \begin{eqnarray*}
+    a \vee c  \leftarrow  b. \quad \quad b  \leftarrow  a, \textit{ not }c. \quad \quad a.
+  \end{eqnarray*}
+If we take the interpretation $I=\{a,b\}$ of $P$ as candidate answer set, then the reduct $P^I$ 
+is  
+\begin{eqnarray*}
+    a \vee c \leftarrow b. \quad \quad   b \leftarrow a. \quad \quad  a.
+\end{eqnarray*}
+and it is easily seen that $I$ is a minimal interpretation closed under $P^I$, and therefore an answer set. 
+\end{example}
+
+We also use a special form of disjunctive rules called \textit{choice rules} \parencite{aspbook}:
+\begin{equation*}
+  v_1~\{ a_1, a_2, \dots a_n \}~v_2 \leftarrow b_1, \dots, b_k, \textit{ not }c_1,\dots,\textit{ not }c_h
+\end{equation*}
+where $v_1$ and $v_2$ are integer constants. The semantics are as follows: if the body is satisfied, then the number of true atoms in $\{ a_1, a_2 \dots a_n \}$ is from $v_1$ to $v_2$.
+
+An aggregate atom is an atom that has the following form: $l \# \{ a_1, \dots ,a_n \} u$
+where $l$ and $u$ are constant numbers, each $a_i$ is a literal. The atom is true in an answer set $A$ iff there are from $l$ to $u$ literals $a_i$ that are true in $A$.
+
+Another construct is \textit{maximization} \parencite{aspbook, leone} (\textit{minimization} is defined analogously) stated as $\#\textit{maximize}\{ a_1=k_1, \dots, a_n=k_n \}$, 
+where $a_1, \dots, a_n$ are classic literals and $k_1, \dots, k_n$ are integer constants (possibly negative). The semantics of this constraint are as follows: a model $I$ is selected if the weighted sum of $[a_i]*k_i$ is maximal in $I$, where $[\cdot]$ are Iverson brackets, i.e. $[a]$ is equal to $1$ iff $a$ is true in $I$ and $0$ otherwise.
+
+\begin{example}[Map Coloring in ASP]
+  Let us demonstrate how the problem of map coloring discussed before can be expressed in ASP. 
+
+  The first constraint ensures that the binary predicate \textit{coloring/2} is a function from nodes to colors and the second that if there are two nodes of the same color joined by an edge, then it is not a model.
+\begin{lstlisting}[caption=ASP encoding of map coloring constraints, label=lst:example_asp_coloring,basicstyle=\ttfamily]
+1 { coloring(X,C) : colors(C) } 1 :- node(X).
+
+:- edge(X,Y), coloring(X,C1), coloring(Y,C2), C1 = C2.
+\end{lstlisting}
+\end{example}
+
 
 \section{FO$(\cdot)$ and the IDP system}
 
