@@ -1,6 +1,6 @@
 \chapter{Background} \label{ch:background}
 \epigraph{From now on you shall be called Brian that is called Brian.}{The Life of Brian}
-In this chapter, we introduce commonly used formalisms and definitions.
+In this chapter, we introduce commonly used formalisms and definitions. We start we classic First Order Logic, then proceed by introducing Answer Set Programming and Constraint Programming. Then, to help the reader we demonstrate a connection between the formalims. After we describe Inductive Logic Programming and Pattern Mining.
 
 \section{First Order Logic}
 \begin{figure}[t]
@@ -181,6 +181,32 @@ where $a_1, \dots, a_n$ are classic literals and $k_1, \dots, k_n$ are integer c
 \end{example}
 
 
+\section{Constraint Programming}
+A detailed introduction to constraint programming can be found in the ''Handbook of Constraint Programming`` \cite{cp_handbook}.
+
 \section{FO$(\cdot)$ and the IDP system}
+
+\section{Comparison between terminologies}
+Since some readers might be more familiar with Constraint Programming than with Answer Set Programming or First Order Logic, in Table \ref{tab:terminology_comparison} we present here terminology comparison \cite{phd_broes}.
+
+In this thesis we use Answer Set Programming terminology, unless specified otherwise.
+\begin{table}
+  \centering
+  \begin{tabular}{c | c | c}
+    \textbf{First Order} & \textbf{Constraint Programming} & \textbf{Answer Set Programming}\\ \hline
+    variable & --         & variable\\
+    constant & variable   & constant \\
+    sentence & constraint & rule/constraint \\
+    precicate symbol & Boolean variable array & predicate symbol\\
+    function symbol &  variable array & function symbol\\
+    atomic sentence & -- & fact\\
+    interpretation & assignment & set of atoms\\
+    theory & model & program \\
+    model & solution & answer set
+  \end{tabular}
+  \caption{Mapping between terms in ASP, CP and FO}
+  \label{tab:terminology_comparison}
+\end{table}
+
 
 \section{Inductive Logic Programming and Relational Pattern Mining}
