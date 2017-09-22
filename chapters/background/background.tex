@@ -182,7 +182,23 @@ where $a_1, \dots, a_n$ are classic literals and $k_1, \dots, k_n$ are integer c
 
 
 \section{Constraint Programming}
-A detailed introduction to constraint programming can be found in the ''Handbook of Constraint Programming`` \cite{cp_handbook}.
+A detailed introduction to \acrlong{cp}(\acrshort{cp}) can be found in the ''Handbook of Constraint Programming`` \cite{handbookcp}. A basic concept here is of a variable $v$ which always has an associated domain $d$, a domain here is simply a set of constants. An example of domains is Boolean domain \{ True, False \}. A constraint $c$ is an expression of the form \textit{name(vars)}, where \textit{vars} is a list of variable names and \textit{name} is the type of constraints from a predefined set of constraint classes. Examples of classes of constraints are comparisons,   arithmetic operations, list and set constraints (all-different, permutations, etc). We denote a set of all variables as $V$, of all domains as $D$ and of constraints as $C$, then a triple $(V,D,C)$ is a constraint programming model and finding an assingment $A$ for $V$ over $D$ satisfying all constraints $C$ is a \acrlong{csp} (\acrshort{csp}).
+
+Let us demonstrate how it is possible to model the map coloring problem in \acrshort{cp}\footnote{based on the encoding from www.hakank.org/minizinc/map.mzn}
+\begin{lstlisting}
+% number of countries
+int: n; 
+% [belgium,denmark,france,germany,netherlands,luxembourg]
+array[1..n] of var 1..4: country; 
+% the map (as a binary matrix)
+array[1..n,1..n] of 0..1: connections; 
+
+forall(i,j in 1..n where i < j /\ conn[i,j] = 1) (
+              country[i] != country[j]
+      )
+\end{lstlisting}
+
+
 
 \section{FO$(\cdot)$ and the IDP system}
 
