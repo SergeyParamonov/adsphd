@@ -200,7 +200,34 @@ forall(i,j in 1..n where i < j /\ conn[i,j] = 1) (
 
 
 
-\section{FO$(\cdot)$ and the IDP system}
+\section{\fod and the IDP system}
+The knowledge based language \fod is the extension of First Order Logic with a number of features, such as, inductive definitions and aggregates. The IDP system \parencite{idppaper} is the reasoning system that accepts as the input \fod language and is able to perform a number of reasoning tasks: such as finding logical models, model checking and theorem proving.
+
+Let us illustrate an inductive definition and an IDP program by example, see Listing \ref{lst:idp_reachability}, where Reach(x,y) is an example of an inductive definition, defined via the base case and the inductive step (see the Theory part).
+\begin{lstlisting}[caption=An example of an inductive definition in FO(.) and of an IDP program,label=lst:idp_reachability]
+vocabulary V{
+  type Node
+  Edge(Node, Node)
+  Reach(Node, Node)
+}
+
+theory T:V{
+  { 
+    Reach(x,y)<- Edge(x,y).
+    Reach(x,y) <-?z : Edge(x,z) & Reach(z,y).
+  }
+}
+
+structure S:V{
+  Node = {1;2;3}
+  Edge = {1,2; 2,3; 3,1} 
+}
+\end{lstlisting}
+
+An IDP program has three parts: \textit{Vocabulary} that defines the terminology and concepts of a problem, \textit{Structure} that sets certain values to true or false, and \textit{Theory} introduces constraints.
+
+
+
 
 \section{Comparison between terminologies}
 Since some readers might be more familiar with Constraint Programming than with Answer Set Programming or First Order Logic, in Table \ref{tab:terminology_comparison} we present here terminology comparison \cite{phd_broes}.
