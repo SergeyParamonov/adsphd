@@ -182,7 +182,7 @@ where $a_1, \dots, a_n$ are classic literals and $k_1, \dots, k_n$ are integer c
 
 
 \section{Constraint Programming}
-A detailed introduction to \acrlong{cp}(\acrshort{cp}) can be found in the ''Handbook of Constraint Programming`` \cite{handbookcp}. A basic concept here is of a variable $v$ which always has an associated domain $d$, a domain here is simply a set of constants. An example of domains is Boolean domain \{ True, False \}. A constraint $c$ is an expression of the form \textit{name(vars)}, where \textit{vars} is a list of variable names and \textit{name} is the type of constraints from a predefined set of constraint classes. Examples of classes of constraints are comparisons,   arithmetic operations, list and set constraints (all-different, permutations, etc). We denote a set of all variables as $V$, of all domains as $D$ and of constraints as $C$, then a triple $(V,D,C)$ is a constraint programming model and finding an assingment $A$ for $V$ over $D$ satisfying all constraints $C$ is a \acrlong{csp} (\acrshort{csp}).
+A detailed introduction to \acrlong{cp}(\acrshort{cp}) can be found in the ''Handbook of Constraint Programming`` \parencite{handbookcp}. A basic concept here is of a variable $v$ which always has an associated domain $d$, a domain here is simply a set of constants. An example of domains is Boolean domain \{ True, False \}. A constraint $c$ is an expression of the form \textit{name(vars)}, where \textit{vars} is a list of variable names and \textit{name} is the type of constraints from a predefined set of constraint classes. Examples of classes of constraints are comparisons,   arithmetic operations, list and set constraints (all-different, permutations, etc). We denote a set of all variables as $V$, of all domains as $D$ and of constraints as $C$, then a triple $(V,D,C)$ is a constraint programming model and finding an assingment $A$ for $V$ over $D$ satisfying all constraints $C$ is a \acrlong{csp} (\acrshort{csp}).
 
 Let us demonstrate how it is possible to model the map coloring problem in \acrshort{cp}\footnote{based on the encoding from www.hakank.org/minizinc/map.mzn}
 \begin{lstlisting}
@@ -230,7 +230,7 @@ An IDP program has three parts: \textit{Vocabulary} that defines the terminology
 
 
 \section{Comparison between terminologies}
-Since some readers might be more familiar with Constraint Programming than with Answer Set Programming or First Order Logic, in Table \ref{tab:terminology_comparison} we present here terminology comparison \cite{phd_broes}.
+Since some readers might be more familiar with Constraint Programming than with Answer Set Programming or First Order Logic, in Table \ref{tab:terminology_comparison} we present here terminology comparison \parencite{phd_broes}.
 
 In this thesis we use Answer Set Programming terminology, unless specified otherwise.
 \begin{table}
@@ -252,4 +252,25 @@ In this thesis we use Answer Set Programming terminology, unless specified other
 \end{table}
 
 
-\section{Inductive Logic Programming and Relational Pattern Mining}
+\section{Relational Pattern Mining}
+The taks of relational pattern mining is to mine queries in a logical and relational learning setting. Starting with the work the Warmr system \parencite{warmr}, there has been a line of work that focusses on the following frequent query mining problem \parencite{bagm,farmer,condensed_luc}:
+
+\noindent
+{\bf Given:} \vspace{-8pt}
+\begin{itemize}
+\item a relational database $D$,
+\item the entity of interest determining the \keypred/1 predicate,
+\item a frequency threshold $t$,
+\item a language ${\cal L}$ of logical queries of the form $\keypred(X) \leftarrow b_1, ..., b_n$ defining $key/1$ ($b_i$'s are atoms).
+\end{itemize}\vspace{-5pt}
+{\bf Find:} all queries $c \in {\cal L}$ s.t. $\freqpred(c,D) \geq t$, where ${\freqpred(c,D) = |\{\theta \mid D \cup c \models key(X)\theta \}|}$.
+
+Notice that the substitutions $\theta$ only substitute variables $X$ that occur in \keypred. 
+
+Here we focus our attention on graph data, as this forms the simplest truly relational learning setting and allows us to focus on what is essential for extending the declarative modeling paradigm to a relational setting. 
+ 
+As an example, consider a graph database $D$, represented by the facts 
+\begin{equation*}
+\{ \edge(g_1,1,2),~ \edge(g_1,2,3),~ \edge(g_1,1,3),~ \edge(g_2,1,2),~ \edge(g_2,2,3),~ \edge(g_2,1,3), \dots \},
+\end{equation*}
+where the ternary relation $\edge(g,e_1,e_2)$ states that in graph $g$ there is an edge between $e_1$ and $e_2$ (we assume graphs to be undirected, so there is also always an edge between $e_2$ and $e_1$). The frequency of $\textit{key}(K) \leftarrow \edge(K,B,C), \edge(K,C,D), \edge(K,B,D)$ in this database is 2 as the query returns $g_1$ and $g_2$. If $key(g)$ holds,  then the graph $g$ is subsumed by the query specified defined in the body of the clause for \keypred.

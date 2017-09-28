@@ -1,0 +1,215 @@
+%\subsection{Relational Data Factorization Example}\label{subsection:exampl}
+
+Before we formalize the ReDF problem and approach in its full generality, we illustrate Relational Data Factorization on the \textit{sells(Company, Part, Project)} example from the Introduction.
+
+\subsection{An example}
+
+Assume we are given 1) a set of tuples for the {\em database} relation \textit{sells(Company, Part, Project)},
+2) a definite {\em shape} clause defining the predicate $\appr\textit{(Company,}$ $\textit{Part, Project)}$, e.g.,
+\begin{align*}
+ \textit{\appr(Com, Pa, Proj)} \leftarrow \textit{offers(Com, Pa), needs(Proj, Pa), deliversto(Com, Proj),}
+\end{align*}
+ which should approximate the database relation \textit{sells(Company, Part, Project)} in
+ terms of the (unknown) relations \textit{offers(Company, Part)}, \textit{needs(Project, Part)} and \textit{deliversto(Com, Project)},
+ and
+3)   an   \error function $\error(\appr, \textit{sells})$ that measures how 
+different the database predicate 
+and its approximation are, e.g., the number of tuples that is one in relation but not in the other. 
+Then, the goal is to find sets of tuples for the unknown relations that minimize the \error. 
+
+In practice, it is usually impossible to find a perfect solution (with $\error=0$) to relational data factorization problems, in this example because of Heath's theorem \citep{heath_theorem} (as discussed in the Introduction). Therefore, it is often useful to impose further restrictions on the sets to be considered. One such constraint could specify that there is no {\em overcoverage}, i.e., that all tuples in \appr must be in \textit{sells}.
+
+\subsection{Problem statement}
+
+Using a logic programming formalism, we generalize the above example into the following ReDF problem statement.\\
+\textbf{Given:}
+\begin{itemize}
+  \item a dataset $D$: a set of ground facts for target predicate \db;
+  \item a factorization shape $Q$: $\appr(\bar T) \leftarrow q_1(\bar T_1), \dots, q_k(\bar T_k)$, where the $q_i$ are factors and the $\bar T_i$ denote tuples of variables;
+  \item a set of constraints $C$;
+  \item an \error function measuring difference between two predicates (i.e., between the corresponding sets of ground facts); 
+\end{itemize}
+\textbf{Find}: the set of ground facts $F$ for the factors $q_i$ that minimizes $\error(\appr,\db)$ and for which $Q \cup F \cup D$ satisfies
+all constraints in $C$.% here $Q(F)$ denotes the set of all ground facts for
+\\ 
+\\
+The factorization shape is a single non-recursive rule defining \appr, the 
+approximation of the target predicate $\db$, where the predicates in the body are the factors. If a variable occurs in a body atom $\bar T_i$ and not in $\bar T$ (the head), then it is called \textit{latent}. The task is to find a set $F$ of ground facts defining the factors $q_i$. Furthermore, each such set $F$ uniquely determines a set of facts for \appr. 
+Notice that if a predicate $q_i$ is already known and defined, then the task simplifies. 
+
+As in matrix factorization, it is quite likely that a perfect solution, with $\error=0$, cannot be obtained. %($Q(F) = D$). 
+Consider the following example: $\db(X,Y) \leftarrow p(X), q(Y)$ and dataset $D = \{ \db(a,c), \db(b,d)\}$.
+Then it is impossible to perfectly reconstruct the target $D$. If $F = \{p(a), p(b), q(c), q(d)\}$, the resulting program overgeneralizes as it entails facts not in $D$:  $\db(a,d) \in \appr$ and $\db(a,d) \not\in D$; if, on the other hand, there are facts in $D$ that are not entailed in $\appr$, one undergeneralizes (e.g., when $F = \emptyset$). 
+
+The scoring function in relational factorization measures the \error between the 
+predicates \appr and \db. Instead of minimizing \error, however, in some cases it is more convenient
+to maximize {\em similarity}. Since these two perspectives can be trivially transformed from one to the other, we will use both without loss of generality. 
+
+\subsection{Approach}
+To make this setup operational, we represent ReDF problems at two different levels. First, at the high level, we characterize typical constraints of interest that are employed across different models. Further, all problems are formulated using the template shown in Listing~\ref{lst:template:encoding}. Second, at the low level, the high-level constraints and encodings are formulated in ASP. The high-level constraints can in principle be automatically transformed into low-level ones.
+
+\begin{lstlisting}[style=model,caption=Prototypical template of a high level problem encoding, label=lst:template:encoding]
+ @\textbf{Input:}@ a set of facts $D$ for the $\db$ predicate 
+ @\textbf{Shape:}@  $\appr(\bar T) \leftarrow q_1(\bar T_1), \dots, q_k(\bar T_k)$
+ @\textbf{Find:}@  $q_1 \ldots q_k$
+ @\textbf{Satisfying:}@  @$C_1(\appr,\db) \wedge \ldots \wedge C_n(\appr,\db)$@
+ @\textbf{Minimizing:}@  @$\error(\appr,\db)$@\end{lstlisting}
+%\vspace{5pt}
+
+We next illustrate this on the {\em sells} example. The high-level description from which we start is given in Listing~\ref{lst:sells:encoding}.
+
+\begin{lstlisting}[style=model,caption=Sells example encoding, label=lst:sells:encoding]
+@\textbf{Input:}@ $\textit{sells(c1,pa1,proj1), sells(c2,pa1,proj2)}$ 
+@\textbf{Shape:}@  $\appr(C,\textit{Pa},\textit{Prj}) \leftarrow \textit{offers(C,Pa), needs(Prj,Pa), deliversto(C,Prj).}$
+@\textbf{Find:}@  @\textit{offers($\cdot$), needs($\cdot$), deliversto($\cdot$)}@
+@\textbf{Minimizing:}@  @$\error(\appr,\textit{sells})$@
+\end{lstlisting}
+
+Next, this high-level formulation can be encoded in and solved using the ASP program given in Listing~\ref{lst:sells} (here, an ASP program can be thought as a conjunction of logical rules, where implication is denoted by ``:-'').
+
+\lstset{numbers=left,
+  keepspaces=true,
+  numberstyle=\tiny,
+  numbersep=5pt,
+  basicstyle=\small,
+  stringstyle=\sffamily,
+  columns=fullflexible,
+  flexiblecolumns=true,
+  belowskip=5pt,
+  alsoletter={-}, 
+  alsodigit={:},
+%  otherkeywords={},
+  emph={%
+      not,
+      :-,
+          },emphstyle={\bfseries}%
+}
+
+\begin{lstlisting}[caption=Factorization of a ternary relation into three binary relations, escapeinside={@}{@}, label=lst:sells,mathescape] 
+@\commenttextasp{\%factorization shape}@
+approx(Com,Pa,Proj) :- offers(Com,Pa), needs(Proj,Pa), deliversto(Com,Proj). @\label{lst:sells:1}@
+@\commenttextasp{\%relation generators}@
+0 { offers(Com,Pa)          } 1 :- sells(Com,Pa,Proj). @\label{lst:sells:gen1}@
+0 { needs(Proj,Pa)           } 1 :- sells(Com,Pa,Proj). @\label{lst:sells:gen2}@
+0 { deliversto(Com,Proj) } 1 :- sells(Com,Pa,Proj). @\label{lst:sells:gen3}@
+@\commenttextasp{\%optimization function}@
+overcoverage(Com,Pa,Proj)   :-        approx(Com,Pa,Proj), not sells(Com,Pa,Proj). @\label{lst:sells:incorrect1}@
+undercoverage(Com,Pa,Proj) :- not approx(Com,Pa,Proj),        sells(Com,Pa,Proj). @\label{lst:sells:incorrect2}@
+error(Com,Pa,Proj) :- undercoverage(Com,Pa,Proj). @\label{lst:sells:e1}@
+error(Com,Pa,Proj) :- overcoverage(Com,Pa,Proj). @\label{lst:selss:e2}@
+@\#@minimize[error(Com,Pa,Proj)]. @\label{lst:sells:minimize}@
+\end{lstlisting}
+
+%The ReDF framework relies on ASP for modeling and solving this type of problem. 
+We introduce ASP in more detail below, but this model is easy to understand if one is familiar with the basics of logic programming. The ASP model basically defines the necessary predicates in ASP using a set of clauses. In addition, the rule in Line \ref{lst:sells:gen1} encodes the constraint that whenever a tuple holds for \textit{sells(Com, Pa, Proj)}
+there should be 0 or 1 corresponding tuples for the predicate \textit{offers(Com, Pa).}
+Furthermore, the minimize statement specifies that we are looking for a model (a set of ground facts or tuples) that minimizes the error.  The encoding in Listing  \ref{lst:sells} together with a set of facts for \textit{sells}
+can be given to an ASP solver such as clasp \citep{gebser2011potassco}. % which can then be used to generate an answer set (a model)
+%that includes the definitions of the factors.  
+
+
+Observe that the relational data factorization approach we propose perfectly fits within the declarative modeling paradigm for machine learning and data mining \citep{DeRaedtECML12}.  Indeed, the next sections will show that it naturally supports a wide range of popular and well-known factorization problems. 
+Modeling different problems corresponds to specifying different constraints, shapes and optimization functions.
+By doing so, one obtains a deep understanding of the relationships among the many variations of factorization, 
+and one can easily design, prototype and experiment with new variations of factorization problems. 
+Furthermore, the models of factorization are in principle solver-independent and do not depend on a particular ASP solver implementation.   
+
+Notice that it would also be possible to use other constraint satisfaction and optimization approaches
+(such as, e.g., Integer Linear Programming), but given that we work within a relational framework, ASP is a natural choice. It is also declarative and has the right expressiveness for the class of problems that we will study, many of which are NP-complete such as BMF; see Subsection \ref{subsection:bmf}. 
+
+Finally, let us mention that there are many factorization approaches in both linear algebra, databases, and even in logic. We provide a detailed discussion of their relationship to ReDF in Section \ref{sec:relwork}.
+
+
+%Let us now illustrate relational data factorization on an example and then formally define it. Reconsider the rule defining {\it car(Plate,State,Age,Fuel,Type)}. This type of rule is usually employed to query facts for the predicate {\it car} starting from facts for {\it compress}, {\it use} and {\it make}.  Relational data factorization is a form of {\em inverse querying} and {\em abduction}, that is, it will start from a set of facts for {\it car} and use the rule to infer facts for {\it compress}, {\it use} and {\it make}.  In this case, one might be given 1) input relation \begin{align*} \{ &\textit{car(a1, fair, old, gas, sport),     car(a2, good, new, gas, sport)}, \\ &\textit{car(a3, fair, old, electric, hev),  car(a4, good, new, electric, hev)} \}, \end{align*} and 2) the above rule defining \textit{car}, and find the exact factorization \newcommand{\fk}{\textit{fk}\xspace} \begin{align*} \{ &\textit{use}(\fk_{1,1},\textit{good,new}),~\textit{use}(\fk_{1,2},\textit{fair,old}), ~\textit{make}(\fk_{2,2},\textit{electric,hev}),  \\ &\textit{make}(\fk_{2,1}, \textit{gas,sport}),~\textit{compress}(a4,\fk_{1,1},\fk_{2,2}), ~\textit{compress}(a3,\fk_{1,2},\fk_{2,2}), \\ &\textit{compress}(a2,\fk_{1,1},\fk_{2,1}),~\textit{compress}(a1,\fk_{1,2},\fk_{2,1}) \}.  \end{align*} may be impossible to factorize a relation, such as {\it car}, exactly (for details we refer to Appendix \ref{sec:why_approximation_is_necessary}).  Therefore, we will impose constraints on the factorization and aim at finding the best factorization w.r.t. a scoring function.  One might, for instance, require that no tuple can be derived from the approximation that is not in the original dataset.  Another type of constraint imposes an upper bound on the number of new identifiers; in the {\it car} example, these are bounds on the number of values for the arguments corresponding to {\it Foreign1} and {\it Foreign2}.
+
+
+
+\section{Preliminaries: ASP essentials}\label{section:asp}
+
+We use the answer set programming (ASP) paradigm for solving relational data factorization problems. Contrary to the programming language Prolog, which is based on a proof-theoretic approach to answer queries, ASP follows a model generation approach. It has been shown to be effective for a wide range of constraint satisfaction problems \citep{aspbook}.
+
+The remainder of this subsection introduces the essentials of ASP in a rather informal way. ASP is a rich (and technical) research area, so we do not focus on technical issues as these would complicate the presentation, but rather refer the interested reader to \citet{aspbook,eiter,leone,DBLP:conf/aaai/Lifschitz08} for more details on this. For the actual implementation, we will use the clasp system \citep{aspbook,BrewkaCACM}.
+
+% A (positive) ASP \textit{program} is a finite set of rules $\{r_i\}$:
+% \begin{equation*}
+%   a_1 \vee a_2 \vee \dots \vee a_n \leftarrow b_1, b_2, \dots, b_k. 
+% \end{equation*}
+% a rule $r_i$ is satisfied in a Herbrand model $M$ if whenever the body of $r_i$ is true in $M$ (i.e., for all $j$ holds that $b_j \in M$), also its head is true (i.e., there is such $j$ that $a_j \in M$).
+% It shall be convenient to refer to rules where $n=1$ as definite, and the set of all such rules for a particular predicate in the head is called a definition. 
+% The other rules can then be viewed as integrity constraints. 
+
+% A Herbrand model $M$ is called an {\em answer set} for a (positive) ASP program if it is a minimal Herbrand model (that is, if no proper subset of $M$ satisfies $P$).
+% In ASP, this notion has been extended with negation, allowing for negative literals in the body, cf. \ref{section:logic_definitions}.
+\begin{definition}[Disjunctive datalog program]
+  A disjunctive datalog program is a finite set of rules of the form: 
+  \begin{equation*}
+    a_1 \vee a_2 \vee \dots \vee a_n \leftarrow b_1, \dots, b_k, \textit{ not }c_1,\dots,\textit{ not }c_h 
+  \end{equation*}
+\end{definition}
+where $a_1, \dots, a_n, b_1, \dots, b_k,c_1, \dots c_h$ are atoms of a function-free first order language $L$. Each atom is an expression of the form $p(t_1,\ldots,t_n)$, where $p$ is a predicate name and $t_i$ is either a constant or a variable. We refer to the head of rule $r$ as $H(r) = \{a_1,\dots,a_n\}$ and to the body as $B(r) = B^{+}(r) \cup B^{-}(r)$, where $B^{+}(r) = \{ b_1, \dots, b_k \}$ is the positive part of the body and $B^{-}(r) = \{ c_1, \dots, c_h \}$ the negative. 
+
+If a disjunctive datalog program $P$ has variables, then its semantics are considered to be the same as that of its grounded version, written as \textit{ground(P)}, i.e. all variables are substituted with constants from the Herbrand Universe $H_P$ (the constants occurring in the program). The semantics of a program with variables is defined by the semantics of the corresponding grounded version.
+
+An interpretation $I$ w.r.t. to a program $P$ is a set of ground atoms of $P$. Let $P$ be a positive disjunctive datalog program (i.e. without negation), then an interpretation $I$ is called closed under $P$, if for every $r \in \textit{ground}(P)$ it holds that $H(r) \cap I \ne \emptyset$ whenever $B(r) \subseteq I$. 
+\begin{definition}[Answer set of a positive program \citep{eiter}]
+An answer set of a positive program $P$ is a minimal (under set inclusion) interpretation among all interpretations that are closed under $P$.
+\end{definition}
+
+%Let us introduce the concept of a reduct \citep{DBLP:conf/aaai/Lifschitz08}.
+\begin{definition}[Gelfond-Lifschitz reduct] 
+A reduct of a ground program $P$ w.r.t. an interpretation $I$, written as $P^I$, is  a positive ground program $P^I$ obtained by: 
+\begin{itemize}
+   \item removing all rules $r \in P$ for which $B^{-}(r) \cap I \ne \emptyset$;
+   \item removing the literals ``$\textit{not }a$'' from all remaining rules.
+ \end{itemize}
+\end{definition}
+Intuitively, the reduct of a program is a program where all rules with bodies contradicting $I$ are removed and in all non-contradicting all negative ones are ignored. The interpretation $I$ is a guess as to what is true and what is false.
+
+\begin{definition}[An answer set of a disjunctive program]
+An answer set of a disjunctive program $P$ is an interpretation $I$ such that $I$ is an answer set of positive ground program $\textit{ground}(P)^I$. 
+\end{definition}
+
+\begin{example} Consider the following disjunctive datalog program $P$.
+  \begin{eqnarray*}
+    a \vee c  \leftarrow  b. \quad \quad b  \leftarrow  a, \textit{ not }c. \quad \quad a.
+  \end{eqnarray*}
+If we take the interpretation $I=\{a,b\}$ of $P$ as candidate answer set, then the reduct $P^I$ 
+is  
+\begin{eqnarray*}
+    a \vee c \leftarrow b. \quad \quad   b \leftarrow a. \quad \quad  a.
+\end{eqnarray*}
+and it is easily seen that $I$ is a minimal interpretation closed under $P^I$, and therefore an answer set. % is $I = \{ a,b \}$, therefore $I$ is an answer set of $P^I$, that is why $I$ is an answer set of $P$.
+\end{example}
+
+We also use a special form of disjunctive rules called \textit{choice rules} \cite{aspbook}:
+\begin{equation*}
+  v_1~\{ a_1, a_2, \dots a_n \}~v_2 \leftarrow b_1, \dots, b_k, \textit{ not }c_1,\dots,\textit{ not }c_h
+\end{equation*}
+where $v_1$ and $v_2$ are integer constants. The semantics are as follows: if the body is satisfied, then the number of true atoms in $\{ a_1, a_2 \dots a_n \}$ is from $v_1$ to $v_2$.
+
+An aggregate atom is an atom that has the following form: $l \# \{ a_1, \dots ,a_n \} u$
+where $l$ and $u$ are constant numbers, each $a_i$ is a literal. The atom is true in an answer set $A$ iff there are from $l$ to $u$ literals $a_i$ that are true in $A$.
+
+Another construct is \textit{maximization} \citep{aspbook, leone} (\textit{minimization} is defined analogously) stated as $\#maximize\{ a_1=k_1, \dots, a_n=k_n \}$, 
+where $a_1, \dots, a_n$ are classic literals and $k_1, \dots, k_n$ are integer constants (possibly negative). The semantics of this constraint are as follows: a model $I$ is selected if the weighted sum of $[a_i]*k_i$ is maximal in $I$, where $[\cdot]$ are Iverson brackets, i.e. $[a]$ is equal to $1$ iff $a$ is true in $I$ and $0$ otherwise.
+
+%For more details on ASP we refer to \citep{aspbook, eiter, leone}.
+
+
+
+
+% Let us illustrate this on a simple example with the program \ref{lst:asp_example}
+% \begin{lstlisting}[caption=ASP example, label=lst:asp_example, escapeinside={@}{@}, basicstyle=\scriptsize] 
+% car(Plate,State,Age,Fuel,Type)} :- compress(Plate,Foreign1,Foreign2),use(Foreign1, State, Age), make(Foreign2,Fuel,Type). 
+% @\commenttextasp{Initial dataset D}@
+% compress(a1, f1a, f2a). use(f1a,fair,old). make(f2a,gas,sport).
+% @\commenttextasp{Answer set}@
+% compress(a1, f1a, f2a). use(f1a,fair,old). make(f2a,gas,sport). car(a1,fair,old,gas,sport).  
+% \end{lstlisting}
+% This answer set is a minimal model the program \ref{lst:asp_example} and it contains the fact {\it car(a1,fair,old,gas,sport)}. 
+% Note that the answer sets need not be unique. 
+
+
+
+
+

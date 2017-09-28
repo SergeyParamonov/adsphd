@@ -1,0 +1,95 @@
+\label{sec:relwork}
+Our work is related to 1) previous work on generalizing problem definitions and solutions in factorization, 2) existing forms of relational decomposition, and 3) approaches in inductive and abductive logic programming, and 4) the use of declarative languages and solvers for data mining.
+
+
+
+\subsection{General models for pattern mining} 
+Our work can be related to a number of approaches that have generalized some of the tasks addressed in Section \ref{subsection:beoynd}.  
+\citet{optimalBMFroles} used BMF as a basis for defining several data mining tasks and modeled them using  integer linear programming. 
+While \citet{optimalBMFroles} also used a general purpose solver, it is restricted to Boolean matrix products involving only two Boolean matrices. 
+In a similar manner \citet{generalClustering} defined a \textit{General Model for Clustering Binary Data}, using matrix factorization to model several well-known clustering methods.  The framework supports only one possible factorization shape, a lower-level modeling language, and requires complete partitions as well as specialized algorithms for different problems. In our approach, the shape of the factorization is separated from the constraints and optimization criterion.
+
+%In a probabilistic context, our work can be related to the generalization of database tiling of \cite{matrixtileanalysis}. The view of tiling is close to our factorization approach but employs a probabilistic framework that relies on factor graphs.  However, the focus is on the computational part and the modeling has only a limited role. 
+
+
+\citet{solvingrelationalequations, journals/is/FanGZ12} investigated inverse querying and the problem of solving relational equations $e_1(D) = e_2(D)$ exactly under several assumptions, that could be used to compute exact solutions to a restricted form of ReDF. However, this approach does not seem to allow for approximations and the use of loss functions. 
+
+
+%An important direction for further work in relational factorization is to consider this type of probabilistic settings.
+
+
+\subsection{Decomposition of databases, tensors, and real-valued matrices} 
+
+ReDF is related to several forms of \emph{relational decomposition}, a term that has been heavily overloaded in the literature. Hence, it is imperative that we present an overview and contrast existing paradigms to our own work. Moreover, ReDF is also related to decomposition methods for real-valued matrices.
+
+\textit{Relational decomposition in database theory.} Ever since the seminal paper by \citet{codd}, the decomposition of relations has been an important theme in database research \citep{normal_form_relational_decomposition, date_book}. Key properties of this form of relational decomposition are \citep{elmasri_book}: 1) a relational schema together with its constraints, e.g., functional dependencies, is assumed given; 2) decomposition is never based on the data (extension), but only on the schema (intension); 3) decomposition is always lossless, i.e., factorization is always exact for any possible extension, and never an approximation. An interesting exception is \textit{Relational Decomposition via Partial Relations} \citep{partial_dependencies}, where one is looking for partially satisfied dependencies in the data and then uses these partial dependencies to derive a normal form. It does take into account data, but only to mine additional schema constraints in the decomposition.
+
+%In comparison in our work: the factorization shape is fixed and does not depend on schema constraints; no complete schema with constraints is given; we aim to find a set of patterns under constraints approximating an original relation; it is based only on this specific instance of the data under consideration; the factorization might contain latent variables. In fact, the purpose of our work is completely different from that of relational decomposition in databases, as we are aiming for abduction rather than a decomposed yet exact representation of the data.
+
+%\textit{In interactive theorem proving.} A program represented in relational Hoare logic is factorized into more simple relational logic programs to facilitate program verification \citep{itp_decomposition}. It is based on the specific properties of the logic and the program, and not on the data as in our case. The goal is also different, as we do not aim to verify correctness of a program but we are looking for sets of patterns optimizing a given criterion under constraints.
+
+\textit{Relational decomposition in tensor calculus.} \citet{tensor_decompositon} extend classical tensor factorization, CP decomposition, to deal with datasets composed of several relations, i.e., CP is generalized to multi-relational datasets. This requires adding relational algebra operations to CP. Key differences are: the data consists of several tables, with a schema to join them at the end; the shape is always the same and a tensor is decomposed into a sum of terms having the same structure; the optimization function is fixed; no user constraints are supported.
+
+\changesb
+\textit{Decomposition of real-valued matrices.} Let us start with SVD (Singular Value Decomposition) \citep{matrix_book}, the best-known method in this area, which gives an optimal rank-$k$ decomposition of a real-valued matrix $A$ into a composition of three matrices $U \Sigma V^T$, where $U$ and $V$ are orthogonal real-valued matrices and $\Sigma$ is a diagonal non-negative matrix with singular values of $A$. One of the key problems with SVD in the context of relational and Boolean factorization is that $U$ and $V$ may contain negative values, which make interpretation in the relational setting problematic. To overcome this issue NNMF (Non-Negative Matrix Factorization) has been introduced \citep{nnmf}. Still, there are two key issues with the usage of NNMF and SVD for relational and Boolean data.
+
+First of all, for a Boolean matrix $A$ there is no clear relation between its real value rank, denoted \rrank, and its Boolean rank, denoted \brank, (\prank denotes the non-negative rank). We know that the following inequalities hold \citep{phd_miettinen}:
+  \begin{align}
+    &\rrank \leq \prank \nonumber \\
+    &\brank \leq \prank \label{eq:brank_vs_prank}
+  \end{align}
+Furthermore, there are examples where $\rrank = n$ and $\brank = \log(n)$ (where $A$ is $n \times n$ matrix) \citep{phd_miettinen}, which implies that there are cases where Boolean factorization could be preferable over real-valued matrix factorization, i.e., there are cases where we can obtain a smaller decomposition if we use discrete rather than real-valued methods. Also, if we look at approximate ranks (when the approximation is set within $\epsilon$), Equation \ref{eq:brank_vs_prank} above does not hold, i.e., there is no clear connection between NNMF and Boolean ranks in the approximate case.
+
+Secondly, existing real-valued matrix factorization methods do not support multiple relations in the decomposition shape and extra constraints in the decomposition, which is at the core of the ReDF method. Furthermore, the constraints used in our method are hard constraints over discrete values.
+The latter problem has been addressed by Collective Matrix Factorization \citep{collective_factorization}, which allows to handle multiple relations and optimization criteria. However, at its core the method relies on stochastic optimization over reals, which leads to the problems discussed at the beginning of the section.
+
+Finally, as ReDF is defined over discrete values in the presence of the hard constraints, all the problems described above (rank inequalities, optimization over reals, uninterpretable values, etc) apply to the comparison of ReDF with real-valued matrix factorizations as well.\changese
+
+%\textit{In natural language processing.} In the work of \citet{nlp_decomposition} the term relational decomposition refers to the technique of representing a concept in textual data as a set of associated relations. The representation of a document is referred as a concept-relational decomposition, since the document is decomposed into the bag representation of concepts. 
+
+%\textit{In security research.} In the work of \citet{security_decomposition}, decomposition is used to handle access limitation to sensitive data stored in the database, i.e., there are several security levels (confidential, classified, etc). The task is to enrich a database with the access policy based on meta-information, e.g., \textit{Tuple-Class} attribute. The key differences here are similar to that of database theory with the addition of meta-information.
+
+\subsection{Relational learning}
+ReDF is also related to some well known techniques in inductive logic programming and statistical relational learning
+and even to abductive reasoning. 
+
+Several frameworks for {\em abduction} have been introduced over the years \citep{abduction,abductioninduction}. 
+In abduction, the goal is to find a (minimal) hypothesis in the form
+of a set of ground facts that explains an observation. Abductive reasoning uses
+a rich background theory as well as integrity constraints; it also uses
+a set of clauses defining the predicate in the observation. The differences with ReDF are that 
+ReDF uses a much simpler shape definition and no real background theory. On the other hand, abductive reasoning
+proceeds in a purely logical manner, and typically does neither take into account multiple facts in the observation nor does it use complex optimization functions.  
+There also exist similarities between ReDF and fuzzy abduction \citep{fuzzylogicabduction,fuzzystudy}, but we differ in the core assumptions we make: all rules and constraints in our setting are deterministic, as well as the evidence that needs to be derived. Also, ReDF has the shape constraint, which allows to derive only specific explanations in a form of a factorization.
+
+
+Meta-interpretive learning \citep{meta_learning} uses templates together with a kind of abductive reasoning
+to find a set of rules and facts in a typical inductive logic programming setting. While it can use much richer templates and 
+background theory, it uses neither constraints nor optimisation functions like ReDF does.
+
+\citet{predicateinvention} introduced a probabilistic framework based on Markov logic together with the EM principle to realize statistical predicate invention. This captures what the authors call \textit{multiple relational clustering} and addresses essentially the same task as the \textit{infinite relational model} of \citet{conf/aaai/KempTGYU06}.  Statistical predicate invention shares several ideas with our approach:  it employs a kind of query or schema to denote the kind of factorization one wants and also imposes some hard constraints on the possible solutions. On the other hand, its optimization criterion is built-in and based on the maximum likelihood principle, the framework seems restricted to a kind of block modeling approach, essentially clustering the different rows and columns into different blocks, and the approach is inherently probabilistic.  % This makes it unclear how to use other optimization criteria, for instance, for discriminative pattern set mining \citep{Liu98integratingclassification,DBLP:conf/pkdd/KnobbeH06}, or to tackle BMF or tiling problems. 
+%a fact the system is looking for the best hypothesis (typically minimal in size) that allows to logically entail the observed fact together with the background knowledge, in our setting it is not necessary to explain all evidence, but instead we search for the best explanation according to the optimization function and satisfies the shape constraint (i.e. the explanation is derived via the shape rule).
+
+
+\subsection{Declarative data mining} 
+
+
+%\added{New part, needs to be proofread} \textit{Abduction.} Several frameworks based on abduction has been introduced over the years \cite{abduction,abductioninduction}. In these frameworks to explain a fact the system is looking for the best hypothesis (typically minimal in size) that allows to logically entail the observed fact together with the background knowledge, in our setting it is not necessary to explain all evidence, but instead we search for the best explanation according to the optimization function and satisfies the shape constraint (i.e. the explanation is derived via the shape rule). There are also similarities with fuzzy abduction \cite{fuzzylogicabduction,fuzzystudy}, however we differ in the core assumptions: all rules and constraints in our setting are deterministic, as well as the evidence that need to be derived. Also, we have the shape constraint, that allows us to derive only specific explanations in a form of a decomposition.
+
+
+The idea of using generic solvers and languages for data mining is not new and has been investigated by, for instance, \cite{GunsAIJ12,miningZinc,DBLP:conf/sac/MetivierBCKL12},
+who used various constraint programming languages for modeling and solving itemset mining problems.  
+The use of ASP for frequent item set and graph mining were investigated in \cite{DBLP:conf/lpnmr/Jarvisalo11} and \cite{ilp_graph_mining}.  
+%A different logical framework, called {IDP} \citep{WarrenBook/DeCatBBD14}, based on classical logic, has also been used in the context of data mining and machine learning \citep{denecker}.  
+Furthermore, the use of 
+integer linear programming is quite popular in data mining and machine learning; e.g., \citet{DBLP:conf/aaai/ChangRRR08}.
+While the choice of a particular framework for modeling and solving may lead to both different models and performances, it should be possible to use alternative frameworks, such as constraint programming or integer programming, for modeling and solving ReDF problems. 
+
+%Another interesting approach to modeling a range of mining problems is that of \citet{miningchains}. 
+\citet{miningchains} extended the typical structure of the mining problem using three-level graphs that represent a chain of relations in the multi-relational setting: authors writing papers, and papers being about certain topics. The goal is to find the subgraphs that satisfy particular constraints and optimization criteria.
+E.g., an author is an authority  if the number of topics he has written papers on is maximal. They provide various interesting discovery tasks 
+and solve them using integer programming.
+
+
+%\citet{dominanceprogramming} proposed a novel notion of \textit{dominance programming} based on the constraint programming paradigm, where a user defines preferences over patterns and provide description of the task as a single query.
+

@@ -1,0 +1,41 @@
+The fields of data mining and machine learning have contributed numerous effective and highly optimized algorithms for analyzing data. 
+However, this  focus on efficiency and scalability has come at the cost of generality. 
+Indeed, while the algorithms are highly effective, their application range is often very restricted, 
+and the algorithms are typically hard to change and adapt even to small variations on the problem definition.
+This observation has led to an interest in declarative methods for data mining and machine learning in which the focus lies on 
+the use of expressive models that can capture a wide range of different problem settings
+and that can then be solved using off-the-shelf constraint solving technology; see \cite{miningZinc,DeRaedtECML12,DMWorkshop,DeRaedtAAAI15}.
+
+Motivated by this quest for more general and generic data analysis approaches, 
+the present paper introduces the problem of relational data factorization (ReDF). ReDF is inspired by matrix factorization, one of the most popular techniques in machine learning and data mining
+for which many variants have been studied, such as non-negative, singular value and Boolean matrix factorization. 
+In matrix factorization, one is given an $n \times m$ matrix $\mathbf{A}$, and the problem is to rewrite it
+as the product of some other matrices, e.g., the product of an $n \times  k$ matrix $\mathbf{B}$ and $k\times m$ matrix $\mathbf{C}$
+such that ${\mathbf{A}_{i,j} = \sum_k \mathbf{B}_{i,k} \cdot  \mathbf{C}_{k,j}}$.  
+In relational data factorization, one is given a relation (i.e., a set of tuples over the same attributes) and asked to
+to rewrite it in terms of other relations.  Consider, for instance, a relation
+\textit{sells(Company, Part, Project)}, stating that companies sell particular parts to particular projects.
+While it is well-known that ternary relations, in general, can not be rewritten
+as the join of three binary relations \citep{heath_theorem, ternary_decomposition}\footnote{Heath Theorem: a relation $R(x,y,z)$ satisfying a functional dependency $x \rightarrow y$ can always be losslessly decomposed into its projections $R_1=\pi_{xy}R$ and $R_2=\pi_{xz}R$; see \citep[Table 5]{ternary_decomposition}}, we might be interested in an approximation of 
+the ternary relation. That is, we might approximate \textit{sells(Company, Part, Project)} 
+by the query \textit{offers(Company,Part), needs(Project, Part), deliversto(Company,} \textit{Project)} (we follow logic programming notation, where the same variable name denotes a natural join).
+The question is then how to determine the extensions for the relations \textit{offers}, \textit{needs}, and \textit{delivers}.
+The found solution will generally be imperfect, so in ReDF we want to find the best approximation w.r.t. a scoring function and we allow the user to specify hard constraints. In the example these might specify, e.g., that only tuples in the target relation \textit{sells} may be derivable from the query. 
+
+In this paper, we develop a modeling and solving approach for ReDF using answer set programming (ASP) \citep{BrewkaCACM}. This is realized by showing for a number of ReDF problems how they can be tackled with ASP.  
+This leads to the identification of constraints and scoring functions, which we then abstract to an even higher-level declarative language. 
+We show that the resulting ReDF framework is general and generic and is in line with 
+  the declarative modeling approach to machine learning and data mining as 
+  1) it allows one to easily specify and solve a wide range of well-known data analysis problems (such as tiling, Boolean matrix factorization, discriminative pattern mining, matrix block diagonalization, etcetera),
+  2) it is effective for prototyping such tasks (as we show in our experiments), even though it cannot yet compete with optimized special purpose algorithms in terms of efficiency, and 
+  3) the constraints and optimization criteria are specified in a declarative and flexible manner. 
+  Translating problem definitions in the ReDF framework to ASP models is straightforward, and small changes in the problem definitions generally result in small changes in the model. 
+%
+%that it allows us to model and solve
+%a wide range of well-studied problems in the data mining community, including tiling, Boolean matrix factorization, blockmodeling, and discriminative pattern mining, as well as new types of relational data factorization problems. 
+%We provide experimental evidence that the ASP approach is effective in that it can be used to solve some realistic problems even though it is not yet competitive in terms of efficiency with the optimized special purpose algorithms in the data mining literature.
+%Taken together these properties make our ReDF framework well-suited for rapid prototyping of data mining tasks. 
+
+  Relational data factorization is a form of relational learning. That is, it is a relational analog of matrix factorization and is therefore relevant to inductive logic programming \citep{ilp_theory_methods,luc_book} and can also be seen as a form of large-scale abduction \citep{abduction}. Moreover, the solution techniques that we adopt are based on answer set programming, which has also been adopted in some recent works and methods on inductive logic programming \citep{ilp_graph_mining,DBLP:conf/lpnmr/Jarvisalo11}. The implementation techniques we employ may also be used in more traditional inductive logic programming settings.
+
+  This paper is structured as follows. Section \ref{section:framework} introduces the formal ReDF framework. Section \ref{section:asp} introduces ASP. Section \ref{section:dm_problems} shows how a wide range of data mining problems can be expressed as ReDF problems. Section \ref{subsection:beoynd} introduces some novel problems that the framework can express. Section \ref{section:implementation} discusses the encoding of the problems into ASP, while Section \ref{section:experiments} reports on the experimental evaluation. In Section \ref{section:related_work} we discuss related work, and we formulate some conclusions and directions for future work in Section \ref{section:discussion}. 

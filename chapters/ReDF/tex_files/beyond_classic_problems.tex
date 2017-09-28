@@ -1,0 +1,103 @@
+\label{sec:pure_decomposition}
+% In this subsection we are going to talk about problems that lie outside of the scope normally discussed in the literature. 
+
+% So far we have treated relations in the matrix-like manner, but it is easy to image a purely relational scenario where one can keep relational representation. Let us present a syntactic example that would mimic a possible real-world problem.  
+
+So far we have focused on matrix-like representations of the data, in which the dataset was represented by instances of $\db(T,A,V)$, for a transactions $T$ having a value $V$ for an attribute $A$. This representation is independent of the number of attributes and values, it allows one to easily specify constraints over all attributes and to access the data using the predicate \db only.
+%Using this representation one can express many data mining problems in a natural way, as shown in the previous section. 
+We will now show that it is also possible to use other, purely relational representations, such as the {\em sells} example from the Introduction.
+
+Section \ref{section:framework} already provided the {\em sells} example for decomposing 
+a ternary relation into three binary ones.   In the shape for the {\em sells} example in Listing \ref{lst:sells}
+%From database theory we know that a ternary relation $p(X,Y,Z)$ cannot always be factorized exactly into three binary relations \citep{ternary_decomposition}.  But we may want to \emph{approximate} the ternary relation using ReDF. Assume that we have a relation \textit{\db(Author, University, Venue)}. Then we define the shape and the optimization criteria as \begin{align} &\textit{\appr(A,U,V)} \leftarrow \textit{worksAt(A,U), publishesAt(A,V), knownAt(U,V)}. \label{eq:pure_triple} \\ &\incorrect(A,U,V)   \leftarrow \db(A,U,V), \textit{not } \appr(A,U,V).\label{eq:incorrect1}\\ &\incorrect(A,U,V)   \leftarrow  \textit{not } \db(A,U,V),\appr(A,U,V).\label{eq:incorrect2}\\ &\texttt{incorrect}: \#\{(A,U,V):\incorrect(A,U,V)\}.  \label{eq:incorrect:minimize} \end{align}
+there is no latent variable: there are only attributes from the original dataset. 
+Since there is no latent variable, there is no ``pattern'' to be found for which the optimization criterion needs to be optimized, 
+which allowed us to use a simple error function using only one type of atom. 
+
+%That is, the body of \appr does not have latent variables and the whole model can be optimized simultaneously. This allowed us to have a simple optimization criterion
+%that used only one type of atom.
+%In this model we neither specified a bias towards covering, nor a penalty towards overcovering. This allows us to simplify the optimization criterion by using only one type of atoms.
+%Further details will be discussed in Section \ref{section:implementation}.\\ \begin{lstlisting}[style=model,caption=Pure relational factorization, label=problem:pure_decomposition] @\textbf{Input:}@ dataset @\db@ @\textbf{Find:}@  the set of ground facts @$\textit{worksAt}(\cdot), \textit{publishesAt}(\cdot), \textit{knownAt}(\cdot)$@ @\textbf{Compute:}@ @$\textit{\appr(A,U,V)} \leftarrow \textit{worksAt(A,U), publishesAt(A,V), knownAt(U,V)}$@ @\textbf{Minimizing:}@ @\texttt{incorrect}@ \end{lstlisting}
+
+However, latent variables can also be useful in a purely relational setting.
+Let us illustrate this on an example inspired by the ArXiv community analysis example of \cite{Gopalan2013Efficient}. 
+Assume we are given a relation \textit{publishedIn} with attributes \textit{Author}, \textit{University}, and \textit{Venue},
+specifying that an author belonging to a particular university publishes in a particular venue. Furthermore, assume we want to factorize this relation into 
+the relation  \textit{\appr(A,U,V)} by introducing a latent attribute \textit{Topic}, denoted as $T$. 
+%Assume, we are given a relation \textit{publishedIn(Author, Uni, Venue)}, for short \textit{p(A,U,V)} and we would like to decompose it into the relation \textit{dp(A,U,V)} (short for decomposed-publishedIn) using the following shape: 
+The latent topic variable clusters authors, universities and venues together in such a way that their join results in publications. 
+
+
+We obtain the following high-level model in Listing \ref{lst:ternary:model}, 
+where $\alpha$ is the constant that indicates the relative cost of overcovering an element and the integer constant $k$ is the number of value that the latent variable ($T$) can take:
+\begin{align*}
+& \appr(A,U,V) \leftarrow \textit{interestedIn}(A, \textit{T}), \textit{specializedIn}(U, \textit{T}), \textit{inField}(V, \textit{T}).
+\end{align*}
+
+
+\begin{lstlisting}[style=model,label=lst:ternary:model,caption=ReDF Purely Relational]
+ @\textbf{Input:}@ dataset @\db and constants $K, \alpha$@
+ @\textbf{Shape:}@ @$\appr(A,U,V) \leftarrow \textit{interestedIn}(A, \textit{T}), \textit{specializedIn}(U, \textit{T}), \textit{inField}(V, \textit{T}).$@
+ @\textbf{Find:}@  the set of ground facts @$\textit{interestedIn}(\cdot), \textit{specializedIn}(\cdot), \textit{inField}(\cdot)$@
+ @\textbf{Satisfying:}@ @$\ktiles$@
+ @\textbf{Maximize:}@ @$\maxcover - \alpha \times \overcoverage$@
+\end{lstlisting}
+The corresponding model without latent variables would be different only in the decomposition shape, i.e., it would look like
+\begin{equation*}
+\appr(A,U,V) \leftarrow  \textit{worksAt(A,U), publishesAt(A,V), knownAt(U,V)}.
+\end{equation*}
+
+\paragraph{Discriminative relational learning}
+In the spirit of discriminative pattern mining, described in Subsection \ref{subsec:discriminative}, we can also do discriminative learning in the purely relational setting. To do so, we assume that the relation has an extra argument Co-Author and we would like to discriminate the dataset by a particular Co-Author $c^+$, i.e., 
+\begin{equation}
+\begin{aligned}
+ &\coverage^+(A,U,V) \leftarrow \appr(A,U,V), \textit{publishedIn}(A,U,V,c^+).\\
+ &\coverage^-(A,U,V) \leftarrow \appr(A,U,V), \textit{publishedIn}(A,U,V,C), C \neq c^+.
+\end{aligned} \label{eq:pure_relational_discriminative}
+\end{equation}
+Then, the optimization criterion remains the same as in Subsection \ref{subsec:discriminative}. Intuitively, if we have only information about an author of a paper (together with his or her university affiliation and a venue), we use this to `predict' his or her co-author using the patterns we obtain in this discriminative setting.
+
+%The shape is somewhat reminiscent of statistical predicate invention as described in the work of \citet{predicateinvention}, 
+%but is different in that we can use other optimization functions and constraints. 
+
+
+% \subsection{Expressive pattern languages}
+% \label{subsec:expressive_language}
+% So far patterns were always conjunctions of attribute-value combinations, e.g., a tile in Figure \ref{decompositionExampleFigure} is a combination such as  
+% \begin{equation*}
+%   \textit{State} = \textit{fair}~\wedge~\textit{Age} = \textit{old}.
+% \end{equation*}
+% Our framework, however, can be easily adapted to also accommodate patterns such as 
+% \begin{equation*}
+%   (\textit{State} = \textit{fair} \vee \textit{State} = \textit{acceptable})~\wedge~\textit{Age} = \textit{old}.
+% \end{equation*}
+% This is known as \textit{internal disjunction} \citep{internal_disjunction}. Conceptually, this would require changing constraint (\ref{def:tiling_conjunctive}) into a constraint 
+% that allows up to $k$ values for the same attribute: 
+% \begin{equation*}
+% \leftarrow  \code(\indexvar,\letter_1, \textit{Attr}), \code(\indexvar,\letter_2, \textit{Attr}), \# \{ \letter_1 \neq \letter_2 \} \geq k.
+% \end{equation*}
+
+% A next step could be to support reasoning, e.g., about  a taxonomy of different values for the attributes. For instance, for the animal dataset \citep{animalDataset} there could be a taxonomy about the types of animals specifying that  dog are carnivores, carnivores are mammals, etc. This would allow for tiles such as 
+% \begin{equation*}
+%   \textit{Class}~=~\textit{mammal} \wedge \textit{Birthtype}~=~\textit{egg-laying}.
+% \end{equation*}
+% If there is a platypus in the dataset, the system could deduce that it is a mammal and match it with the tile description. 
+%  %a mammal), the system can deduce the fact that it is a mammal and it would match to the tile description. 
+% This kind of reasoning is natural for logical reasoning systems like ASP and it is not hard to make an implementation using inference rules such as
+% \begin{equation*}
+%   \code(I,\textit{mammal}, \textit{class}) \leftarrow \code(I, \textit{dog}, \textit{class}).
+% \end{equation*}
+% %It say that for any pattern with an index $I$, if its class is equal to dog, then it also has the value mammal.
+
+% In the same spirit as in \citep{ebmf}, one could introduce negation into the pattern language with patterns such as
+% \begin{equation*}
+%   \textit{State} = \textit{fair}~\wedge~\textit{Age} \neq \textit{old}.
+% \end{equation*}
+% On the implementation level this requires introducing negated elements into possible values of an attribute, e.g., values of attribute \textit{birthtype} can be 
+% \begin{equation*}
+%   \{ \textit{egg-laying}, \textit{ovuliparity}, \textit{ovoviviparity}, \textit{not-egg-laying}, \textit{not-ovuliparity} \dots \}.
+% \end{equation*}
+% While at a conceptual level this coincides with internal disjunction, it results in a quite different search strategy. To see this we need to make the assumption that 
+% the domains of the attributes are finite. If we allow $n-1$ values for an attribute among $n$ possible values, then it is the same as to prohibit only one $n$-th value, which would leave $n-1$ possible values.
+
+% For the sake of clarity of presentation, in the current paper we refrain from experimenting with the expressive pattern languages discussed in this subsection.

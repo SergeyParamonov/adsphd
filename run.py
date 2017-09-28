@@ -277,6 +277,7 @@ def cover():
 def newchapter():
     """Create the necessary files for a new chapter."""
     chaptername = ""
+    chaptersdir = settings.chaptersdir
     validchaptername = re.compile(r'^[a-zA-Z0-9_.]+$')
     while validchaptername.match(chaptername) == None:
         chaptername = input("New chapter file name (only a-z, A-Z, 0-9 or _): ")

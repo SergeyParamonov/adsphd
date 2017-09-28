@@ -1,0 +1,31 @@
+The key contribution of this paper is the introduction of the framework of relational data factorization,  
+which was shown to be relevant for modeling, prototyping, and experimentation purposes. 
+
+On the modeling side, we have formulated several well-known data mining tasks in terms of ReDF, 
+which allowed us to identify commonalities and differences between these data mining tasks. 
+One advantage of the framework is that small changes in the problem definition typically lead to small changes in the model. Furthermore, ReDF allowed us to model new types of relational data mining problems.
+
+ 
+%The contribution of this paper is twofold lies on both the modeling side and on the experimental side. Let us briefly go over these two points.
+
+%\paragraph{Modeling contribution} By formulating several well-known data mining tasks into the framework of relational decomposition, we have identified commonalities and differences between the tasks and we have also of relational decomposition demonstrates that a number of important data mining problems have similar structure despite being treated as different problems in the literature. As a new general kind of problems, relational decomposition not only allows to model classic data mining problem but goes beyond and presents new interesting variations and even new data mining tasks e.g. relational tiling combined with taxonomy reasoning. 
+
+
+%It has showed that the problem of discriminative $k$-pattern set mining in its structure is similar to a matrix decomposition problem and the framework allows us to see which part is directly responsible for the difference between the problems. In case of discriminative mining, the optimization criterion is different and we can directly obtain it from the problem formulation, where one can see that preference of the models is reflected by the optimization criterion.  
+
+%We regard the modeling aspect of relational decomposition as the main contribution. It is not only natural way of representing of many data mining task but it is useful tool in analyzing the structure of the problem to produce a model of the task. Besides of the model design, it allows to introduce changes into the model easily, e.g. as we have seen in the example with overlapping tiling or noise modeling. The main idea behind it, the small change in the task should lead to the small change in the model (and computations).
+
+%We have shown that -- despite their simplicity -- the preliminary ASP implementations can already solve reasonable factorization problems. We believe that the experiments provide evidence for the potential of the proposed approach. One direction for further research is to integrate local search heuristic functions into the system, which could substantially speed-up the solving step. Related to this is that one might try other classes of solvers such as constraint or integer programming. A second direction is to provide a generic template language for a user that would allow specifying the task in the ReDF framework and derive the encoding and needed optimization methods to provide a reasonable solution.
+
+
+We have not only modeled problems, but also demonstrated that these models can be easily 
+translated into concrete executable ASP encodings.
+The experiments have shown the feasibility of the approach, especially for prototyping, and especially with the sampling technique.
+The runtimes were typically not comparable with highly optimized and much more specific implementations that are typically used in data mining. 
+Still they could be run on reasonable datasets of modest size (e.g.,  Mushroom and Chess have approximately $185\,000$ and $115\,000$ non-empty elements respectively). 
+
+Directions for future research include investigating the use of alternative solvers (such as constraint or integer programming), the 
+  study of heuristics and local search, and the expansion of the range of tasks to which ReDF can be applied. For example, a general ReDF framework is needed to factorize evidence for probabilistic lifted inference, where the shape of the factorization crucially affects the overall performance of the algorithm \citep{DBLP:conf/nips/BroeckD13}.
+
+\textit{Acknowledgments.}  We would like to thank Marc Denecker, Tias Guns, Benjamin Negrevergne, Siegfried Nijssen, and Behrouz Babaki for their help and assistance, and last but not least the ICON project (FP7-ICT-2011-C) and FWO for funding this work.
+ %ASP and IDP implementations can already solve reasonable decomposition problems. We believe that the experiments provide evidence for the potential of the proposed approach. One direction for further research is to integrate local search heuristic functions into the system, which could substantially speed-up the solving step. Related to this is that one might try other classes of solvers such as constraint or integer programming. A second direction is to provide a generic template language for a user that would allow to specify the task in the relational decomposition framework and derive the encoding and needed optimization methods to provide a reasonable solution.
