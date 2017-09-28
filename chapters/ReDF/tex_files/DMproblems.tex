@@ -1,4 +1,4 @@
-Data mining has contributed numerous techniques for finding patterns in (Boolean) matrices. One fundamental approach is that of \emph{tiling} \citep{tiling}.  A tile is a rectangular area in a Boolean matrix represented by set of rows and columns such that all values on the corresponding rows and columns in the matrix are equal to 1.  
+Data mining has contributed numerous techniques for finding patterns in (Boolean) matrices. One fundamental approach is that of \emph{tiling} \parencite{tiling}.  A tile is a rectangular area in a Boolean matrix represented by set of rows and columns such that all values on the corresponding rows and columns in the matrix are equal to 1.  
 
 One is typically not interested in {\em any} tile, but in maximal tiles, i.e., tiles that cannot be extended.  For instance, Figure \ref{tilesExample} shows a binary dataset and two tiles. The first tile consists of the first and second column together with the first and second row. All entries for these rows and columns are 1s. 
 Furthermore, it cannot be expanded as adding the third column or row would also include 0 values. The second tile
@@ -148,12 +148,12 @@ We specify the high-level DBP model in Listing \ref{dbp:model:full}.
 @\textbf{Satisfying:}@ @$\ktiles$@
 @\textbf{Maximizing:}@ @$\maxcover  - \alpha \times \overcover$@
 \end{lstlisting}
-This formulation mimics \textit{The Discrete Basis Problem} \citep{dbp}. That is, $K$ plays the role of the basis size and $\alpha$ mimics the bias towards rewarding covering and penalizing overcovering (the flags \texttt{--bonus-covered} and\\\texttt{--penalty-overcovered} in ASSO).
+This formulation mimics \textit{The Discrete Basis Problem} \parencite{dbp}. That is, $K$ plays the role of the basis size and $\alpha$ mimics the bias towards rewarding covering and penalizing overcovering (the flags \texttt{--bonus-covered} and\\\texttt{--penalty-overcovered} in ASSO).
 %The correspondence between these two formulations is explained in \ref{subsection:bmf_explanation}.
 
 %Let us reformulate the problem in high algebraic language we used before (assuming the query is the same) \begin{align} & \onevalueConstraint \\ & \ktiles \end{align} Then, the optimization criterion takes into account overcoverage \begin{align} & \opti(M) = \coverage - \overcoverage \end{align}
 
-It is well-known that tiling and {\em Boolean matrix factorization} (BMF) are closely related \citep{conf/icdm/Miettinen12}. Hence, let us also briefly show how BMF can be realized in our framework.  It corresponds to an instance of DBP where only binary values (true and false) are possible and the \overcoverageConstraint constraint applies. Hence, it is required that the factorization undercovers the initial dataset, i.e., if there is a 0 in a position in the original dataset, then there cannot be a 1 in the approximation.  Therefore, the optimization criterion of DBP is further simplified and we obtain the following BMF model, without overcovering, in Listing \ref{bmf:simplified:model}.
+It is well-known that tiling and {\em Boolean matrix factorization} (BMF) are closely related \parencite{conf/icdm/Miettinen12}. Hence, let us also briefly show how BMF can be realized in our framework.  It corresponds to an instance of DBP where only binary values (true and false) are possible and the \overcoverageConstraint constraint applies. Hence, it is required that the factorization undercovers the initial dataset, i.e., if there is a 0 in a position in the original dataset, then there cannot be a 1 in the approximation.  Therefore, the optimization criterion of DBP is further simplified and we obtain the following BMF model, without overcovering, in Listing \ref{bmf:simplified:model}.
 \begin{lstlisting}[style=model, label=bmf:simplified:model, caption=BMF without overcovering]
  @\textbf{Input:}@ dataset @\db@and constant @$K$@
  @\textbf{Shape:}@ @$\appr(\column,\transaction) \leftarrow \code(\indexvar,\column), \inrel(\indexvar,\transaction)$@
@@ -165,7 +165,7 @@ It is well-known that tiling and {\em Boolean matrix factorization} (BMF) are cl
 
 \subsection{Discriminative k-pattern set mining}
 \label{subsec:discriminative}
-A common supervised data mining task is that of discriminative pattern set mining \citep{DBLP:conf/pkdd/KnobbeH06}.  Let \dbvars be a categorical dataset, \positiveT (\negativeT) be the set of positive (negative) transactions, and $ k$ the number of tiles. Then, the task is to find extensions of the relations \codevars and \invars such that positive and negative transactions are discriminated. A standard interpretation is to find tiles that cover as many positive and as few negative ones as possible \citep{Liu98integratingclassification}. The only required change in the model concerns the scoring function (and assigning some weight to the errors):
+A common supervised data mining task is that of discriminative pattern set mining \parencite{DBLP:conf/pkdd/KnobbeH06}.  Let \dbvars be a categorical dataset, \positiveT (\negativeT) be the set of positive (negative) transactions, and $ k$ the number of tiles. Then, the task is to find extensions of the relations \codevars and \invars such that positive and negative transactions are discriminated. A standard interpretation is to find tiles that cover as many positive and as few negative ones as possible \parencite{Liu98integratingclassification}. The only required change in the model concerns the scoring function (and assigning some weight to the errors):
 \begin{equation}
   \#\{T: \covered(T),\positiveT \} - \alpha \#\{ T: \covered(T),\negativeT \}, \label{eq:discriminate_optimization}
 \end{equation}
@@ -214,7 +214,7 @@ This corresponds to the high-level model in Listing \ref{lst:discriminative:mode
 \label{fig:diag_examples}
 \end{figure}
 
-\citet{blockdiagonal} introduced the problem of and an algorithm for permuting the rows and columns of a sparse matrix into block diagonal form. 
+\cite{blockdiagonal} introduced the problem of and an algorithm for permuting the rows and columns of a sparse matrix into block diagonal form. 
 They relate this problem to other combinatorial and classical linear algebra problems. The underlying block-diagonal structure of a matrix can be used to parallelize certain matrix computations. An illustration of block-diagonalization (several variants) of the Animals dataset is depicted in Figure \ref{fig:diag_examples}.
 
 We reduce it to a form of tiling. The shape query is the same as in tiling but the constraints are different: if a tile $I_1$ has an attribute $A$, then a tile $I_2$ cannot use the same attribute. A similar constraint is imposed on the $\inrel$ predicate and transactions stating that each item $A$ can belong to only one tile

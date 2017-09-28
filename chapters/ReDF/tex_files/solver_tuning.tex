@@ -40,7 +40,7 @@
 
 This appendix briefly evaluates the performance of the solver that was used for the experiments. We first describe how we tuned the system and then continue with an analysis of the solving process.
 
-\textit{Solver tuning.} The clingo system \citep{gebser2011potassco} has a variety of parameters that affect runtime. We performed a series of preliminary experiments to determine the parameters that were used for all other experiments in this section. These tuning experiments mostly concerned maximum $k$-tiling on datasets of moderate size, but some test experiments on other tasks did not reveal any discrepancies. 
+\textit{Solver tuning.} The clingo system \parencite{gebser2011potassco} has a variety of parameters that affect runtime. We performed a series of preliminary experiments to determine the parameters that were used for all other experiments in this section. These tuning experiments mostly concerned maximum $k$-tiling on datasets of moderate size, but some test experiments on other tasks did not reveal any discrepancies. 
 
 Runtime was measured for a large number of search options while fixing the dataset and task. Figure~\ref{meta-time} shows the results obtained for maximum $k$-tiling on the Animals dataset. 
 Search options ``heuristic=Vmtf'' and the ``lookahead'' options result in shorter runtimes, but the ``lookahead'' options do not scale well; with these options the system is unable to handle bigger datasets like Mushroom and Chess. Therefore, all remaining experiments in this section have been performed with ``heuristics=Vmtf''. None of the other combinations of parameters gave any substantial improvement in runtime.
@@ -69,5 +69,5 @@ Flare       &0.225&0.575 & 3
 \end{center}
 \end{table}
 
-\textit{Alternatives to manual parameter tuning.} \textit{claspfolio} is a portfolio system for clasp \citep{gekakascsczi11a}. However, our experiments indicated that none of the precomputed models of claspfolio applied to the problems considered in this work and the system switches to the default solver. \textit{hclasp} \citep{conf/aaai/GebserKROSW13} introduces heuristics into the reasoning process of clasp. Since we consider a wide class of problems, it requires a nontrivial decision procedure to find the right heuristics for a particular task. We regard it as a possible direction for future research.
+\textit{Alternatives to manual parameter tuning.} \textit{claspfolio} is a portfolio system for clasp \parencite{gekakascsczi11a}. However, our experiments indicated that none of the precomputed models of claspfolio applied to the problems considered in this work and the system switches to the default solver. \textit{hclasp} \parencite{conf/aaai/GebserKROSW13} introduces heuristics into the reasoning process of clasp. Since we consider a wide class of problems, it requires a nontrivial decision procedure to find the right heuristics for a particular task. We regard it as a possible direction for future research.
 

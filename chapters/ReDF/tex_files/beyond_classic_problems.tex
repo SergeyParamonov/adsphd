@@ -9,7 +9,7 @@ We will now show that it is also possible to use other, purely relational repres
 
 Section \ref{section:framework} already provided the {\em sells} example for decomposing 
 a ternary relation into three binary ones.   In the shape for the {\em sells} example in Listing \ref{lst:sells}
-%From database theory we know that a ternary relation $p(X,Y,Z)$ cannot always be factorized exactly into three binary relations \citep{ternary_decomposition}.  But we may want to \emph{approximate} the ternary relation using ReDF. Assume that we have a relation \textit{\db(Author, University, Venue)}. Then we define the shape and the optimization criteria as \begin{align} &\textit{\appr(A,U,V)} \leftarrow \textit{worksAt(A,U), publishesAt(A,V), knownAt(U,V)}. \label{eq:pure_triple} \\ &\incorrect(A,U,V)   \leftarrow \db(A,U,V), \textit{not } \appr(A,U,V).\label{eq:incorrect1}\\ &\incorrect(A,U,V)   \leftarrow  \textit{not } \db(A,U,V),\appr(A,U,V).\label{eq:incorrect2}\\ &\texttt{incorrect}: \#\{(A,U,V):\incorrect(A,U,V)\}.  \label{eq:incorrect:minimize} \end{align}
+%From database theory we know that a ternary relation $p(X,Y,Z)$ cannot always be factorized exactly into three binary relations \parencite{ternary_decomposition}.  But we may want to \emph{approximate} the ternary relation using ReDF. Assume that we have a relation \textit{\db(Author, University, Venue)}. Then we define the shape and the optimization criteria as \begin{align} &\textit{\appr(A,U,V)} \leftarrow \textit{worksAt(A,U), publishesAt(A,V), knownAt(U,V)}. \label{eq:pure_triple} \\ &\incorrect(A,U,V)   \leftarrow \db(A,U,V), \textit{not } \appr(A,U,V).\label{eq:incorrect1}\\ &\incorrect(A,U,V)   \leftarrow  \textit{not } \db(A,U,V),\appr(A,U,V).\label{eq:incorrect2}\\ &\texttt{incorrect}: \#\{(A,U,V):\incorrect(A,U,V)\}.  \label{eq:incorrect:minimize} \end{align}
 there is no latent variable: there are only attributes from the original dataset. 
 Since there is no latent variable, there is no ``pattern'' to be found for which the optimization criterion needs to be optimized, 
 which allowed us to use a simple error function using only one type of atom. 
@@ -57,7 +57,7 @@ In the spirit of discriminative pattern mining, described in Subsection \ref{sub
 \end{equation}
 Then, the optimization criterion remains the same as in Subsection \ref{subsec:discriminative}. Intuitively, if we have only information about an author of a paper (together with his or her university affiliation and a venue), we use this to `predict' his or her co-author using the patterns we obtain in this discriminative setting.
 
-%The shape is somewhat reminiscent of statistical predicate invention as described in the work of \citet{predicateinvention}, 
+%The shape is somewhat reminiscent of statistical predicate invention as described in the work of \cite{predicateinvention}, 
 %but is different in that we can use other optimization functions and constraints. 
 
 
@@ -71,13 +71,13 @@ Then, the optimization criterion remains the same as in Subsection \ref{subsec:d
 % \begin{equation*}
 %   (\textit{State} = \textit{fair} \vee \textit{State} = \textit{acceptable})~\wedge~\textit{Age} = \textit{old}.
 % \end{equation*}
-% This is known as \textit{internal disjunction} \citep{internal_disjunction}. Conceptually, this would require changing constraint (\ref{def:tiling_conjunctive}) into a constraint 
+% This is known as \textit{internal disjunction} \parencite{internal_disjunction}. Conceptually, this would require changing constraint (\ref{def:tiling_conjunctive}) into a constraint 
 % that allows up to $k$ values for the same attribute: 
 % \begin{equation*}
 % \leftarrow  \code(\indexvar,\letter_1, \textit{Attr}), \code(\indexvar,\letter_2, \textit{Attr}), \# \{ \letter_1 \neq \letter_2 \} \geq k.
 % \end{equation*}
 
-% A next step could be to support reasoning, e.g., about  a taxonomy of different values for the attributes. For instance, for the animal dataset \citep{animalDataset} there could be a taxonomy about the types of animals specifying that  dog are carnivores, carnivores are mammals, etc. This would allow for tiles such as 
+% A next step could be to support reasoning, e.g., about  a taxonomy of different values for the attributes. For instance, for the animal dataset \parencite{animalDataset} there could be a taxonomy about the types of animals specifying that  dog are carnivores, carnivores are mammals, etc. This would allow for tiles such as 
 % \begin{equation*}
 %   \textit{Class}~=~\textit{mammal} \wedge \textit{Birthtype}~=~\textit{egg-laying}.
 % \end{equation*}
@@ -89,7 +89,7 @@ Then, the optimization criterion remains the same as in Subsection \ref{subsec:d
 % \end{equation*}
 % %It say that for any pattern with an index $I$, if its class is equal to dog, then it also has the value mammal.
 
-% In the same spirit as in \citep{ebmf}, one could introduce negation into the pattern language with patterns such as
+% In the same spirit as in \parencite{ebmf}, one could introduce negation into the pattern language with patterns such as
 % \begin{equation*}
 %   \textit{State} = \textit{fair}~\wedge~\textit{Age} \neq \textit{old}.
 % \end{equation*}
