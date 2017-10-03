@@ -1,4 +1,4 @@
-This section describes how ReDF models can be implemented in ASP. We do this for the basic problem of tiling, as well as for the purely relational data factorization presented before. Implementations of the other variations are included in Appendix \ref{ASP_appendix}. Our primary implementation is written in clasp, can be used with the clasp system \parencite{aspbook,BrewkaCACM} and will be made available online upon acceptance of this manuscript.
+This section describes how ReDF models can be implemented in ASP. We do this for the basic problem of tiling, as well as for the purely relational data factorization presented before. Implementations of the other variations are included in Appendix \ref{ASP_appendix}. Our primary implementation is written in clasp, can be used with the clasp system \parencite{ASPbook,BrewkaCACM} and will be made available online upon acceptance of this manuscript.
 
 \subsection{General computation methods: greedy and sampling approaches.} 
 In all described problems, the goal is to find $k$ patterns or tiles, where a pattern is interpreted as a set of facts corresponding to a particular value of the latent variable. 
@@ -12,50 +12,22 @@ be evaluated in Section \ref{subsec:experiments_tiling}.
 The greedy approach is described  in  Algorithm \ref{alg:greedy}. Essentially, 
 when the next best \tile has been computed (where \tile is a set of facts associated with the \tile identifier, e.g., in tiling a pattern is a set of transactions and attributes), it is added to the current set of \tiles. The specific part for each tile is represented by \texttt{executeProgram} and is encoded separately in ASP. Note that this greedy, iterative approach to finding $k$ patterns is very common in pattern mining. 
 \changesb Theoretical bounds on the solution quality of the greedy approach have been studied in the context of the maximum $k$-set coverage problem \parencite{max_k_set_cover1, max_k_set_cover2}; more details can be found in Appendix \ref{appendix:k_set_coverage_analysis}. \changese
-\begin{algorithm}[thb]
-  \small
- \caption{Greedy execution model}
+\begin{figure}[thb]
+\captionof{algorithm}{Greedy execution model}
+\includegraphics[width=\textwidth]{algorithm1_greedy.png}
  \label{alg:greedy}
- \SetKwInOut{Input}{input}\SetKwInOut{Output}{output}
- \Input{\data is the dataset}
- \Output{\tiles is the set of patterns}
- \tiles$ \gets \emptyset$\;
- \For{$i \in  [1,k]$}{
-     \ $\tile \gets \texttt{executeProgram}(\data, \tiles, i)$\;  
-     \ $\tiles \gets \{\tile\} \cup \tiles$ \;
-  }   
-  \normalsize
-\end{algorithm}
+\end{figure}
 
 \textit{Column sampling execution model.} To improve scalability, we employ a sampling approach. Interestingly, our approach is different from most existing sampling techniques in data mining: instead of sampling a rows or patterns, we sample columns. Algorithm \ref{sampling} presents the column sampling approach we propose. The key difference with the greedy approach is that instead of determining the 
 next best pattern on the {\em overall} dataset in each iteration, this approach samples $N$ subsets of the data
 and determines the next best pattern for all of these subsets. The best among these is then fixed,
 and the process is repeated. We empirically evaluate the effects of sampling
 on the quality of the computed patterns and on the runtime in the experiment section. \changesb Quality bounds for this type of greedy search have also been analyzed previously \parencite{max_k_set_cover1}; for more details we refer to Appendix \ref{appendix:k_set_coverage_analysis}. \changese
-\begin{algorithm}[thb]
-  \small
- \SetKwInOut{Input}{input}
- \SetKwInOut{Output}{output}
- \caption{Column sampling execution model}
+\begin{figure}[thb]
+\captionof{algorithm}{Column sampling execution model}
  \label{sampling}
- \Input{\data is the dataset}
- \Input{$N$    is the number of samples}
- \Input{$\alpha$ is the relative size of a sample}
- \Output{\tiles is the set of patterns}
- \tiles$ \gets \emptyset$\;
- \For{$i \in  [1,k]$}{
-    \ \maxtile $\gets \emptyset$ \;
-    \For{$j \in  [1,N]$}{
-   \ \sample $\gets \texttt{getColumnSample}(\data, \alpha)$\;
-   \ $\tile \gets \texttt{executeProgram}(\sample, \tiles, i)$\;  
-     \If{$\texttt{score}(\tile) > \texttt{score}(\maxtile)$}{
-     \ $\maxtile \gets \tile$ \;
-     }
-   }
-   \ $\tiles \gets \{\maxtile\} \cup \tiles$ \;
-  }   
-  \normalsize
-\end{algorithm}
+\includegraphics[width=\textwidth]{algorithm2_greedy_sampling.png}
+\end{figure}
 
 \lstset{numbers=left,
   numberstyle=\tiny,
