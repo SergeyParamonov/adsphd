@@ -12,7 +12,7 @@ In the past few years, many pattern mining problems have been modeled using cons
 While the resulting systems are not always as efficient as state-of-the-art pattern mining systems,
 the advantages of this type of declarative modeling are  now generally accepted: they support more constraints,
 they are easier to modify and extend, and they are built using general purpose systems.
-However, so far, the declarative modeling approach has not yet been applied to inductive logic programming. This paper investigates whether such 
+However, so far, the declarative modeling approach has not yet been applied to inductive logic programming. This chapter investigates whether such 
 an extension would be possible.  To realize this, we consider frequent query mining, the ILP version of frequent pattern mining, as well as the answer set programming paradigm, the logic programming version of constraint programming. 
 More specifically, we address the following three questions: 
 
@@ -34,12 +34,9 @@ to be essential for modeling ILP tasks.
 \end{enumerate}
 
 
-This paper is organized as follows:
-Section \ref{sec:problem} formally introduces the problem. In Section \ref{sec:encoding}, we introduce a second order model for frequent query mining that addresses Question \qone. In Section \ref{sec:fol} we present a first order model for query mining, demonstrate main issues with this approach and address Question \qtwo. In Section \ref{sec:experiments} we provide experimental evidence to support our answers to Questions \qtwo and \qthree. In Section \ref{sec:approach_extension} we discuss advantages (such as extendability) and disadvantages of the models and the approach overall. In Section \ref{sec:related_work} we present an overview of the related work in the ILP context of frequent query mining. Finally, we conclude in Section \ref{sec:conclusions} with a summary of the work. 
-
 \section{Problem statement}\label{sec:problem}
 
-The problem that we address in this paper is to mine queries in a logical and relational learning setting. Starting with the work the Warmr system \parencite{warmr}, there has been a line of work that focusses on the following frequent query mining problem \parencite{bagm,farmer,condensed_luc}:
+The problem that we address in this chapter is to mine queries in a logical and relational learning setting. Starting with the work the Warmr system \parencite{warmr}, there has been a line of work that focusses on the following frequent query mining problem \parencite{bagm,farmer,condensed_luc}:
 
 
 \noindent
@@ -57,7 +54,7 @@ The problem that we address in this paper is to mine queries in a logical and re
 
 Notice that the substitutions $\theta$ only substitute variables $X$ that occur in \keypred. 
 
-In this paper, we focus our attention on graph data, as this forms the simplest truly relational learning setting and allows us to focus on what is essential for extending the declarative modeling paradigm to a relational setting. In principle, this setting can easily be generalized to the full inductive logic programming problem. 
+In this chapter, we focus our attention on graph data, as this forms the simplest truly relational learning setting and allows us to focus on what is essential for extending the declarative modeling paradigm to a relational setting. In principle, this setting can easily be generalized to the full inductive logic programming problem. 
  
 As an example, consider a graph database $D$, represented by the facts 
 \begin{equation*}
@@ -65,9 +62,9 @@ As an example, consider a graph database $D$, represented by the facts
 \end{equation*}
 where the ternary relation $\edge(g,e_1,e_2)$ states that in graph $g$ there is an edge between $e_1$ and $e_2$ (we assume graphs to be undirected, so there is also always an edge between $e_2$ and $e_1$). The frequency of $\textit{key}(K) \leftarrow \edge(K,B,C), \edge(K,C,D), \edge(K,B,D)$ in this database is 2 as the query returns $g_1$ and $g_2$. If $key(g)$ holds,  then the graph $g$ is subsumed by the query specified defined in the body of the clause for \keypred.
 
-The goal of this paper is to explore how such typical ILP problems can be encoded in 
+The goal of this chapter is to explore how such typical ILP problems can be encoded in 
 ASP languages.   So, we will need to translate the typical ILP or Prolog construction into an ASP format. 
-In the present paper, we employ IDP, which belongs to the ASP family of formalisms. Most statements and constraints written in IDP can be translated into standard ASP mechanically. %Any particular deviation from mainstream the ASP approach is indicated. 
+In the present chapter, we employ ASP as well as IDP, which belongs to the ASP family of formalisms. Most statements and constraints written in IDP can be translated into standard ASP mechanically. %Any particular deviation from mainstream the ASP approach is indicated. 
 A brief example-based introduction to IDP is in Appendix \ref{sec:idp_intro} and for a detailed system and paradigm description we refer to the IDP system and language description \parencite{idp} and to the ASP primer \parencite{eiter}.
 
 To realize frequent query mining in IDP, we need to tackle four problems: 1) encode the queries in IDP; 2) implement the subsumption test to check whether a query subsumes a particular entity in the database; 3) choose and encode a language bias; and 4) determine, in addition to frequency, further constraints that could be used and encode them. We will now address each of these problems in turn.
@@ -107,7 +104,7 @@ in IDP or ASP as rule evaluation, that is, in the above example, to assert the k
 Computationally, this would however be infeasible as the size of the grounded rules 
 grows exponentially with the number of distinct variables in the rule.
 
-Throughout the paper we use OI-subsumption for all tasks, except of the experimental comparison with Subsumer in Section \ref{sec:experiments} (since, it is not designed to perform OI-subsumption).
+Throughout the chapter we use OI-subsumption for all tasks, except of the experimental comparison with Subsumer in Section \ref{sec:experiments} (since, it is not designed to perform OI-subsumption).
 
 \paragraph{Encoding the language bias}
 In practice, one often bounds query languages, for instance by using a bottom clause and only considering queries or clauses that subsume the bottom clause. 
@@ -364,7 +361,7 @@ We have shown that modern ASP solvers, in principle, can be applied to ILP query
 
 \section{Hybrid ASP-based Approach to Pattern Mining}
 
-  Detecting small sets of relevant patterns from a given dataset is a central challenge in data mining. The relevance of a pattern is based on user-provided criteria; typically, all patterns that satisfy certain criteria are considered relevant. Rule-based languages like Answer Set Programming (ASP) seem well-suited for specifying such criteria in a form of constraints.  Although progress has been made, on the one hand, on solving individual mining problems and, on the other hand, developing generic mining systems, the existing methods either focus on scalability or on generality.  In this paper we make steps towards combining local (frequency, size, cost) and global (various condensed representations like maximal, closed, skyline) constraints in a generic and efficient way. We present a hybrid approach for itemset and sequence mining which exploits dedicated highly optimized mining systems to detect frequent patterns and then filters the results using declarative ASP. Experiments on real-world datasets show the effectiveness of the proposed method and computational gains both for itemset and sequence mining. 
+  Detecting small sets of relevant patterns from a given dataset is a central challenge in data mining. The relevance of a pattern is based on user-provided criteria; typically, all patterns that satisfy certain criteria are considered relevant. Rule-based languages like Answer Set Programming (ASP) seem well-suited for specifying such criteria in a form of constraints.  Although progress has been made, on the one hand, on solving individual mining problems and, on the other hand, developing generic mining systems, the existing methods either focus on scalability or on generality.  In this chapter we make steps towards combining local (frequency, size, cost) and global (various condensed representations like maximal, closed, skyline) constraints in a generic and efficient way. We present a hybrid approach for itemset and sequence mining which exploits dedicated highly optimized mining systems to detect frequent patterns and then filters the results using declarative ASP. Experiments on real-world datasets show the effectiveness of the proposed method and computational gains both for itemset and sequence mining. 
  
 \section{Introduction to Hybrid Approach}
 \paragraph{Motivation} 
