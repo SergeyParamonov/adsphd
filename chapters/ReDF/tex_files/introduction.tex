@@ -7,7 +7,7 @@ the use of expressive models that can capture a wide range of different problem 
 and that can then be solved using off-the-shelf constraint solving technology; see \cite{miningZinc,DeRaedtECML12,DMWorkshop,DeRaedtAAAI15}.
 
 Motivated by this quest for more general and generic data analysis approaches, 
-the present paper introduces the problem of relational data factorization (ReDF). ReDF is inspired by matrix factorization, one of the most popular techniques in machine learning and data mining
+the present chapter introduces the problem of relational data factorization (ReDF). ReDF is inspired by matrix factorization, one of the most popular techniques in machine learning and data mining
 for which many variants have been studied, such as non-negative, singular value and Boolean matrix factorization. 
 In matrix factorization, one is given an $n \times m$ matrix $\mathbf{A}$, and the problem is to rewrite it
 as the product of some other matrices, e.g., the product of an $n \times  k$ matrix $\mathbf{B}$ and $k\times m$ matrix $\mathbf{C}$
@@ -22,7 +22,7 @@ by the query \textit{offers(Company,Part), needs(Project, Part), deliversto(Comp
 The question is then how to determine the extensions for the relations \textit{offers}, \textit{needs}, and \textit{delivers}.
 The found solution will generally be imperfect, so in ReDF we want to find the best approximation w.r.t. a scoring function and we allow the user to specify hard constraints. In the example these might specify, e.g., that only tuples in the target relation \textit{sells} may be derivable from the query. 
 
-In this paper, we develop a modeling and solving approach for ReDF using answer set programming (ASP) \parencite{BrewkaCACM}. This is realized by showing for a number of ReDF problems how they can be tackled with ASP.  
+In this chapter, we develop a modeling and solving approach for ReDF using answer set programming (ASP) \parencite{BrewkaCACM}. This is realized by showing for a number of ReDF problems how they can be tackled with ASP.  
 This leads to the identification of constraints and scoring functions, which we then abstract to an even higher-level declarative language. 
 We show that the resulting ReDF framework is general and generic and is in line with 
   the declarative modeling approach to machine learning and data mining as 
@@ -38,4 +38,4 @@ We show that the resulting ReDF framework is general and generic and is in line 
 
   Relational data factorization is a form of relational learning. That is, it is a relational analog of matrix factorization and is therefore relevant to inductive logic programming \parencite{ilp_theory_methods,luc_book} and can also be seen as a form of large-scale abduction \parencite{abduction}. Moreover, the solution techniques that we adopt are based on answer set programming, which has also been adopted in some recent works and methods on inductive logic programming \parencite{ilp_graph_mining,DBLP:conf/lpnmr/Jarvisalo11}. The implementation techniques we employ may also be used in more traditional inductive logic programming settings.
 
-  This paper is structured as follows. Section \ref{section:framework} introduces the formal ReDF framework. Section \ref{section:asp} introduces ASP. Section \ref{section:dm_problems} shows how a wide range of data mining problems can be expressed as ReDF problems. Section \ref{subsection:beoynd} introduces some novel problems that the framework can express. Section \ref{section:implementation} discusses the encoding of the problems into ASP, while Section \ref{section:experiments} reports on the experimental evaluation. In Section \ref{section:related_work} we discuss related work, and we formulate some conclusions and directions for future work in Section \ref{section:discussion}. 
+  This chapter is structured as follows. Section \ref{section:framework} introduces the formal ReDF framework. Section \ref{section:dm_problems} shows how a wide range of data mining problems can be expressed as ReDF problems. Section \ref{subsection:beoynd} introduces some novel problems that the framework can express. Section \ref{section:implementation} discusses the encoding of the problems into ASP, while Section \ref{section:experiments} reports on the experimental evaluation. In Section \ref{subsec:evaluatingsolver} we discuss solver's performance configurations. In Section \ref{appendix:application_purel_relational} we discuss potential applications of ReDF. In Section \ref{appendix:k_set_coverage_analysis}, we analyze theoretically the greedy approximation strategy. In Section \ref{section:related_work}, we discuss related work, and we formulate some conclusions and directions for future work in Section \ref{section:discussion}. 

@@ -50,7 +50,10 @@ The problem that we address in this paper is to mine queries in a logical and re
 \item a frequency threshold $t$,
 \item a language ${\cal L}$ of logical queries of the form $\keypred(X) \leftarrow b_1, ..., b_n$ defining $key/1$ ($b_i$'s are atoms).
 \end{itemize}\vspace{-5pt}
-{\bf Find:} all queries $c \in {\cal L}$ s.t. $\freqpred(c,D) \geq t$, where ${\freqpred(c,D) = |\{\theta \mid D \cup c \models key(X)\theta \}|}$.
+{\bf Find:} all queries $c \in {\cal L}$ s.t. $\freqpred(c,D) \geq t$, where 
+\begin{equation*}
+\freqpred(c,D) = |\{\theta \mid D \cup c \models key(X)\theta \}|.
+\end{equation*}
 
 Notice that the substitutions $\theta$ only substitute variables $X$ that occur in \keypred. 
 
@@ -134,7 +137,6 @@ In frequent query mining one is interested in mining \textit{frequent} queries, 
     
   \begin{subfigure}{.44\textwidth}
     \captionsetup{
-      font={scriptsize},
     }
     \begin{center}
       \includegraphics[width=1.0\textwidth]{figure_single.png}
@@ -145,7 +147,6 @@ In frequent query mining one is interested in mining \textit{frequent} queries, 
   \end{subfigure}
     \begin{subfigure}{.44\textwidth}
     \captionsetup{
-      font={scriptsize},
     }
     \begin{center}
 
@@ -156,7 +157,6 @@ In frequent query mining one is interested in mining \textit{frequent} queries, 
   \end{subfigure}
  
     \captionsetup{
-      font={scriptsize},
     }
   \caption{Examples of single graph subsumption (left) and of a canonicity check (right)}
   \end{center}
@@ -277,12 +277,12 @@ The goal of the next experiment is to estimate the potential gain of the introdu
     font={small}
   }
   \begin{center}
-    \begin{subfigure}{.51\textwidth}
+    \begin{subfigure}{1\textwidth}
       \captionsetup{
         font={scriptsize},
         skip= 0pt
       }
-      \scalebox{0.65}{
+      \scalebox{0.75}{
         \begin{tabular}{l l r r r r r}
           \textbf{dataset} & \textbf{model} & 1 & 5 & 10 & 25 & 50\\
           \hline
@@ -306,7 +306,7 @@ The goal of the next experiment is to estimate the potential gain of the introdu
         \label{table:query_enumeration}
       \end{subfigure}
       \hfill 
-      \begin{subfigure}{.48\textwidth}
+      \begin{subfigure}{1\textwidth}
         \captionsetup{
           font={scriptsize},
           skip=-0pt
@@ -403,7 +403,7 @@ While a number of individual methods tackling selective constraint-based mining 
   \setlength\tabcolsep{3.0pt}
   \begin{tabular}{|l | c | c | c | c | c|}
 \hline
-    \textbf{Datatype}                & \textbf{Task}                  & \rot{\parencite{DBLP:conf/lpnmr/Jarvisalo11}} & \rot{\parencite{DBLP:conf/ijcai/GebserGQ0S16}} & \rot{\parencite{dp2013}} &  \rot{\textbf{Our work}} \\  \hline  \hline
+    \textbf{Datatype}                & \textbf{Task}                  & \rotatetxt{\cite{DBLP:conf/lpnmr/Jarvisalo11}} & \rotatetxt{\cite{DBLP:conf/ijcai/GebserGQ0S16}} & \rotatetxt{\cite{dp2013}} &  \rotatetxt{\textbf{Our work}} \\  \hline  \hline
                                                                                                                                                                       
   \multirow{3}{*}{\textbf{Itemset}}  & frequent pattern mining        &  \checkmark      &  \na        & \checkmark       & \checkmark   \\ 
                                      & condensed (closed, max, etc)   & $\checkmark^{*}$ &  \na        & \checkmark       & \checkmark   \\ 
@@ -770,7 +770,7 @@ shown in \qtwo. Finally, as demonstrated in \qthree various local constraints ca
 %can 
 bringing additional performance benefits. %from the local constraints 
 
-\section{ASP-based Hybrid Mining Related Work}\label{sec:relwork}
+\section{ASP-based Hybrid Mining Related Work}\label{sec:hybrid_relwork}
 
 The problem of enhancing pattern mining by injecting various user-specified constraints has recently gained increasing attention. On the one hand, optimized dedicated approaches exist, in which some of the constraints are deeply integrated into the mining algorithm, e.g., \parencite{DBLP:conf/kdd/PeiH00}.  On the other hand, %purely 
 declarative methods based on Constraint Programming \parencite{sky2014,DBLP:conf/cpaior/NegrevergneG15,DBLP:journals/corr/MetivierLC13}, SAT solving \parencite{DBLP:conf/pakdd/JabbourSS15,DBLP:conf/cikm/JabbourSS13} and ASP \parencite{DBLP:conf/lpnmr/Jarvisalo11,DBLP:conf/ijcai/GebserGQ0S16,DBLP:journals/corr/GuyetMQ14} have been proposed. 

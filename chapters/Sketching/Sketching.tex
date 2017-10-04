@@ -230,11 +230,11 @@ However, adding aggregates to non-disjunctive ASP raises the complexity of an AS
 similarly for other aggregate functions; the same rules, e.g., the example extension, apply to aggregate reification.
 
 
-\skadded{With aggregates we can sketch a significantly larger class of problems. Consider the problem from the Functional Pearls Collection: ``Finding celebrities problem'' \parencite{celebrity_problem} \footnote {\scriptsize ASP code:\tiny \url{hakank.org/answer_set_programming/finding_celebrities.lp4}}. Problem statement: ``Given a list of people at a party and for each person the list of people they know at the party, we want to find the celebrities at the party.
+\skadded{With aggregates we can sketch a significantly larger class of problems. Consider the problem from the Functional Pearls Collection: ``Finding celebrities problem'' \parencite{celebrity_problem} \footnote {\scriptsize ASP code:~ \url{hakank.org/answer_set_programming/finding_celebrities.lp4}}. Problem statement: ``Given a list of people at a party and for each person the list of people they know at the party, we want to find the celebrities at the party.
 A celebrity is a person that everybody at the party knows but that only knows other celebrities. At least one celebrity is present at the party.'' The sketch core looks as follows (names are shortened):}
 \begin{Verbatim}[fontsize=\small]
 n(N) :- N = ?#{ P : p(P) }.
-:- c(C),p(C),n(N),S=?#{P:k(P,C),p(P)},S<N-1.
+:- c(C), p(C), n(N), S = ?#{P : k(P,C), p(P)}, S < N-1.
 :- c(C), p(C), not c(P), k(C,P).
 \end{Verbatim} 
 
@@ -394,7 +394,7 @@ of solutions decreases. Furthermore, the number of sketched variables has a grea
 \skadded{To investigate \qfour, we have used the Latin Square from Listing \ref{lst:latin_square}. We have used examples for Latin Square $3\times 3$, and verified its correctness on Latin Square $4 \times 4$ (which can be checked analytically because  all solutions are known). We have discovered, that there is an inverse dependency between number of solutions and accuracy, see Figure \ref{fig:latin_square_generalization}. This happens because there are typically very few useful or ``intended'' programs while there are lot of incorrect ones.}
 
 
-To investigate \qfive, we have focused on the $N$-queens problem and collected several encodings from multiple sources: Potascco, Hakank.org, an ASP course by Tran Cao Son\footnote{{\tiny\url{www.hakank.org/answer_set_programming/nqueens.lp}\\\url{www.cs.uni-potsdam.de/~torsten/Lehre/ASP/Folien/asp-handout.pdf}\\\url{www.cs.nmsu.edu/~tson/tutorials/asp-tutorial.pdf}}} and our encoding. 
+To investigate \qfive, we have focused on the $N$-queens problem and collected several encodings from multiple sources: Potascco, Hakank.org, an ASP course by Tran Cao Son\footnote{{\url{www.hakank.org/answer_set_programming/nqueens.lp}\\\url{www.cs.uni-potsdam.de/~torsten/Lehre/ASP/Folien/asp-handout.pdf}\\\url{www.cs.nmsu.edu/~tson/tutorials/asp-tutorial.pdf}}} and our encoding. 
 Whereas all the encodings model the same problem they show significant variations 
 in  expressing constraints. To reduce the bias in how the sketched variables are introduced and systematically measure the parameters, we pick sketched variables randomly (inequalities and arithmetic) and use the same examples from our dataset (randomly picking the correct amount) for all models.
 

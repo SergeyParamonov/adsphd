@@ -22,7 +22,7 @@ For example, the influential Reinhart-Rogoff economical paper ``Growth in a Time
 % why learn them
 \added{
 Such issues and mistakes could be overcome through the development of intelligent user-assisting tools that would be able to automatically discover what constraints and formulas hold in a spreadsheet.
-This is the problem we study in this paper.
+This is the problem we study in this chapter.
 We envision that automatic constraint discovery can enable: auto-completion, error checking, formula suggestion, rich import and data compression.
 Auto-completion can help users quickly populate spreadsheets by suggesting values for unfilled cells based on constraints that have previously been detected within the spreadsheet.
 Error checking can identify erroneous values in spreadsheets, for example, while typing, by noticing that previously discovered constraint are violated by newly entered values, or offline by selectively leaving out values.
@@ -44,7 +44,7 @@ Our inspiration comes from work on program synthesis, in particular Flashfill \c
 
 
 % Moved up
-The question that we ask in this paper is: is it possible to learn the set of constraints present in a spreadsheet, from just tabular spreadsheet data? The main challenge is the number of possible constraints and combinations of rows and columns that need to be considered as input to the constraints.
+The question that we ask in this chapter is: is it possible to learn the set of constraints present in a spreadsheet, from just tabular spreadsheet data? The main challenge is the number of possible constraints and combinations of rows and columns that need to be considered as input to the constraints.
 To answer this challenge we propose a general-purpose method and system, named \sname (from: Tabular Constraint Learner, pronounced ``tackle''), for discovering row-wise and column-wise constraints. \added{Constraints on contiguous rows and columns are most common in spreadsheets, with semantically related items stored in rows or columns and formula's usually ranging over contiguous ranges, as formulas parallel to a table are often \textit{dragged} over its entire span.}
 %
 % contribs
@@ -61,8 +61,8 @@ Our contributions are as follows:
 %Moreover, we sketch additional application scenario's such as autocompletion and error detection.
 
 
-This paper is organized as follows.
-Section \ref{sec:related_work} discusses related work. Section \ref{sec:formalization} introduces the relevant concepts and defines the problem formally while Section \ref{sec:approach} presents our approach. This is evaluated in Section \ref{sec:evaluation} after which \added{we show how to realize two of the motivating applications using our system} in Section \ref{sec:applications}, and we conclude in Section \ref{sec:conclusions}.
+This chapter is organized as follows.
+Section \ref{sec:tacle_related_work} discusses related work. Section \ref{sec:formalization} introduces the relevant concepts and defines the problem formally while Section \ref{sec:approach} presents our approach. This is evaluated in Section \ref{sec:evaluation} after which \added{we show how to realize two of the motivating applications using our system} in Section \ref{sec:applications}, and we conclude in Section \ref{sec:tacle_conclusions}.
 
 %Due to the complexity of numeric computations in spreadsheets, people often fail to grasp the properties of the data, which leads to the so called Spreadsheet risk\footnote{\url{https://en.wikipedia.org/wiki/Spreadsheet\#Spreadsheet_risk}} and even caused major flaw in the famous economics papers \cite{flaw_excel} and billion-losses in the financial industry \cite{spreadsheet_risk_loss}. Tabular constraint learning provides a potential cure by indicating learned constraint violations and suggest possible fixes.
 
@@ -84,7 +84,7 @@ Section \ref{sec:related_work} discusses related work. Section \ref{sec:formaliz
 %   \item USED -- Declarative, general / modular, stacking of constraint problems
 % \end{itemize}
 %}
-\section{Related Work}\label{sec:related_work}
+\section{Related Work}\label{sec:tacle_related_work}
 \sname combines ideas from several existing approaches and different fields of research.
 
 First, it borrows techniques from logical and relational learning \cite{luc_book}, as it discovers
@@ -236,7 +236,7 @@ We will sometimes write that $B'$ is a \textit{subblock} of $B$ or that $B$ is a
 An example of block containment is $T_1[:,\rangeto{3}{6}] \sqsubseteq T_1[:,\rangeto{3}{8}] $, which contains the sales numbers of all employees for the four quarters.
 
 
-\begin{table}[!htb]
+\begin{table}[htb]
 \caption{{\small
   Constraint templates implemented in \sname.
   Only blocks in \textbf{bold} may contain more than one vector;
@@ -411,7 +411,7 @@ Consider, for example, the constraint template for the row-based sum:
 
 $\textit{SUM}_\textit{row}$ and $\textit{SUM}_\textit{col}$ are part of a family of constraints that we refer to as \emph{aggregate constraints} that range over multiple rows or columns and are also available for aggregate operators \textit{MIN}, \textit{MAX}, \textit{AVERAGE}, \textit{PRODUCT} and \textit{COUNT}.
 \textit{SUMIF} is part of a family constraints that we refer to as \emph{conditional aggregate constraints} which aggregate over a vector and only include those cells that satisfy a condition on a related cell in that table, e.g., for the spreadsheet in Figure~\ref{fig:main_example}: $\range{T_1}{\rangeall}{10}$ and the data in $T_5$ for matching salesperson names.
-Conditional aggregates are also available for the above aggregate operators, except for product. Note that \textit{SUMPRODUCT} is not considered part of the family of aggregate constraints in this paper as it is not defined for other aggregate operators. See Section~\ref{sec:which_cons} for a more detailed discussion of the constraints used in \sname.
+Conditional aggregates are also available for the above aggregate operators, except for product. Note that \textit{SUMPRODUCT} is not considered part of the family of aggregate constraints in this chapter as it is not defined for other aggregate operators. See Section~\ref{sec:which_cons} for a more detailed discussion of the constraints used in \sname.
 \end{example}
 
 
@@ -561,7 +561,7 @@ Headers can be detected, for example, by checking if the first row or column con
 \added{Our implementation of this approach is called the \ecautoextract{} tool.}
 
 \paragraph{Visual selection (\ecvisualextract)}
-The above assumptions do not hold for many tables. However, since the specification of tables is usually easy for humans, we employ a second approach which allows users to indicate tables using a visual tool. Screenshots are available in the accompanying GitHub repository with meta-data\footnote{\url{https://github.com/SergeyParamonov/TaCLe}\label{github-link}} \added{and in Appendix \ref{appendix:examples}}.
+The above assumptions do not hold for many tables. However, since the specification of tables is usually easy for humans, we employ a second approach which allows users to indicate tables using a visual tool. Screenshots are available in the accompanying GitHub repository with meta-data\footnote{\url{https://github.com/SergeyParamonov/TaCLe}\label{github-link}}.
 Users select tables excluding the header and optionally specify an orientation.
 The \added{\ecvisualextract{}} tool then generates the specification of the tables automatically.
 
@@ -1005,7 +1005,7 @@ The data is also visualized in Figure~\ref{fig:comparison}.
 
 
 {\setlength{\tabcolsep}{0.33em}
-\begin{table}[]
+\begin{table}[htb]
   \centering
   \caption{Summary of properties and results per spreadsheet category}
   \label{tbl:category_overview}
@@ -1019,7 +1019,7 @@ The data is also visualized in Figure~\ref{fig:comparison}.
 \textbf{Recall (supported)} & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 \\ \hline
 \textbf{Precision} & 0.94 & 0.96 & 0.69 & 0.90 & 1.00 & 1.00 \\ \hline
 \textbf{Runtime \sname} & 0.91 & 0.10 & 0.87 & 0.04 & 0.79 & 0.20 \\ \hline
-\added{\textbf{Runtime no-CSP baseline}} & 58.36 & 6.48 & 36.84 & 1.75 & 19.73 & 4.93 \\
+\makecell{\textbf{Runtime no-CSP}\\\textbf{baseline}} & 58.36 & 6.48 & 36.84 & 1.75 & 19.73 & 4.93 \\
 
 \end{tabular}
 \end{table}}
@@ -1198,7 +1198,7 @@ This approach would be more robust, however, it requires definition tests to be 
 %In the limited case of detecting single errors one can leave out every row (column), consider the remaining data to be the sample and
 %and the left out row (column) to be new input.
 
-\section{Conclusions}\label{sec:conclusions}
+\section{Conclusions}\label{sec:tacle_conclusions}
 
 % points: 1) can be a base for an actual plugin or a function in excel 2) novel problem and challenge for systems and constraint solvers 3) can be part of the complicated pipeline togehter with the header detection
 Our goal is to automatically identify constraints in a spreadsheet.
@@ -1230,7 +1230,7 @@ The links are also provided in the accompanying GitHub repository) and data summ
 
 The overview of constraint distributions per category is presented in Table \ref{tab:constraint_by_category}.
 
-\begin{table}
+\begin{table}[htb]
   \centering
   \rowcolors{2}{gray!25}{white}
   \caption{Constraint occurrence in the collected dataset in absolute values by category}

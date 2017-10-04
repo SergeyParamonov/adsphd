@@ -3,54 +3,56 @@
 
 \begin{figure*}[htb]
 %  \captionsetup{font=captionfontsize}
-\begin{subfigure}[t]{0.315\textwidth}
+\begin{subfigure}[t]{0.348\textwidth}
   \renewcommand{\figurename}{Listing}
   \vspace{3pt}
-  \begin{Verbatim}[fontsize=\scriptsize,numbers=left,xleftmargin=0mm,commandchars=\\\{\}]
+  \begin{Verbatim}[fontsize=\scriptsize,numbers=left,xleftmargin=-2mm,commandchars=\\\{\}]
 [SKETCH]
 reached(Y) :- cycle(a,Y).\label{line:reached}
-reached(Y) :- cycle(X,Y), reached(X).\label{line:reached2}
-           :- ?p(Y), ?not ?q(Y). \label{line:ham_constraint}
+reached(Y) :- cycle(X,Y),\label{line:reached2}
+                     reached(X).
+        :- ?p(Y), ?not ?q(Y). \label{line:ham_constraint}
 [EXAMPLES]
-positive: cycle(a,b). cycle(b,c). ...
-negative: cycle(a,b). cycle(b,a).
+positive:cycle(a,b).cycle(b,c)...
+negative:cycle(a,b).cycle(b,a).
 [SKETCHEDVAR]
 ?p/1 : node, reached
 ?q/1 : node, reached
 [FACTS]
 node(a). node(b). node(c).
 [EXAMPLES]
-positive: cycle(a,b). cycle(b,c). \label{line:example}
-                      cycle(c,a).
-negative: cycle(a,b). cycle(b,a).
+positive: cycle(a,b).cycle(b,c).\label{line:example}
+                     cycle(c,a).
+negative: cycle(a,b).cycle(b,a).
 \end{Verbatim}
-\caption{Hamiltonian Cycle (the original ASP encoding from \protect\parencite{ASPbook})} \label{lst:ham}
+\caption{Hamiltonian Cycle\\ASP encoding from\\ \protect\parencite{ASPbook}} \label{lst:ham}
 \end{subfigure}
 \rulesep
-\begin{subfigure}[t]{0.66\textwidth}
+\begin{subfigure}[t]{0.645\textwidth}
   \vspace{3pt}
   \renewcommand{\figurename}{Sketch}
-  \begin{Verbatim}[fontsize=\scriptsize,numbers=left,xleftmargin=6mm,commandchars=\\\{\}]
+  \begin{Verbatim}[fontsize=\scriptsize,commandchars=\\\{\}]
 %%%%% EXAMPLES AND DECISIONS %%%%%%
 positive(0). cycle(0,a,b). cycle(0,b,c). cycle(0,c,a). \label{line:example_rewritten}
 reified_q_choice(c_node). reified_q_choice(c_reached).
-1 \{ decision_q(X) :  reified_q_choice(X) \} 1. \label{line:decision1}
-1 \{ decision_not(positive); decision_not(negative) \} 1.\label{line:decision2}
+1 \{decision_q(X) :  reified_q_choice(X)\} 1. \label{line:decision1}
+1 \{decision_not(positive); decision_not(negative)\} 1.\label{line:decision2}
 %%%%% INFERENCE RULES %%%%%%
 reified_q(E,c_node,X0) :- node(X0),examples(E). \label{line:reified_q}
 reified_q(E,c_reached,X0) :- reached(E,X0).
 reached(E,Y) :- cycle(E,a,Y),examples(E). \label{line:reach_rewritten}
 reached(E,Y) :- cycle(E,X,Y),reached(E,X),examples(E).
 reified_not(E,positive,Q,Y) :- reified_q(E,Q,Y). \label{line:reified_not1}
-reified_not(E,negative,Q,Y) :- not reified_q(E,Q,Y),dom1(Y),...\label{line:reified_not2}
+reified_not(E,negative,Q,Y) :- not reified_q(E,Q,Y), \label{line:reified_not2}
+                                            dom1(Y),...
 %%%%% POSITIVE/NEGATIVE SKETCHED RULES %%%%%%
-:- reified_p(E,P,Y),reified_not(E,Not_D,Q,Y),decision_p(P), \label{line:positive_rewritten1}
-   decision_q(Q),decision_not(Not_D),positive(E).\label{line:positive_rewritten2}
+:- reified_p(E,P,Y),reified_not(E,Not_D,Q,Y),\label{line:positive_rewritten1}
+decision_p(P),decision_q(Q),decision_not(Not_D),positive(E).\label{line:positive_rewritten2}
 neg_sat(E) :- reified_p(E,P,Y),reified_not(E,Not_D,Q,Y), \label{line:negative_rewritten1}
-       decision_p(P),decision_q(Q),decision_not(Not_D),negative(E). \label{line:negative_rewritten2}
+decision_p(P),decision_q(Q),decision_not(Not_D),negative(E). \label{line:negative_rewritten2}
 :- not neg_sat(E), negative(E).
 \end{Verbatim}
-\caption{ASP core of rewritten Listing \protect \ref{lst:ham} (only predicate $q$ shown, domains, facts, etc omitted)} \label{lst:rewriting}
+\caption{ASP core of rewritten Listing \protect\ref{lst:ham}\\(only predicate $q$ shown, domains, facts, etc omitted)} \label{lst:rewriting}
 \end{subfigure}
 \hrulesep
 \begin{subfigure}[t]{0.49\textwidth}
@@ -63,7 +65,7 @@ neg_sat(E) :- reified_p(E,P,Y),reified_not(E,Not_D,Q,Y), \label{line:negative_re
 insquare(S,N) :- cell(X,Y,N), square(S,X,Y).
 :- num(N), squares(S), ?not insquare(S,N). 
 \end{Verbatim}
-\caption{Sudoku (core). \protect ASP code from \cite{asp_tutorial_sudoku}} \label{lst:sudoku}
+\caption{Sudoku (core). ASP code from\\\protect \parencite{asp_tutorial_sudoku}} \label{lst:sudoku}
 \end{subfigure} 
 \rulesep
 %  \begin{subfigure}[t]{0.32\textwidth}
@@ -90,9 +92,10 @@ insquare(S,N) :- cell(X,Y,N), square(S,X,Y).
 :- cell(X,Y,N), cell(X,Z,M), Y ?= Z, N ?= M.
 :- cell(X,Y,N), cell(Z,Y,N), X ?= X, N ?= M.
 [EXAMPLES]
-positive: cell(1,1,a). cell(1,2,b). cell(1,3,c)...
+positive: cell(1,1,a). cell(1,2,b). 
+                             cell(1,3,c)...
 \end{Verbatim}
-\caption{Latin Square (based on Sudoku; core)} \label{lst:latin_square}
+\caption{Latin Square \\(based on Sudoku; core)} \label{lst:latin_square}
 \end{subfigure}
 
 \caption{Collection of sketches and an example of rewriting used in the paper}

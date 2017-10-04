@@ -4,8 +4,8 @@
  \caption{Dataset properties. For each dataset,  we specify whether the attributes have Boolean or categorical domains, the number of tuples and attributes, and the average number of distinct values per attribute}
  \label{table:dataset_description}
 %\scalebox{.9}{
-\begin{tabular}{lcrrr}
-\textbf{Dataset} & \textbf{Attributes} & \textbf{\# tuples} & \textbf{\# attributes} & \textbf{Avg \# values per attribute}  \\
+\begin{tabular}{lcccc}
+  \textbf{Dataset} & \textbf{Attributes} & \textbf{\# tuples} & \textbf{\# attributes} &   \makecell{ \textbf{Avg \# values} \\ \textbf{per attribute}}  \\
 Animals          & Boolean         &  $50$  &  $85$  &  2  \\
 Solar flare      & categorical &  $1\,389$  &  $11$  &  $3.3$  \\
 Tic-tac-toe      & categorical  &  $958$  &  $10$  &  $2.9$  \\
@@ -34,7 +34,7 @@ In Subsection~\ref{subsec:solvingexisting} we show how ReDF formulations of exis
 \begin{center}
 \caption{Maximum $k$-Tiling}
 \label{tab:tiling}
-\begin{subtable}{.45\textwidth}
+\begin{subtable}{.41\textwidth}
 \captionsetup{
     font = {small},
   }
@@ -55,7 +55,7 @@ Mushroom &13h09m & 19h44m & - & - & -\\
 }
 \end{subtable}
 \hfill
-\begin{subtable}{.41\textwidth}
+\begin{subtable}{.40\textwidth}
 \captionsetup{
     font = {small},
   }
@@ -99,13 +99,11 @@ Unfortunately, the ASP solver is not as efficient as the specialized miner as ca
 
 \begin{figure}[t]
       \captionsetup{
-                   skip=-2pt
                  }
   \begin{center}
     \begin{subfigure}{.49\textwidth}
       \captionsetup{
                    font={scriptsize},
-                   skip=-5pt
                  }
       \includegraphics[width=\textwidth]{tiling-time-plot.pdf}
       \caption{Runtime}
@@ -115,7 +113,6 @@ Unfortunately, the ASP solver is not as efficient as the specialized miner as ca
     \begin{subfigure}{.49\textwidth}
       \captionsetup{
                    font={scriptsize},
-                   skip=-5pt
                  }
       \includegraphics[width=\textwidth]{tiling_comparison.pdf}
       \caption{Coverage}
@@ -137,7 +134,7 @@ However, what is important to emphasize here is that only a small change in the 
 \begin{center}
 \caption{Maximum $k$-Tiling with overlap. The maximal allowed overlap is limited by parameter $N$}
 \label{tab:overlapping}
-\begin{subtable}{.36\textwidth}
+\begin{subtable}{.34\textwidth}
 \caption{Runtime}
 \label{tab:overlapping:time}
 \scalebox{.75}{
@@ -158,7 +155,7 @@ Voting                & 1 & 1m10s &2m19s& 2m53s &3m8s&3m15s\\
 }
 \end{subtable}
 \hfill
-\begin{subtable}{.37\textwidth}
+\begin{subtable}{.34\textwidth}
 \caption{Coverage}
 \label{tab:overlapping:coverage}
 \scalebox{.75}{
@@ -209,15 +206,15 @@ We perform Boolean matrix factorization (Section \ref{subsection:bmf}) by applyi
 \paragraph{Discriminative pattern set mining}
 
 \begin{figure}[thb]
-\begin{subfigure}{.56\textwidth}
+\begin{subfigure}{.48\textwidth}
   \captionsetup{skip = 0pt}
 \begin{center}
-  \includegraphics[width=0.9\linewidth]{DiscriminativeChess.png}
+  \includegraphics[width=0.8\linewidth]{DiscriminativeChess.png}
   \caption{Runtime (in s) to mine $k$-th discriminative pattern on Chess dataset ($\alpha = 1$, i.e., positive and negative tuples are weighted equally)}
   \label{figure:discriminative_chess}
  \end{center}
 \end{subfigure}
-\begin{subfigure}{.43\textwidth}
+\begin{subfigure}{.49\textwidth}
 \begin{center}
 \captionsetup{skip = 0pt, font=small}
 \captionof{figure}{Discriminative mining coverage on Chess and Tic-tac-toe datasets ($\alpha = 1$, i.e., positive and negative tuples are weighted equally)}
@@ -304,10 +301,10 @@ Solving this task was computationally easy, since there is no latent variable to
 \caption{Experimental summary for pure relational factorizations from Subsection \ref{subsection:beoynd}}
 \label{table:pure}
 \scalebox{.75}{
-\begin{tabular}{llllll}
-  \multirow{2}{*}{\textbf{\normalsize{With a latent variable}}} & \textbf{\#Transactions} & \textbf{Overall runtime} & \textbf{Avg runtime} &  \textbf{\#Topics}  &  \textbf{Avg atoms per topic}\\
-   & 58  & 14s & 1.1s & 12 & 5.4\\
-  \multirow{2}{*}{\textbf{\normalsize{Without a latent variable}}} & \textbf{\#Transactions} & \textbf{Overall runtime} & \textbf{Correct} &  \textbf{\#Incorrect}  &  \textbf{Avg factor size}\\
+\begin{tabular}{c | ccccc}
+  \multirow{2}{*}{\textbf{\normalsize{\makecell{With a latent\\variable}}}} & \textbf{\#Transactions} & \textbf{\makecell{Overall\\runtime}} & \textbf{Avg runtime} &  \textbf{\#Topics}  &  \textbf{\makecell{Avg atoms\\per topic}}\\
+  & 58  & 14s & 1.1s & 12 & 5.4 \\ \hline  
+  \multirow{2}{*}{\textbf{\normalsize{\makecell{Without a latent\\variable}}}} & \textbf{\#Transactions} & \textbf{\makecell{Overall\\runtime}} & \textbf{Correct} &  \textbf{\#Incorrect}  &  \textbf{\makecell{Avg factor\\size}}\\
   & 58  & 0.01s & 58 & 0 & 45
 \end{tabular}
 }
