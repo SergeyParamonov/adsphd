@@ -1,0 +1,47 @@
+We present the proof of Theorem \ref{theorem:tiling} (Section \ref{section:implementation}).
+\begin{theorem-non}[Correctness of the ASP tiling encoding]
+The ASP program \pprog defined by the listing \ref{lst:encoding} computes the $k$-th largest tile w.r.t. the scoring function \maxcover (\ref{eqn:coverage-opt}) as extensions of the predicates $\code(k,\cdot,\cdot)$ and $\inrel(k,\cdot)$ in its answer set \as, provided that 
+the dataset is represented extensionally through the predicates \db, \valid, and \col 
+and the $k-1$ already found tiles are represented extensionally through the predicates $\code(I,\cdot,\cdot)$ and $\inrel(I,\cdot)$ for $I \in \overline{1,k-1}$.
+\end{theorem-non}
+
+\begin{proof}
+  We prove the theorem by means of mathematical induction. The encoding here implicitly refers to the encoding in  Listing \ref{lst:encoding}.
+
+  We first prove the statement for the case when $k=1$, i.e., the program \pprog computes the first largest tile by the coverage function in Eq. \ref{eqn:coverage-opt}.
+
+  \textbf{Step 1: k = 1}
+
+  First of all, the answer set \as always exists, since there is no cyclic dependency involving negation and an ``empty'' answer set w.r.t. to the predicates \code and \inrel can be selected as a possible answer set.
+
+  Secondly, observe that the extension of the predicate \textit{intersect$(\cdot)$} is empty, since there is no other tile computed before and the rule in Line \ref{intersect_line} never applies. Then, let us show that \as satisfies the other two conditions from the constraints \constr and it is the largest tile w.r.t. to coverage.
+
+  Assume that the following constraint from \constr is violated
+\begin{equation*}
+\leftarrow \code(\indexvar,\letter_1, \column), \code(\indexvar,\letter_2, \column), \letter_1 \neq \letter_2.
+\end{equation*}
+Then there exist $v_1, v_2, a$ such that $v_1 \neq v_2$, $\code(1, v_1, a) \in \as$, $\code(1, v_2, a) \in \as$. Then the body of the rule in Line \ref{guess_line} is satisfied, since $a$ is a column in the dataset. Then, the head must be satisfied: $v_1$ and $v_2$ are valid values, so we derive that
+\begin{equation*}
+  0~\{ \code(1,v_1,a), \code(1,v_2,a) \}~1,
+\end{equation*}
+which contradicts the assumption that $v_1 \neq v_2$, $\code(1, v_1, a) \in \as$, $\code(1, v_2, a) \in \as$. Then, since $v_1,v_2, a$ were fixed but arbitrary the constraint in Eq. \ref{def:tiling_conjunctive} is satisfied by \as.
+
+Assume that the following constraint from \constr is violated by \as
+\begin{equation*}
+\leftarrow  \code(\indexvar,\letter, \column),\inrel(\indexvar,\transaction),~\textit{not } \db(\letter, \column, \transaction). 
+\end{equation*}
+There exist $v, a, t$ such that $\code(1,v,a) \in \as$ and $\inrel(1,t) \in \as$, but $\db(v,a,t) \not \in \as$. Then the rule in Line \ref{overcover_line} applies, since the body of it satisfied by the assignment $\theta = \{ T \mapsto t, Value \mapsto v, Attribute \mapsto a\}$ (and guess is equal to 1). Then, $\textit{overcover(t)} \in \as$. Then the body of the rule in Line \ref{in_line} is not satisfied and $\inrel(1,t) \not \in \as$. Then, we derived contradiction between the facts that $\inrel(1,t) \in \as$ and $\inrel(1,t) \not \in \as$, therefore, \as satisfies the constraint in Eq, \ref{def:pure_tiling}.
+
+Assume that \as is not a maximal answer set by the coverage function, than there is an answer set $\as'$ such that it satisfies all the constraints from \constr and the cardinality of the extension of the predicate \covered is higher than in \as. If so, then \as violates the optimization criterion in Line \ref{maximize_line}. Then, \as is maximal w.r.t. the coverage function.
+
+\textbf{Step 2: k-1}. Assume, we have proven the theorem for the values up to $k-1$.
+
+\textbf{Step 3: k}. Let us show that theorem holds for the $k$-th tile, for $k > 1$. The proof is very similar to the reasoning presented above. We assume that \as violates some of the contraints from \constr and demonstrate ``reductio ad absurdum''. Here we demonstrate the only different reasoning part from the previous case of the step one.
+
+Assume that ``intersection'' constraint in Eq. \ref{def:non_intersect} from \constr is violated:
+\begin{equation*}
+\leftarrow  \inrel(I_1,T), \inrel(I_2,T), \code(I_1,V,A), \code(I_2,V,A), I_1 \neq I_2.
+\end{equation*}
+Then, there exist $i, v, t, a$ such that $i \neq k$ and $\inrel(i,t) \in \as$, $\inrel(k,t) \in \as$, $\code(i,v,a) \in \as$, $\code(k,v,a) \in \as$. Then the body of the rule in Line \ref{intersect_line} is satisfied, hence $\textit{intersect(t)} \in \as$. Then, the body of the ``in''-rule in Line \ref{in_line} is not satisfied and $\inrel(k,t) \not \in \as$. We obtain contradiction between two facts: our assumption that $\inrel(k,t) \in \as$ and the conclusion that $\inrel(k,t) \not \in \as$.
+ \qed
+\end{proof}

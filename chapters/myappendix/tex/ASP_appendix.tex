@@ -1,0 +1,75 @@
+\lstset{
+  basicstyle=\footnotesize,
+}
+
+\textit{Overlapping tiling.} Constraint \overlappingTilesConstraint is encoded in ASP as indicated in Listing \ref{encoding_noisy} (we indicate only the new lines in the listing). Let us explain how this new constraint works. The rule in Line \ref{line_intersect_count} for a transaction $T$ computes the attributes \textit{Attr} on which the current tile intersects with the previous tiles. The constraint in Line \ref{line_intersect_noisy} defines the transaction where the current tile cannot occur in the following way: if the number of attributes where the current tile intersect with the other is higher than \textit{overlap\_level}, then the tile cannot occur in this transaction.
+
+\begin{lstlisting}[caption=Overlapping tiling, label=encoding_noisy, escapeinside={@}{@}] 
+intersect_N(T,Attr) :- guess != Indx, tile(currentI, V, Attr), tile(Indx, V, Attr), in(Indx,T). @\label{line_intersect_count}@
+intersect(T) :- overlap_level #count{ intersect_N(T,Indx) : col(Indx) }, transaction(T).@\label{line_intersect_noisy}@
+\end{lstlisting}
+
+We see that a slight change of the formulation of property of a solution leads to a small change in the modeling and also to a small change in the implementation.
+
+\textit{BMF}. Boolean data is a particular case of attribute-value data, and corresponds to the situation when values can be either true or false.  It is straightforward to realize the encoding of tiling for BMF by deleting all the arguments in Listing~\ref{lst:encoding} corresponding to values; we encode only the true facts for \dbbin. Also, as described in Subsection \ref{subsection:bmf}, we remove the rules corresponding to the intersection of tiles. The ASP code is in Listing \ref{bmf}. 
+\begin{lstlisting}[caption=Boolean Matrix Factorization, label=bmf, escapeinside={@}{@}] 
+0 { tile(currentI,I) } 1 :- item(I). @\label{bmf_guess}@
+over_cover(currentI, T) :- not db(T,I), tile(currentI,I), transaction(T). @\label{bmf_over_cover}@
+in(currentI,T) :- not over_cover(currentI,T), transaction(T). @\label{bmf_in}@
+covered(T,I) :- tile(currentI,I), in(currentI,T), db(T,I). @\label{bmf_covered}@
+#maximize[covered(T,I)].@\label{bmf_maximize}@
+\end{lstlisting}
+
+The structure and functions of the constraints is the same as in Listing \ref{lst:encoding}. Except for the modification described above, where we remove ``value'' argument from the predicates in the encoding and non-intersection constraint.
+
+\textit{Discriminative $k$-pattern set mining.} In case of discriminate $k$-pattern set mining, we need to change the optimization criterion and evaluation function to capture positive and negative transactions. The changed optimization criterion \ref{eq:discriminate_optimization} can be straightforwardly implemented in ASP, see Listing~\ref{encoding_discriminate}.
+
+\begin{lstlisting}[caption=Discriminative k-pattern set mining, label=encoding_discriminate, escapeinside={@}{@}] 
+in(currentI,T) :- transaction(T), not over_covered(currentI, T). @\label{line_in_disc}@
+covered_plus(T)  :- in(Indx,T), tile(Indx, Value, Attribute), positive(T). @\label{line_cover_plus}@
+covered_minus(T) :- in(Indx,T), tile(Indx, Value, Attribute), negative(T). @\label{line_cover_minus}@
+#maximize[covered_plus(T) = 1, covered_minus(T) = -@$\alpha$@].
+\end{lstlisting}
+
+This encoding distinguishes between the positively and negatively covered transactions, and weights negative covered transactions by $\alpha$.
+
+\textit{Matrix block-diagonal form.} The encoding mainly mimics the tiling encoding. We indicate here the constraints that are different in Listing \ref{lst:diag_encoding}.
+\begin{lstlisting}[caption=Encoding block diagonal form  , label=lst:diag_encoding, escapeinside={@}{@}] 
+@\commenttextasp{\%generate possible tile using only not used items}@
+0 { tile(currentI,I) } 1 :- item(I), not usedI(I).
+@\commenttextasp{\%coverage takes into account noise level}@
+over_covered(I,T) :- not db(T,I), code(currentI,I), transaction(T).
+too_noisy(T)      :- noise_level #count{ over_covered(I,T) : item(I) }, transaction(T).
+covered(T,I) :- in(C,T), code(C,I).
+@\commenttextasp{\%current tile can occur only in not used transactions}@
+in(currentI,T) :- transaction(T), not too_noisy(T), not usedT(T).
+@\commenttextasp{\%penalty for used transactions}@
+leftT(T,I) :- in(currentI,T), db(T,I), not covered(T,I). @\label{line:usage_penalty_T}@
+@\commenttextasp{\%penalty for used columns}@
+leftI(T,I) :- code(currentI,I), db(T,I), not covered(T,I). @\label{line:usage_penalty_I}@
+@\commenttextasp{\%optimization takes into account penalties}@
+#maximize[ covered(T,I)=1, leftT(T,I)=@$\alpha$@, leftI(T,I)=-@$\beta$@]. @\label{line:diag_opt}@
+\end{lstlisting}
+
+The constraints are similar to the described above in tiling, overlapping tiling and discriminative $k$-pattern set mining. Rules in Lines \ref{line:usage_penalty_T} and \ref{line:usage_penalty_I} introduce the notation of ``not used'' but blocked by the tile transactions and items. In the optimization criterion \ref{line:diag_opt} each of these elements is penalized.
+
+
+
+\textit{Purely relational factorization with a latent variable.} The factorization shape is defined as
+\begin{equation*}
+  \textit{approx}(A,U,V) \leftarrow \textit{interestedIn}(A, \textit{Topic}), \textit{specializedIn}(U, \textit{Topic}), \textit{field}(V, \textit{Topic}).
+\end{equation*}
+The candidates are generated by the following rules:
+%We start generating candidates for the factorization i.e. relations \textit{interestedIn}, \textit{specializedIn} and \textit{field} based on the authors and universities in the publishedIn relation by the following rules:
+  \begin{lstlisting}[caption=Generator rules, escapeinside={@}{@}, label=lst:pure_relational_encoding] 
+0 { interestedIn(A,T)  } 1 :- p(A,_,_), topic(T).
+0 { specializedIn(U,T) } 1 :- p(A,U,_), interestedIn(A,T), topic(T).
+inField(V,T) :- p(A,U,V), interestedIn(A,T), specializedIn(U,T), topic(T). 
+approx(Author, Uni, Venue) :- interestedIn(Author, G), specializedIn(Uni, G), inField(Venue, G).\end{lstlisting}
+The idea is that we first consider for every author whether he is interested in the topic or not, 
+and then this process is repeated for every university (having a corresponding author interested in the topic), and finally, it is determined whether the venue belongs to the topic based on the relations {\it interestedIn} and {\it publishedIn}. The optimization criterion is essentially the same as that of BMF.
+\begin{lstlisting}[caption=Optimization criterion, escapeinside={@}{@}] 
+  covered(A,U,V) :- approx(A,U,V),     p(A,U,V).
+  overcovered(A,U,V) :- approx(A,U,V), not p(A,U,V).
+  #maximize[covered(A,U,T) = 1, overcovered(A,U,T) = -@$\alpha$@].
+\end{lstlisting}

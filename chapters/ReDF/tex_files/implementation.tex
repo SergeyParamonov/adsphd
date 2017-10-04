@@ -89,7 +89,7 @@ The general structure of the ASP encoding is similar to the \emph{sells} example
 \begin{lstlisting}[caption=Generators for the model without a latent variable into three binary relations, escapeinside={@}{@}, label=lst:pure_alternative] 
 0 { works_at(A,U)     } 1 :- published_in(A,U,V). @\label{lst:pure:gen1}@
 0 { publishes_at(A,V) } 1 :- published_in(A,U,V), works_at(A,U). @\label{lst:pure:gen2}@
-0 { known_at(U,V)     } 1 :- published_in(A,U,V), works_at(A,U), publishes_at(A,V). @\label{lst:pure:gen3}@
+0 { known_at(U,V) } 1 :- published_in(A,U,V), works_at(A,U), publishes_at(A,V). @\label{lst:pure:gen3}@
 \end{lstlisting}
 
 

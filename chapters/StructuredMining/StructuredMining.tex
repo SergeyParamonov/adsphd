@@ -3,9 +3,6 @@
 
   Nevertheless, our results indicate that second order extensions to these languages are necessary for expressing the model as well as for efficient solving, especially for what concerns subsumption testing. We propose such second order extensions and evaluate their potential effectiveness with a number of experiments in subsumption as well as in query mining.
 
-
-
-
 \section{Introduction}
 \label{sec:intro}
 In the past few years, many pattern mining problems have been modeled using constraint programming techniques \parencite{guns_framework}.
@@ -32,7 +29,6 @@ to be essential for modeling ILP tasks.
   \item We implement and evaluate the presented models in the IDP system \parencite{idp}, a knowledge base system that belongs to the ASP paradigm.
   \item We empirically evaluate the proposed models and compare them on the classical datasets with the state-of-the-art ILP methods.
 \end{enumerate}
-
 
 \section{Problem statement}\label{sec:problem}
 
@@ -65,7 +61,7 @@ where the ternary relation $\edge(g,e_1,e_2)$ states that in graph $g$ there is 
 The goal of this chapter is to explore how such typical ILP problems can be encoded in 
 ASP languages.   So, we will need to translate the typical ILP or Prolog construction into an ASP format. 
 In the present chapter, we employ ASP as well as IDP, which belongs to the ASP family of formalisms. Most statements and constraints written in IDP can be translated into standard ASP mechanically. %Any particular deviation from mainstream the ASP approach is indicated. 
-A brief example-based introduction to IDP is in Appendix \ref{sec:idp_intro} and for a detailed system and paradigm description we refer to the IDP system and language description \parencite{idp} and to the ASP primer \parencite{eiter}.
+For a detailed system and paradigm description we refer to the IDP system and language description \parencite{idp} and to the ASP primer \parencite{eiter}.
 
 To realize frequent query mining in IDP, we need to tackle four problems: 1) encode the queries in IDP; 2) implement the subsumption test to check whether a query subsumes a particular entity in the database; 3) choose and encode a language bias; and 4) determine, in addition to frequency, further constraints that could be used and encode them. We will now address each of these problems in turn.
 
@@ -125,14 +121,14 @@ We now present a modification of the previous encoding in Eq. \ref{eq:full_subsu
   \label{eq:invar_single_subsumption}
 \end{equation}
 The intuition behind these rules is that we select a subgraph by picking nodes in the bottom clause (i.e., a graph), and then we enforce the constraints on the nodes that have been selected. Eq. \ref{eq:invar_single_subsumption} implements this by adding an \invar predicate at the beginning of each clause as a guard, the rule is activated iff the corresponding node is selected.
-\
+
 \paragraph{Encoding the multiple subsumption test}
 In frequent query mining one is interested in mining \textit{frequent} queries, which implies that there is a bag of graphs to match. 
 
 \begin{figure}[t]
   \begin{center}
     
-  \begin{subfigure}{.44\textwidth}
+  \begin{subfigure}{.48\textwidth}
     \captionsetup{
     }
     \begin{center}
@@ -142,7 +138,7 @@ In frequent query mining one is interested in mining \textit{frequent} queries, 
     \end{center}
     \hfill 
   \end{subfigure}
-    \begin{subfigure}{.44\textwidth}
+    \begin{subfigure}{.48\textwidth}
     \captionsetup{
     }
     \begin{center}
@@ -158,6 +154,138 @@ In frequent query mining one is interested in mining \textit{frequent} queries, 
   \caption{Examples of single graph subsumption (left) and of a canonicity check (right)}
   \end{center}
 \end{figure}
+
+Figure \ref{fig:mining_def} illustrates this setup. We can see that we need to test whether the query $\theta$-subsumes each of the graphs in the dataset. To do so, we quantify over a function representing $\theta$, the homomorphism. This makes this formulation second order. Why do we quantify over a function here and not in the previous example? Before, the function was quantified existentially since the whole program was asking for a model, which is the same as asking whether the function exists. Here, however, we need a separate function for each graph, since the reasoning process is going to take into account the existence and non-existence of homomorphisms for particular graphs and to reason on top of that.
+\begin{equation}
+  \begin{aligned}
+    \contp(G) \Longleftrightarrow \exists \theta: \big ( & \tedge(X,Y) \wedge \invar(X) \wedge \invar(Y) \implies \edge(G,\theta(X),\theta(Y)).\\
+    & \tlabel(X,L) \implies \nodelabel(G,\theta(X),L). \\
+    & X \neq Y \implies \theta(X) \neq \theta(Y) \big ).          
+  \end{aligned}
+  \label{eq:ho-matching}
+\end{equation}
+This constraint mimics the single graph subsumption test but introduces a new predicate \contp, indicating a matched graph. 
+
+We refer to the group of constraints in Eq. \ref{eq:ho-matching} as \MatchingConstraint. The syntax used above is not yet supported by ASP-solvers such as clasp \cite{clasp} or IDP \cite{idp}, but we will argue that adding such second order logic 
+syntax is crucial to enable effective modeling and solving of any structural mining problem. This argument will be backed up by experiments in experimental section.
+
+
+\paragraph{Encoding the frequency constraint}
+We consider two typical query mining settings: frequent and discriminative query mining. In the frequent setting a query is accepted if it subsumes at least  $t$ graphs. In the discriminative setting, each graph in the dataset is labeled as either positive or negative, as indicated by the corresponding predicates $\posg(G)$ ($\negg(G)$) that marks a positive (negative) graph $G$, and we are interested in queries that match more than $t_p$ graphs with a positive label and do not match more than $t_n$ negatively labeled graphs.
+
+To model the frequent setting we use an aggregation constraint (Eq. \ref{constr:occurence}) and the discriminative setting can be modeled similarly (Eq. \ref{constr:discriminative}):
+\begin{align}
+ &| \{G :\contp(G) \}| \geq t. \label{constr:occurence} \\
+ &| \{G :\posg(G)  \wedge \contp(G) \}| \geq t_p \wedge |\{ G: \negg(G)  \wedge \contp(G) \}| \leq t_n.  \label{constr:discriminative}
+\end{align}
+\vspace{-20pt}
+\paragraph{Encoding the canonical form constraint}
+It is well-known since the seminal work of Plotkin \cite{plotkin} that the subsumption lattice contains many clauses that are equivalent, and there has been a lot of work in ILP devoted to avoid the generation of multiple clauses from the same equivalence class (e.g., the work on optimality of refinement operators \cite{inverseentailement} and many others \cite{refinment1,refinment2}).
+
+This can be realized in ASP by checking that the current query is not isomorphic to a lexicographically smaller subgraph (using 
+a lexicographic order on the identifiers of the entities or nodes). For example, in Figure \ref{fig:automorphism}, consider the subgraph induced by the nodes 1-3-4 (the numbers are identifiers and the colors are labels). Notice that there is an isomorphic subgraph 1-2-4, i.e., there exists a function $\theta$ preserving edges and labels such that a string representation of the latter subgraph is smaller than the former. We call the graph with the smallest lexicographic representation \textit{canonical}.
+Canonicity can be enforced by the following group of constraints, called \NonIsomorphismConstraint.
+\begin{equation}
+  \begin{aligned}
+    \neg \exists \theta & \big ( X \neq Y \implies \theta(X) \neq \theta(Y).\\ 
+    & \invar(X) \Longleftrightarrow \exists Y: \theta(X) = Y.\\
+    &  \invar(X) \wedge \invar(Y) \wedge \tedge(X,Y) \Longleftrightarrow \tedge(\theta(X), \theta(Y)).\\
+    &  \invar(X) \wedge \tlabel(X) = Y \Longleftrightarrow \tlabel(\theta(X)) = Y.\\
+    &  \infvar(Y) \Longleftrightarrow \theta(X) = Y. \\
+    &  d_1(X) \Longleftrightarrow \invar(X) \wedge \lnot \infvar(X). \\ 
+    &  d_2(X) \Longleftrightarrow \infvar(X) \wedge \lnot \invar(X). \\
+    & \min(d_1(X)) > \min(d_2(X)) \big ).
+  \end{aligned}
+  \label{eq:canonical}
+\end{equation}
+We refer to this group of constraints as \NonIsomorphismConstraint. It enforces a query to have the smallest lexicographic representation, like the canonical code of mining algorithms \cite{farmer, condensed_luc}. We define a canonical representation in terms of the lexicographic order over the bottom clause node identifiers. If there is a query satisfying the constraints, then there is no other lexicographically smaller isomorphic graph. 
+
+\noindent \emph{Note:}  The intuition of Eq. \ref{eq:canonical} that the first four rules ensure the existence of a homomorphism under OI-assumption (which can be relaxed by removing a constraint) between the current query on the node in \invar and another subgraph of the bottom clause. The other rules ensure that the other subgraph has a smaller lexicographic order: \infvar is an auxiliary predicate that stores nodes of the other subgraph, in $d_1$ ($d_2$) there are nodes that only belong to the first, current query, (or second) subgraph. If the minimal node in $d_1$ (current query) is larger than in $d_2$ (the other graph), the query is not in canonical form. 
+
+We now present additional types of constraints that allow solving variations of the query mining problem.
+
+\paragraph{\Connectedness} As in graph mining \cite{farmer}, we are often only interested in connected queries.
+ The constraint to achieve this consists of two parts: 1) a definition of path and 2) a constraint over path. The first is defined inductively over the bnodes selected by $\invar(X)$, the second enforces that any two nodes in the pattern are connected. Note, that the usage of $\{\dots\}$ indicates an inductive definition: the predicate on the left side is completely defined by the rules specified between curly brackets as a transitive closure. If both variables are in the pattern, there must be a path between them. %Connectedness is a common assumption for patterns \cite{mining_graph_data_book}, since we aim to mine structure and without it one would obtain unconnected parts of a graph as solution.
+\begin{equation}
+  \begin{aligned}
+    \{ &\pathrel(X,Y) \leftarrow \invar(X) \wedge \invar(Y) \wedge \tedge(X,Y). \\
+       &\pathrel(X,Y) \leftarrow  \exists Z: \invar(Z) \wedge \pathrel(X,Z) \wedge \tedge(Z,Y) \wedge \invar(Y). \\
+       &\pathrel(Y,X) \leftarrow  \pathrel(X,Y).\}\\
+       &\invar(X) \wedge \invar(Y) \wedge X \neq Y \implies \pathrel(X,Y).
+  \end{aligned}
+  \label{constr:connectedness}
+\end{equation}
+
+\paragraph{The \ObjectiveFunction} An objective function is one way to impose a ranking on the queries. A constraint in the form of an objective function is defined over a model to maximize certain parameters. We consider only objective functions over the queries and matched graphs in the dataset: 1) no objective function, i.e., the frequent query mining problem; 2) maximal size of a query Eq. \ref{eq:max_size} (in terms of bnodes) 3) maximal coverage Eq. \ref{eq:coverage} (i.e., the number of matched graphs); 4) discriminative coverage Eq. \ref{eq:discriminative_coverage}, i.e., the difference between the number of positively and negatively labeled graphs that are covered by a query.
+ \begin{align}
+ &| \{ X: \invar(X) \}| \mapsto \max \label{eq:max_size} \\
+ &| \{ G: \contp(G) \}| \mapsto \max \label{eq:coverage} \\
+ &|\{ G : \posg(G) \wedge \contp(G)\}| - |\{ G: \negg(G) \wedge \contp(G) \}| \mapsto \max \label{eq:discriminative_coverage}
+ \end{align}
+Mining the top-$k$ queries with respect to a given objective function is often a more meaningful task than enumerating all frequent queries, since it provides a more manageable number of solutions that are best according to some function \cite{mdl_mining}.
+
+\paragraph{\TopologicalConstraint}
+Enforces parts of the bottom clause to be in the query. Let $\mathcal{X}$ be the desired subset of the nodes, then the constraint is $\bigwedge_{X \in \mathcal{X}}\invar(X)$.
+
+\paragraph{\CardinalityConstraint}
+This constraint ensures that the size of a graph pattern is at least $n$ (at most, equal) $\exists \circ n~X: \invar(X)$, where $\circ \in \{ =, \leq, <, \geq, > \}$.
+
+\paragraph{\ifthenconstraint} 
+This constraint ensures that if a node is present in the query, then another node must be present in the query, e.g., a node $Y$ must be present in the query, if a node $X$ is in. We encode this constraint as a logical implication: $\invar(X) \implies \invar(Y)$.
+
+\section{First Order Model}\label{sec:fol}
+\begin{figure}[tbh]
+    \captionsetup{
+    	font={scriptsize},
+    }
+\begin{subfigure}{.49\textwidth}
+    \captionsetup{
+      font={scriptsize},
+    }
+    \begin{center}
+      \includegraphics[width=1.025\textwidth]{figure_explanation.png}
+      \caption{Frequent query mining}
+      \label{fig:mining_def}
+    \end{center}
+  \end{subfigure}
+  \hfill 
+  \begin{subfigure}{.50\textwidth}
+    \captionsetup{
+      font={scriptsize},
+    }
+    \begin{center}
+    \includegraphics[width=1.025\textwidth]{figure_FOL.png}
+    \caption{First order version of the graph mining model}
+    \label{fig:fol}
+    \end{center}
+  \end{subfigure}
+  \caption{Conceptual comparison between first and second order models}
+\end{figure}
+In the previous section we have given a positive answer to Question \qone using second order logic. However, after formalizing a problem the next step is to actually solve it. In this section we address Question \qtwo: can we use existing ASP engines to solve these frequent query mining problems directly? Is it necessary to add constructs to existing modeling languages, or is it possible to write down an efficient and elegant first order logic model for which existing solvers can be used?
+
+To answer Question \qtwo, we will encode the problem of frequent query mining as an ASP problem using enumeration techniques. We shall also show how to approach top-$k$ querying mining with this encoding.
+\vspace{-10pt}
+\paragraph{The matching and occurrence constraints} Since we are restricted to FOL here, we have to encode $\theta$ as a binary predicate now, adding graph $G$ as a parameter. In the encoding there are five clauses: the first enforces edge preservation; the second enforces that a mapping exists only for the bnodes in the pattern and only for the matched graphs, i.e., $\theta(G,X)$ is a partial function; the third enforces $\theta(G,X)$ to be an injective function on the bnodes for each of the graphs; the fourth enforces label matching; the fifth ensures occurrence frequency (the same as before).
+\begin{equation}
+\begin{aligned}
+  &\contp(G) \wedge \invar(X) \wedge \invar(Y) \wedge \tedge(X,Y) \Longrightarrow \edge(G,\theta(G,X), \theta(G,Y)).\\
+  &\contp(G) \wedge \invar(X) \Longleftrightarrow \phantom{t} \exists Y: Y=\theta(G,X). \\
+  &\contp(G) \wedge \invar(X) \wedge \invar(Y) \wedge X \neq Y \Longrightarrow \theta(G, X) \neq \theta(G, Y). \\
+  &\contp(G) \wedge \invar(X) \wedge \tlabel(X,L) \Longrightarrow \nodelabel(G,\theta(G,X),L). \\
+  & |\{ \textit{G} : \contp(\textit{G}) \}| \geq t.
+\end{aligned}
+\label{constr:fol_matching}
+\end{equation}
+\vspace{-20pt}
+\paragraph{Encoding the model enumeration constraints}
+A common technique in existing clause learning solvers with restarts for generating all solutions, is by asserting for each found solution a model invalidating clause which excludes this model. We use it to denote that certain combinations of nodes in the bottom clause are no longer valid solutions. E.g., if we find a graph on nodes 1-2-3 to be a solution and we store these nodes, then we prohibit this combination of nodes  to ensure that the solver will find a new different solution.
+
+We present a version of \textit{model invalidation clauses (\mic)} \cite{phd_broes} for frequent query enumeration. Our \mic{}s are designed for Algorithm \ref{algo:top_cycle}, since we enumerate queries of a fixed length: once we increase the length we remove all previous \mic{}s. This allows us to use \mic{}s of a very simple form: given a set of nodes $\mathcal{X}$, we define a constraint $C_{\mathcal{X}}$ as $C_{\mathcal{X}} = \overline{\bigwedge_{X \in \mathcal{X}} \invar(X)}$.
+For example, if a query $q$ on the nodes 1-2-3 is found to be frequent, we would generate the following constraint, as so not to generate 1-2-3 again: $\overline{\invar(1) \wedge \invar(2) \wedge \invar(3)}.$
+Note, that this simple form of model invalidation clauses can only be used if an algorithm iterates over the length of a query and removes \mic{}s once the length is increased.
+\paragraph{Anti-monotonicity property} It is easy to integrate avoidance of the infrequent supergraph generation in Algorithm \ref{algo:top_cycle}: once a query is established to be infrequent, the corresponding \mic{} is kept, when the query length is increased. However, our experiments in Section \ref{sec:experiments} indicate that the current computational problems come from a different source and cannot be solved using this property.
+\vspace{-5pt}
+
   
 \paragraph{Frequent query enumeration in Algorithm \ref{algo:top_cycle}}
 \begin{algorithm}[thb]
@@ -436,7 +564,7 @@ Finally, from all valid patterns a desired condensed representation is construct
 
 \subsection{Encoding Local Constraints} 
 
-In our declarative program we specify local constraints by the predicate \texttt{valid}, which reflects the conditions given in Def.~\ref{def:val}. For every constraint in $\cC_l$ we have a set of dedicated rules, stating when a pattern is not valid. 
+In our declarative program we specify local constraints by the predicate \texttt{valid}, which reflects the conditions given in Definition \ref{def:val}. For every constraint in $\cC_l$ we have a set of dedicated rules, stating when a pattern is not valid. 
 For instance, a constraint checking whether the cost of items in a pattern exceeds a given threshold $N$ is encoded as % using the following rule:
 %\sergey{we, actually have size precomputed for each pattern from the wrapper and/or the specialized algo, so cost here}
 
@@ -601,7 +729,7 @@ dominated :- valid(J), g_size_geq_fr(J).
 dominated :- valid(J), geq_size_g_fr(J). 
 \end{lstlisting}}
 \end{figure}
-\normalsize{Finally, the skyline itemset/sequence encoding is given in List.~\ref{lst:sky}, where the first two rules specify the conditions (a) and (b) for skyline itemsets as specified in Sec.~\ref{sec:prelim}. }
+\normalsize{Finally, the skyline itemset/sequence encoding is given in List.~\ref{lst:sky}, where the first two rules specify the conditions (a) and (b) for skyline itemsets as specified before}
 
 \begin{figure}[t]
 \small{ \begin{lstlisting}[language=ASPlang,label=lst:maxs,caption=Maximal sequence encoding, escapeinside={@}{@}]
