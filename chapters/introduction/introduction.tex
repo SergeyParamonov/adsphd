@@ -61,8 +61,46 @@ Communications, 2017.
 Sketched Answer Set Programming. The idea of sketching takes root in
 imperative programming, when a function in C or Java has a part of it,
 typically a constant left unspecified. A user then provides a number
-of examples for the this sketched constant to be filled in with a
-correct value satisfying the examples. \sergey{to be continued}
+of examples for this sketched constant to be filled in with a
+correct value satisfying the examples. Inspired by this approach, we
+introduce Sketched Answer Set Programming, where a user writes a
+regular program but with certain parts such as constants, predicates
+or operators are left uncertain. Then, we rewrite this sketched
+program into a regular ASP program, i.e., we use a standard ASP solver
+to complete sketches.
+
+
+The chapter consists of the research previously published in the following papers:
+\begin{addmargin}[2em]{2em}
+  Sergey Paramonov, Christian Bessiere, Anton Dries, Luc De Raedt:
+  Sketched Answer Set Programming. CoRR abs/1705.07429 (2017)
+\end{addmargin}
+
+
+Last but not least, Chapter \ref{ch:StructuredMining} introduces a logic
+based approach to structured pattern mining. The idea to apply general
+solvers to pattern mining takes root in the work of
+\cite{declrativeapproach}, where Constraint Programming is applied to
+Itemset Mining. Contrary to itemset mining, where objects do not have
+any particular structures, structured mining studies mining patterns
+in sequences, trees, graphs, etc. First, we introduce a general
+mathematical model of graph mining based on the logical formulation of
+the constraints. Second, we show that the model can be hybridized by
+using our generic framework together with specialized solvers
+developed for particular pattern mining problems.
+
+The chapter consists of the research previously published in the following papers:
+\begin{addmargin}[2em]{2em}
+Sergey Paramonov, Matthijs van Leeuwen, Marc Denecker, Luc De Raedt:
+An Exercise in Declarative Modeling for Relational Query Mining. ILP
+2015: 166-182
+
+
+Sergey Paramonov, Daria Stepanova, Pauli Miettinen:
+Hybrid ASP-Based Approach to Pattern Mining. RuleML+RR 2017: 199-214
+\end{addmargin}
+
+
 
 \section{Datasets, code and experimental results}
 
