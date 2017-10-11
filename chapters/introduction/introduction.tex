@@ -1,10 +1,29 @@
 \chapter{Introduction}\label{ch:introduction}
+\epigraph{
+- Homer, is it the way you pictured PhD life?\\
+- Yeah, pretty much, except we drove in a van solving mysteries.
+}{Could be Homer Simpson}
 
+This thesis links the research fields of data mining, machine learning and logic
+programming. We introduce them in turn and provide an overview of the contributions of the thesis and
+its general structure.
+
+\section{Data Mining and Machine Learning}
+
+\section{Logic Programming}
 In his seminal work Sir Bob \textcite{kowalski} proclaimed:
 \begin{center}
   Algorithm = Logic + Control.
 \end{center}
 
+\section{Contribution}
+
+\begin{itemize}
+  \item \cone
+  \item \ctwo
+  \item \cthree
+  \item \cfour
+\end{itemize}
 
 
 
@@ -77,7 +96,7 @@ The chapter consists of the research previously published in the following paper
 \end{addmargin}
 
 
-Last but not least, Chapter \ref{ch:StructuredMining} introduces a logic
+\textbf{Chapter} \ref{ch:StructuredMining} introduces a logic
 based approach to structured pattern mining. The idea to apply general
 solvers to pattern mining takes root in the work of
 \cite{declrativeapproach}, where Constraint Programming is applied to
@@ -100,48 +119,19 @@ Sergey Paramonov, Daria Stepanova, Pauli Miettinen:
 Hybrid ASP-Based Approach to Pattern Mining. RuleML+RR 2017: 199-214
 \end{addmargin}
 
-
+\textbf{Chapter} \ref{ch:conclusions} summarizes the thesis and
+discusses future work possibilities.
 
 \section{Datasets, code and experimental results}
+In order to make results repeatable and to follow the Open Source
+spirit, we have opened and published the datasets, use-cases,
+meta-data and other useful information.
 
-\sergey{talk about github here: TaCLe, SkASP, etc}
-
-% Illustration on how to refer to your papers when using biblatex
-% (see second line in thesis.tex to activate biblatex)
-%\definecolor{shadecolor}{gray}{0.85}
-%\begin{shaded}
-%This chapter was previously published as:\\
-%\fullcite{VandenBroeck2011IJCAI}
-%\newpage
-%\end{shaded}
-
-
-
-%And yet another citation \cite{FrRo2010Diffusion}.
-
-% Some dummy code to get at least 1 entry in the nomenclature.
-%\nomenclature{$\Theta$}{A nice symbol}
-%Introducing some symbol: $\Theta$.
-
-% Some dummy code to get at least 1 entry in the list of
-% abbreviations.
-
-% Some dummy code show how to include images.
-% \begin{figure}
-%   \centering
-%   \medskip
-%   \includegraphics[width=.9\textwidth]{sine}
-%   \caption{Illustration of how to include a figure. }
-%   \label{fig:sine}
-% \end{figure}
-
-
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Keep the following \cleardoublepage at the end of this file, 
-% otherwise \includeonly includes empty pages.
+They can be found in the following GitHub repositories:
+\begin{itemize}
+\item \url{https://github.com/SergeyParamonov/TaCLe}
+\item \url{https://github.com/SergeyParamonov/sketching}
+\item \url{https://github.com/SergeyParamonov/LGM}
+\end{itemize}
 \cleardoublepage
-
 % vim: tw=70 nocindent expandtab foldmethod=marker foldmarker={{{}{,}{}}}
