@@ -47,15 +47,15 @@ on the quality of the computed patterns and on the runtime in the experiment sec
 }
 \begin{lstlisting}[float,floatplacement=t, caption=Greedy maximum $k$-tiling formalization in answer set programming, label=lst:encoding, escapeinside={@}{@}] 
 @\commenttextasp{\%\onevalueConstraint; it generates at most one value per attribute}@
-0 { tile(currentI, Value, Attribute) : valid(Attribute, Value) } 1 :- col(Attribute). @\label{guess_line}@
+0 { tile(current, Value, Attribute) : valid(Attribute, Value) } 1 :- col(Attribute). @\label{guess_line}@
 @\commenttextasp{\%\overcoverageConstraint}@
-over_covered(currentI,T) :- not db(Value, Attribute, T), tile(currentI, Value, Attribute), transaction(T). @\label{overcover_line}@
+over_covered(current,T) :- not db(Val, Attr, T), tile(current, Val, Attr), transaction(T). @\label{overcover_line}@
 @\commenttextasp{\%\intersectionConstraint}@
-intersect(T) :- currentI != Index, tile(currentI, Value, Attribute), tile(Index, Value, Attribute), in(Index,T). @\label{intersect_line}@
+intersect(T) :- current != I, tile(current, Val, Attr), tile(I, Val, Attr), in(I,T). @\label{intersect_line}@
 @\commenttextasp{\%defines presence of tiles in transactions}@
-in(currentI,Transct) :- transaction(Transct), not over_covered(currentI, Transct), not intersect(Transct). @\label{in_line}@
+in(current,T) :- transaction(T), not over_covered(current, T), not intersect(T). @\label{in_line}@
 @\commenttextasp{\%defines \maxcover function}@
-covered(Transct, Attribute) :- in(Index,Transct), tile(Index, Value, Attribute). @\label{covered_line}@
+covered(Transct, Attribute) :- in(Index,Transct), tile(Index, _, Attribute). @\label{covered_line}@
 #maximize[covered(Transct, Attribute)]. @\label{maximize_line}@
 \end{lstlisting}
 
@@ -89,7 +89,7 @@ The general structure of the ASP encoding is similar to the \emph{sells} example
 \begin{lstlisting}[caption=Generators for the model without a latent variable into three binary relations, escapeinside={@}{@}, label=lst:pure_alternative] 
 0 { works_at(A,U)     } 1 :- published_in(A,U,V). @\label{lst:pure:gen1}@
 0 { publishes_at(A,V) } 1 :- published_in(A,U,V), works_at(A,U). @\label{lst:pure:gen2}@
-0 { known_at(U,V) } 1 :- published_in(A,U,V), works_at(A,U), publishes_at(A,V). @\label{lst:pure:gen3}@
+0 { known_at(U,V) } 1 :- published_in(A,U,V),works_at(A,U),publishes_at(A,V).@\label{lst:pure:gen3}@
 \end{lstlisting}
 
 
