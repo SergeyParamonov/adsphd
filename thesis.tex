@@ -64,15 +64,15 @@
 %%% COVER: End settings %%%
 
 % for the nomenclature (comment out if you do not use the nomencl package
-\usepackage{nomencl}   % For nomenclature
-\renewcommand{\nomname}{List of Symbols}
-\newcommand{\myprintnomenclature}{%
-  \cleardoublepage%
-  \printnomenclature%
-  \chaptermark{\nomname}
-  \addcontentsline{toc}{chapter}{\nomname} %% comment to exclude from TOC
-}
-\makenomenclature%
+% \usepackage{nomencl}   % For nomenclature
+% \renewcommand{\nomname}{List of Symbols}
+% \newcommand{\myprintnomenclature}{%
+%   \cleardoublepage%
+%   \printnomenclature%
+%   \chaptermark{\nomname}
+%   \addcontentsline{toc}{chapter}{\nomname} %% comment to exclude from TOC
+% }
+% \makenomenclature%
 
 % for the list of abbreviations (comment out if you do not use the glossaries package
 \usepackage{glossaries} % For list of abbreviations
@@ -82,7 +82,7 @@
   \cleardoublepage%
   \printglossary[title=\glossname]
   \chaptermark{\glossname}
-  \addcontentsline{toc}{chapter}{\glossname} %% comment to exclude from TOC
+% \addcontentsline{toc}{chapter}{\glossname} %% comment to exclude from TOC
 }
 \makeglossaries%
 \input{auxilary_files/glossary}
@@ -122,7 +122,7 @@
 
 \frontmatter % to get \pagenumbering{roman}
 
-\includepreface{preface}
+%\includepreface{preface}
 \includeabstract{abstract}
 \includeabstractnl{abstractnl}
 
@@ -138,7 +138,7 @@
 %    \includenomenclature{nomenclaturechapter}
 % 2. automatic generation via the nomencl package
 %    \nomenclature[cB]{$c_B(\vec{x})$}{Characteristic function of $B$}
-\myprintnomenclature
+%\myprintnomenclature
 
 \tableofcontents
 \listoffigures
@@ -149,7 +149,7 @@
 \mainmatter % to get \pagenumbering{arabic}
 
 % Show instructions on a separate page
-\instructionschapters\cleardoublepage
+%\instructionschapters\cleardoublepage
 
 \includechapter{introduction}
 \includechapter{background} 

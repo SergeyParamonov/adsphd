@@ -1,5 +1,5 @@
 \chapter{Structured Mining}\label{ch:StructuredMining}
-  Motivated by the declarative modeling paradigm for data mining, we report on our experience in modeling and solving relational query and graph mining problems with the IDP system, a variation on the answer set programming paradigm. Using IDP or other ASP-languages for modeling appears to be natural given that they provide rich logical languages for modeling and solving many search problems and that relational query mining (and ILP) is also based on logic.
+Motivated by the declarative modeling paradigm for data mining, we report on our experience in modeling and solving relational query and graph mining problems with the IDP system, a variation on the answer set programming paradigm. Using IDP or other ASP-languages for modeling appears to be natural given that they provide rich logical languages for modeling and solving many search problems and that relational query mining (and \acrshort{ilp}) is also based on logic.
 
   Nevertheless, our results indicate that second order extensions to these languages are necessary for expressing the model as well as for efficient solving, especially for what concerns subsumption testing. We propose such second order extensions and evaluate their potential effectiveness with a number of experiments in subsumption as well as in query mining.
 
@@ -26,7 +26,7 @@ More concretely, the main contributions of this work can be summarized as follow
 \begin{enumerate}
   \item We present two declarative models and corresponding solving strategies for the query mining problem that support a wide variety of constraints.  While one model can be expressed in the ASP paradigm, the other model requires a  second order extension that we believe
 to be essential for modeling ILP tasks. 
-  \item We implement and evaluate the presented models in the IDP system \parencite{idp}, a knowledge base system that belongs to the ASP paradigm.
+  \item We implement and evaluate the presented models in the \acrshort{idp} system \parencite{idp}, a knowledge base system that belongs to the ASP paradigm.
   \item We empirically evaluate the proposed models and compare them on the classical datasets with the state-of-the-art ILP methods.
 \end{enumerate}
 

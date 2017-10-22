@@ -28,7 +28,7 @@ given_settings = {
   'makebibliography': True,
   'makeindex':        True,
   'makeglossary':     True,
-  'makenomenclature': True,
+  'makenomenclature': False,
 
   'usebiblatex':      False,
   'biblatexbackend':  'biber', # alternative: bibtex
