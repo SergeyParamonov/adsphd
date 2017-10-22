@@ -48,6 +48,39 @@ Conretely, the thesis investigates the following questions:
     and query mining?
 \end{itemize}
 
+Addressing \cone, we look into a classical problem of matrix
+factorization. We demonstrate how the problem of Boolean Matrix
+Factorization can be generalized into relational setting, called
+\textit{Relational Data Factorization}, and
+demonstrate how it allows to model a variaty of classic data mining
+problems and novel tasks as well.
+
+With the regard to \ctwo: we look into a more practical setting.
+Typically, machine learning and data mining algorithms make the i.i.d.
+(independent identically distributed) assumption, which, of course,
+breaks in the relational setting. If we look at a spreadsheet, it is
+typically one or more tables with relationaships between them. Usually
+in a form of a formula, a macro or of some other constraint. If we
+want to detect these connections between tables or their parts, we
+have to give up the i.i.d. assumption. This setting, referred as
+\textit{Tabular constraint learning}, breaks the standard
+machine learning and data mining algorithms and 
+makes the problem essentially relational.
+
+This leads us to \cthree: if we already have a relational model but
+something changes over time or due to changes in the specification, then we would like
+to be able to indicate uncertainty in some parts of the model. These
+uncertain or, \textit{open}, parts are called \textit{sketched} and
+the whole sketched model is referred as a \textit{sketch} and the
+problem as \textit{constraint sketching}.
+
+Finally, looking at \cfour: if we look at the area of itemset mining, where \acrlong{cp}
+has been succefully applied, then the next natural question to ask:
+if \acrshort{cp} has been succesful for unstructured, or
+non-relational, pattern mining, can we model its \textit{structured},
+or \textit{relational}, version using logic programming? To answer
+this question we look into \textit{sequence}, \textit{graph} and
+\textit{query mining}.
 
 
 \section{Structure of the Thesis}
