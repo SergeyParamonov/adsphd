@@ -5,27 +5,118 @@
 }{Could be Homer Simpson}
 
 \begin{addmargin}[2em]{2em}
-This thesis links the research fields of data mining, machine learning
-and logic
-programming. We introduce them in turn and provide an overview of the
+This thesis links the research fields of data mining, constraint learning
+and logic programming. We introduce them in turn and provide an overview of the
 contributions of the thesis and
 its general structure.
 \end{addmargin}
 
-\section{Data Mining and Machine Learning}
+The ability to write down a model and just push a button to get the
+answer is an appealing idea. It is one of the holy grails of
+Artificial Intelligence, called Declarative Programming. Today in the age of data, we would like
+to write models, feed them with data and find the insight slipping
+away from a human eye. What we do not really want to do is to write
+all of tedious code. Once, we have written a model, we would like just
+to a feature to it and get an updated answer. Unsurprisingly, it is
+not an easy task. To tackle it we need first to introduce Data Mining
+problems and then attack them with the most powerful weapon -- Logic.
+The main reason behind this is simple: in this thesis, we are
+concerned with Relational Data and Relational Data Mining Problems.
+And Logic is the best modelling tool to handle relational data
+problems.
 
-Many data mining and machine learning problems are \textbf{combinatorial problems}, which
+\section{Data Mining}
+Data Mining is the scientific area concerned with turning data into
+knowledge. The amount of data available and generated today is simply
+enormous and Data Mining is
+devoted to structuring, filtering, classifying and extracting useful
+patterns from this data.
+
+The \textit{knowledge} extracted from the data can manifest itself in
+multiple forms. For example, an interesting piece of a data,
+\textit{typically a substructure}, can be
+referred as a \textit{pattern} \parencite{han_book}. The most known is
+\textit{frequent pattern mining} \parencite{survey_han}. In fact, various measures of
+``interest'' exist, which has given a raise to multiple types of
+patterns to look for \parencite{tias_topk}.
+
+
+Many Data Mining problems, and especially \textit{Pattern Mining
+problems}, are \textbf{combinatorial problems}, which
 is 
 
 \begin{center}
   Combinatorial problem = Model + Search
 \end{center}
 
+Therefore, it seems natural to model them using systems designed to
+perform search in declarative manner, such as \acrlong{cp} or
+\acrlong{asp} (which we discuss later in detail).
+
+If we simplify the details, then a pattern mining problem can be
+viewed as follows: let $D$ be a set of object and $\phi$ be a function of
+interest, then find all objects $d$ in $D$ such that $\phi(d)$ holds.
+Simply speaking, we enumerate objects that have a certain property of
+interest.
+
+
+\section{Constraint Learning}
+Constraint Learning is the research field concerned with finding
+constraints in the data \parencite{constraint_learning,QUACQ,Conacq}.
+Let us outline in simple terms, what constraint learning is about.
+Explaining what constraint learning in term of the previous section:
+let $D$ be a dataset and $\Phi$ be a set of interesting properties:
+then find all properties $\phi$ in $\Phi$ such that $\phi(D)$ holds.
+
+It is not hard to see a certain duality between these problems, essentially:
+\begin{center}
+  \textbf{Patterns are constraints and constraints are patterns}.
+\end{center}
+
+In case of pattern mining, we enumerate objects on which the property
+of interest holds and in constraint learning we find interesting
+properties that hold in the data (or its parts).
+
+Therefore, constraint learning and pattern mining are interconnected
+and both play a central role in this thesis.
+
 \section{Logic Programming}
 In his seminal work Sir Bob \textcite{kowalski} proclaimed:
 \begin{center}
   Algorithm = Logic + Control.
 \end{center}
+
+What he meant is quite simple, you can turn logical rules into a
+computational process. Why is this important for us? Logic deals with
+relations and relational structures, it is naturally designed to be
+working in the relational setting. Therefore, if we can combine logic
+with computations we obtain a computational engine that can work in
+our relational learning setting.
+
+
+Imagine, that there are three people: John, Peter and Elena. We know
+that people who are not allergic to fish like sushi; and Peter is
+allergic to fish. Who likes sushi then? We can write this puzzle as a
+simple logical implication:
+
+\begin{equation*}
+  \textit{likes\_sushi}(X)~{:}{-}~\textit{person}(X),~\text{not}~
+  \textit{allergic}(X). 
+\end{equation*}
+
+This notation of Prolog (Programming in logic) mimics the logical implication:
+
+\begin{equation*}
+  \forall X: \textit{person}(X), \overline{\textit{allergic}}(X)
+  \implies \textit{likes\_sushi}(X)
+\end{equation*}
+
+Indeed, in this thesis we use modern Logic Programming engines: such
+as \acrlong{asp} \cite{ASPbook,whatisasp} and \acrlong{idp}
+\parencite{idp} (we explain them in details in the following chapter)
+that naturally support constraints and various types of logical
+inference.
+
 
 \section{Contribution}
 Given the abundance of relational data (such as spreadsheets, graphs
@@ -199,7 +290,7 @@ Proceedings 1837, pp 168-177, 2017
 \textbf{Chapter} \ref{ch:conclusions} summarizes the thesis and
 discusses future work possibilities.
 
-\section{Datasets, code and experimental results}
+\section{Datasets, Code and Experimental Results}
 In order to make results repeatable and to follow the Open Source
 spirit, we have opened and published the datasets, use-cases,
 meta-data and other useful information.
