@@ -13,17 +13,19 @@ its general structure.
 
 The ability to write down a model and to simply push a button to get the
 answer is an appealing idea. It is one of the holy grails of
-Artificial Intelligence, called Declarative Programming. Today in the age of data, we would like
+Artificial Intelligence, called Declarative Programming, where one
+specifies what to and not how to. Today in the age of data, we would like
 to write models, feed them with data and find the insight slipping
 away from a human eye. What we do not really want is to write
-all of tedious code. Once we have written a model, we would like
+a lot of tedious code. Once we have written a model, we would like
 to add a feature to it and get an updated answer. Unsurprisingly, it is
 not an easy task. To tackle it we need first to introduce Data Mining
 problems and then attack them with the most powerful weapon -- Logic.
-The main reason behind this is simple: in this thesis, we are
-concerned with Relational Data and Relational Data Mining Problems.
-And Logic is the best modelling tool to handle relational data
-problems. 
+Since in this thesis, we are
+concerned with Relational Data and Relational Data Mining Problems 
+and Logic is one of the best modelling tool to handle relational data
+problems, we will use Logic Programming to model and solve Relational
+Data Mining Problems.
 
 \section{Data Mining}
 Data Mining is the scientific area concerned with turning data into knowledge. 
@@ -32,14 +34,14 @@ Data Mining is devoted to structuring, filtering, classifying and extracting use
 
 The \textit{knowledge} extracted from the data can manifest itself in
 multiple forms. For example, an interesting piece of data,
-\textit{typically a substructure}, can be
-[referred to as]/considered a \textit{pattern} \parencite{han_book}. 
-The most known [NOUN NEEDED! pattern learning task?] is the
-\textit{frequent pattern mining} , or pattern mining for short \parencite{survey_han}. 
+\textit{typically a substructure}, is referred as a \textit{pattern} \parencite{han_book}. 
+The most known pattern learning task is the
+\textit{frequent pattern mining}, or pattern mining for short \parencite{survey_han}. 
 At a high level it can be formalized as follows: 
-let $D$ be a set of object and $\phi$ be a function of
+let $D$ be a dataset, $P$ be the language of allowed patterns and
+$\phi$ be a predicate of
 interest, then the pattern mining problem is the problem of finding
-all objects $d$ in $D$ such that $\phi(d)$ holds.
+all objects $p$ in $P$ such that $\phi(p,D)$ holds.
 Simply speaking, we enumerate objects that have a certain property of
 interest.
 Various measures of relevance or ``interestingness'' of a pattern exist, which lead to an extensive research of multiple types of patterns \parencite{tias_topk}.
@@ -65,8 +67,9 @@ constraints in the data \parencite{constraint_learning,QUACQ,Conacq}.
 Similar to the pattern matching problem, we can define 
 the constraint learning problem as follows:
 %Explaining what constraint learning in term of the previous section:
-let $D$ be a dataset and $\Phi$ be a set of interesting properties, then
-then the problem is to find all properties $\phi$ in $\Phi$ such that $\phi(D)$ holds.
+let $D$ be a dataset, $C$ be a set of interesting properties (constraints), and
+$\phi$ be a satisfaction function, then
+then the problem is to find all properties $c$ in $C$ such that $\phi(D,c)$ is satisfied.
 
 It is not hard to see a certain duality between the two problems, essentially:
 \begin{center}
