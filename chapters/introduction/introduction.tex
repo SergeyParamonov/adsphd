@@ -11,74 +11,72 @@ contributions of the thesis and
 its general structure.
 \end{addmargin}
 
-The ability to write down a model and just push a button to get the
+The ability to write down a model and to simply push a button to get the
 answer is an appealing idea. It is one of the holy grails of
 Artificial Intelligence, called Declarative Programming. Today in the age of data, we would like
 to write models, feed them with data and find the insight slipping
-away from a human eye. What we do not really want to do is to write
-all of tedious code. Once, we have written a model, we would like just
-to a feature to it and get an updated answer. Unsurprisingly, it is
+away from a human eye. What we do not really want is to write
+all of tedious code. Once we have written a model, we would like
+to [VERB NEEDED] a feature to it and get an updated answer. Unsurprisingly, it is
 not an easy task. To tackle it we need first to introduce Data Mining
 problems and then attack them with the most powerful weapon -- Logic.
 The main reason behind this is simple: in this thesis, we are
 concerned with Relational Data and Relational Data Mining Problems.
 And Logic is the best modelling tool to handle relational data
-problems.
+problems. [я не знаю. последние 3 предложения - это очень strong statements, и далеко не все будут с ними согласны. я бы переформулировала гораздо менее категорично, напирая на то, что это одна из возможных опций, у которой к тому же есть плюсы 1), 2), 3). explainable AI, то-сё.]
 
 \section{Data Mining}
-Data Mining is the scientific area concerned with turning data into
-knowledge. The amount of data available and generated today is simply
-enormous and Data Mining is
-devoted to structuring, filtering, classifying and extracting useful
-patterns from this data.
+Data Mining is the scientific area concerned with turning data into knowledge. 
+The amount of data available and generated today is truly enormous. 
+Data Mining is devoted to structuring, filtering, classifying and extracting useful patterns from this data.
 
 The \textit{knowledge} extracted from the data can manifest itself in
-multiple forms. For example, an interesting piece of a data,
+multiple forms. For example, an interesting piece of data,
 \textit{typically a substructure}, can be
-referred as a \textit{pattern} \parencite{han_book}. The most known is
-\textit{frequent pattern mining} \parencite{survey_han}. In fact, various measures of
-``interest'' exist, which has given a raise to multiple types of
-patterns to look for \parencite{tias_topk}.
+[referred to as]/considered a \textit{pattern} \parencite{han_book}. 
+The most known [NOUN NEEDED! pattern learning task?] is the
+\textit{frequent pattern mining} , or pattern mining for short \parencite{survey_han}. 
+At a high level it can be formalized as follows: 
+let $D$ be a set of object and $\phi$ be a function of
+interest, then the pattern mining problem is the problem of finding
+all objects $d$ in $D$ such that $\phi(d)$ holds.
+Simply speaking, we enumerate objects that have a certain property of
+interest.
+Various measures of relevance or ``interestingness'' of a pattern exist, which lead to an extensive research of multiple types of patterns \parencite{tias_topk}.
 
 
-Many Data Mining problems, and especially \textit{Pattern Mining
-problems}, are \textbf{combinatorial problems}, which
-is 
+Many Data Mining problems, and especially pattern mining
+problems, are \textbf{combinatorial problems}, which in turn have two main components to them, namely problem modelling and search: 
 
 \begin{center}
   Combinatorial problem = Model + Search
 \end{center}
 
-Therefore, it seems natural to model them using systems designed to
-perform search in declarative manner, such as \acrlong{cp} or
-\acrlong{asp} (which we discuss later in detail).
+Therefore, it seems natural to model pattern mining problems 
+using systems designed to perform search in declarative manner, such as \acrlong{cp} or \acrlong{asp}. %(which we discuss later in detail).
 
-If we simplify the details, then a pattern mining problem can be
-viewed as follows: let $D$ be a set of object and $\phi$ be a function of
-interest, then find all objects $d$ in $D$ such that $\phi(d)$ holds.
-Simply speaking, we enumerate objects that have a certain property of
-interest.
+
 
 
 \section{Constraint Learning}
 Constraint Learning is the research field concerned with finding
 constraints in the data \parencite{constraint_learning,QUACQ,Conacq}.
-Let us outline in simple terms, what constraint learning is about.
-Explaining what constraint learning in term of the previous section:
-let $D$ be a dataset and $\Phi$ be a set of interesting properties:
-then find all properties $\phi$ in $\Phi$ such that $\phi(D)$ holds.
+%Let us outline in simple terms, what constraint learning is about.
+Similar to the pattern matching problem, we can define 
+the constraint learning problem as follows:
+%Explaining what constraint learning in term of the previous section:
+let $D$ be a dataset and $\Phi$ be a set of interesting properties, then
+then the problem is to find all properties $\phi$ in $\Phi$ such that $\phi(D)$ holds.
 
-It is not hard to see a certain duality between these problems, essentially:
+It is not hard to see a certain duality between the two problems, essentially:
 \begin{center}
   \textbf{Patterns are constraints and constraints are patterns}.
 \end{center}
 
 In case of pattern mining, we enumerate objects on which the property
-of interest holds and in constraint learning we find interesting
+of interest holds, and in constraint learning we find interesting
 properties that hold in the data (or its parts).
-
-Therefore, constraint learning and pattern mining are interconnected
-and both play a central role in this thesis.
+Therefore, we consider constraint learning and pattern mining to be interconnected, and both problems play a central role in this thesis.
 
 \section{Logic Programming}
 In his seminal work Sir Bob \textcite{kowalski} proclaimed:
@@ -86,17 +84,19 @@ In his seminal work Sir Bob \textcite{kowalski} proclaimed:
   Algorithm = Logic + Control.
 \end{center}
 
-What he meant is quite simple, you can turn logical rules into a
-computational process. Why is this important for us? Logic deals with
-relations and relational structures, it is naturally designed to be
-working in the relational setting. Therefore, if we can combine logic
-with computations we obtain a computational engine that can work in
+%What he meant is quite simple, 
+The intuition behind this statement is that
+you can turn logical rules into a computational process. 
+Why is this important for us? Logic deals with
+relations and relational structures, it is naturally designed to
+work in the relational setting. Therefore, if we can combine logic
+with computation, we obtain a computational engine that can work in
 our relational learning setting.
 
-
-Imagine, that there are three people: John, Peter and Elena. We know
-that people who are not allergic to fish like sushi; and Peter is
-allergic to fish. Who likes sushi then? We can write this puzzle as a
+Consider an example in which there are three people: John, Peter and Elena. 
+We know that people who are not allergic to fish like sushi; 
+furthermore, we know that Peter is allergic to fish. 
+Who likes sushi then? We can write this puzzle as a
 simple logical implication:
 
 \begin{equation*}
@@ -104,16 +104,16 @@ simple logical implication:
   \textit{allergic}(X). 
 \end{equation*}
 
-This notation of Prolog (Programming in logic) mimics the logical implication:
+The following notation in Prolog (Programming in logic) mimics the logical implication:
 
 \begin{equation*}
-  \forall X: \textit{person}(X), \overline{\textit{allergic}(X)}
+  \forall X: \textit{person}(X) \wedge \overline{\textit{allergic}(X)}
   \implies \textit{likes\_sushi}(X)
 \end{equation*}
 
-Indeed, in this thesis we use modern Logic Programming engines: such
-as \acrlong{asp} \cite{ASPbook,whatisasp} and \acrlong{idp}
-\parencite{idp} (we explain them in details in the following chapter)
+In this thesis we use modern Logic Programming engines, such
+as \acrlong{asp} \parencite{ASPbook,whatisasp} and \acrlong{idp}
+\parencite{idp} %(we explain them in details in the following chapter)
 that naturally support constraints and various types of logical
 inference.
 
@@ -121,14 +121,14 @@ inference.
 \section{Contribution}
 Given the abundance of relational data (such as spreadsheets, graphs
 or logical structures) and of various machine learning and data
-problems. A natural question arises: \textit{``How can we model
+problems, a natural question arises: \textit{``How can we model
 relational data mining problems?''}. This thesis introduces a number
 of foundational relational problems and offers a uniform view on them.
 Since the data and problems are relational, we approach them using
-relational methods, namely, logic programming.
+relational methods, namely, logic programming. [is it the only relational method?? ``namely" implies it is, but i'm not sure it is true...]
 
 The \textbf{main contribution} of this thesis is in the novel problems
-it offers.
+it offers. [the sentence is out of context here, move it]
 
 Concretely, the thesis investigates the following questions:
 \begin{itemize}
@@ -137,30 +137,31 @@ Concretely, the thesis investigates the following questions:
     Factorization problem, into the relation setting?
   \item \ctwo: What practical problems are intrinsically relational and
     how can they be modelled and used in practice?
-  \item \cthree: Looking at the inversed problem: given a relational
+  \item \cthree: \textit{(the inverse problem)} given a relational
     model, can we mark some parts of its to be uncertain and in what
     setting would it be applicable?
-  \item \cfour: Similarly to unstructured constraint-based itemset
-    mining: can we apply declarative relational mining
+  \item \cfour: 
+%  Similarly to unstructured constraint-based itemset mining: 
+    can we apply declarative relational mining
     techniques to structured patter mining, such as sequence, graph
     and query mining?
 \end{itemize}
 
-Addressing \cone, we look into a classical problem of matrix
+Addressing \cone, we look into the classical problem of matrix
 factorization. We demonstrate how the problem of Boolean Matrix
 Factorization can be generalized into relational setting, called
 \textit{Relational Data Factorization}, and
 demonstrate how it allows to model a variety of classic data mining
 problems and novel tasks as well.
 
-With the regard to \ctwo: we look into a more practical setting.
+With regards to \ctwo, we look into a more practical setting ;
 Typically, machine learning and data mining algorithms make the i.i.d.
-(independent identically distributed) assumption, which, of course,
+(independent identically distributed) assumption, which of course
 breaks in the relational setting. If we look at a spreadsheet, it is
-typically one or more tables with relationships between them. Usually
+typically one or more tables with relationships between them, usually
 in a form of a formula, a macro or of some other constraint. If we
 want to detect these connections between tables or their parts, we
-have to give up the i.i.d. assumption. This setting, referred as
+have to give up the i.i.d. assumption. This setting, referred to as the
 \textit{Tabular constraint learning}, breaks the standard
 machine learning and data mining algorithms and 
 makes the problem essentially relational.
@@ -169,11 +170,11 @@ This leads us to \cthree: if we already have a relational model but
 something changes over time or due to changes in the specification, then we would like
 to be able to indicate uncertainty in some parts of the model. These
 uncertain or, \textit{open}, parts are called \textit{sketched} and
-the whole sketched model is referred as a \textit{sketch} and the
+the whole sketched model is referred to as a \textit{sketch} and the related
 problem as \textit{constraint sketching}.
 
-Finally, looking at \cfour: if we look at the area of itemset mining, where \acrlong{cp}
-has been successfully applied, then the next natural question to ask:
+Finally, lwith respect to \cfour, if we look at the area of itemset mining, where \acrlong{cp}
+has been successfully applied, then the natural question to ask is:
 if \acrshort{cp} has been successful for unstructured, or
 non-relational, pattern mining, can we model its \textit{structured},
 or \textit{relational}, version using logic programming? To answer
@@ -281,7 +282,6 @@ discusses future work possibilities.
 In order to make results repeatable and to follow the Open Source
 spirit, we have opened and published the datasets, use-cases,
 meta-data and other useful information.
-
 They can be found in the following GitHub repositories:
 \begin{itemize}
 \item \url{https://github.com/SergeyParamonov/TaCLe}
