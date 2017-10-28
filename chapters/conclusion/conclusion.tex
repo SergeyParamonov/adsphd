@@ -182,7 +182,7 @@ generality and flexibility of the approach, however, it often comes at
 the cost of longer runtimes of the method. There are a number of ways
 as has been indicated to handle this problem but it should not come as
 a surprise that general methods cannot compete out-of-the-box in the efficiency with
-a specialized method devoted to only one particular problem. What is
+a specialized method devoted to only one particular problem. It is
 also clear that specialized methods must be significantly modified in
 order to be used in a new setting. Our extensive experimental study
 also demonstrates that general relational methods are well-suited for
@@ -205,7 +205,7 @@ well as between multiple tables.
 
 \begin{description}
 \item[\cthree] \textit{Looking at the inversed problem: given a relational
-    model, can we mark some parts of its to be uncertain and in what
+    model, can we mark some parts of it to be uncertain and in what
   setting would it be applicable?}
 \end{description}
 
@@ -213,7 +213,7 @@ As we have demonstrated in Chapter \ref{ch:Sketching}, given a
 partially complete specification of an ASP program, \acrshort{asp}
 can successfully learn relational programs based a few examples
 provided. We have extensively analyzed the learned programs and
-discovered that on average only few between 2-5 examples needed to
+discovered that on average only few, typically between 2-5, examples needed to
 converge to a correct solution. Furthermore, we were able to detect
 errors in publicly available encodings, we have contacted the authors
 and the models were updated.
@@ -222,15 +222,16 @@ and the models were updated.
 \begin{description}
 \item[\cfour]  \textit{Similarly to unstructured constraint-based itemset
     mining: can we apply declarative relational mining
-    techniques to structured patter mining, such as sequence, graph
+    techniques to structured pattern mining, such as sequence, graph
   and query mining?}
 \end{description}
 
-As indicated in Chapter \ref{ch:StructuredMining}, we have applied the
-logic programming methods to the structured mining problems. We were
-able to create a purely declarative model of graph mining. What we
+As indicated in Chapter \ref{ch:StructuredMining}, we have applied 
+logic programming methods to the structured mining problems. As the
+result, 
+a purely declarative model of graph mining has been created. What we
 have discovered is that the systems cannot yet handle this type of
-models efficiently. As a result, we have proposed a hybrid model that
+models efficiently. Then, to overcome this issue, we have proposed a hybrid model that
 first applies a standard pattern mining algorithm and then uses a
 logic programming engine. This has lead to an order of magnitude
 efficiency jump and, from the practical point of view, it seems to be
