@@ -5,24 +5,36 @@ future work opportunities.
 \end{addmargin}
 
 \section{Discussion and Future Work}
-Let us introduce possibilities of future work here.
+Let us introduce possibilities of future work here. Each chapter
+describes the future work specific for a particular area or a problem,
+while in this chapter we describe possible future directions from the
+perspective of the thesis as a whole.
 
 \subsection{Pindakaas}
 If we recap the key features of FlashFill \parencite{flashfill} and of TaCLe
 \parencite{tacle}, then we would highlight the following:
 
-\textbf{FlashFill}
+\textbf{FlashFill:}
 \begin{itemize}
-\item String transformation
-\item Marked input-output columns
-\item Structured search over programs
+\item String transformation: one of its main capabilities is to
+  auto-complete strings in a column 
+\item Marked input-output columns: one or more columns are used as
+  input and one columns is treated as the output of the string
+  transformation function
+\item Structured search over programs: internally it searches for a
+  program that performs the matching transformation while minimizing
+  its complexity
 \end{itemize}
 
-\textbf{TaCLe}
+\textbf{TaCLe:}
 \begin{itemize}
-  \item Textual and numeric flat Excel formulae
-  \item Unsupervised
-  \item Enumerates all constraints matching the data
+  \item Textual and numeric flat Excel formulae: it is not purely
+    textual as FlashFill, but it handles both numbers and strings
+  \item Unsupervised: the constraints we find do not have marked
+    inputs and outputs
+  \item Enumerates all constraints matching the data: TaCle does not
+    search for a single solution but find the whole set of formula
+    (typically, it outputs its condensed representation)
 \end{itemize}
 
 We see that there indeed possibilities for creating a system that
