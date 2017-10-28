@@ -142,12 +142,12 @@ it offers. Concretely, the thesis investigates the following questions:
   \item \ctwo: What practical problems are intrinsically relational and
     how can they be modelled and used in practice?
   \item \cthree: \textit{(the inverse problem)} given a relational
-    model, can we mark some parts of its to be uncertain and in what
+    model, can we mark some parts of it to be uncertain and in what
     setting would it be applicable?
   \item \cfour: 
 %  Similarly to unstructured constraint-based itemset mining: 
     can we apply declarative relational mining
-    techniques to structured patter mining, such as sequence, graph
+    techniques to structured pattern mining, such as sequence, graph
     and query mining?
 \end{itemize}
 
@@ -162,7 +162,8 @@ With regards to \ctwo, we look into a more practical setting ;
 Typically, machine learning and data mining algorithms make the i.i.d.
 (independent identically distributed) assumption, which of course
 breaks in the relational setting. If we look at a spreadsheet, it is
-typically one or more tables with relationships between them, usually
+typically one or more tables with relationships between them or
+within the table itself, usually
 in a form of a formula, a macro or of some other constraint. If we
 want to detect these connections between tables or their parts, we
 have to give up the i.i.d. assumption. This setting, referred to as the
@@ -175,7 +176,9 @@ something changes over time or due to changes in the specification, then we woul
 to be able to indicate uncertainty in some parts of the model. These
 uncertain or, \textit{open}, parts are called \textit{sketched} and
 the whole sketched model is referred to as a \textit{sketch} and the related
-problem as \textit{constraint sketching}.
+problem as \textit{constraint sketching}. We propose the problem and
+learning technique for \acrlong{skasp}.
+
 
 Finally, lwith respect to \cfour, if we look at the area of itemset mining, where \acrlong{cp}
 has been successfully applied, then the natural question to ask is:
@@ -227,7 +230,7 @@ The chapter consists of the research previously published in the following paper
 \begin{addmargin}[2em]{2em}
 Samuel Kolb (*), Sergey Paramonov (*), Tias Guns, Luc De Raedt:
   Learning constraints in spreadsheets and tabular data. Machine
-  Learning 106(9-10), 2017.
+  Learning 106 (9-10), 2017.
 
 
 Sergey Paramonov (*), Samuel Kolb (*), Tias Guns, Luc De Raedt:
@@ -239,13 +242,13 @@ Communications, 2017.
 \textbf{Chapter} \ref{ch:Sketching} introduces the novel problem of
 Sketched Answer Set Programming. The idea of sketching takes root in
 imperative programming, when a function in C or Java has a part of it,
-typically a constant left unspecified. A user then provides a number
+typically a constant, left unspecified. A user then provides a number
 of examples for this sketched constant to be filled in with a
 correct value satisfying the examples. Inspired by this approach, we
 introduce Sketched Answer Set Programming, where a user writes a
 regular program but with certain parts such as constants, predicates
 or operators are left uncertain. Then, we rewrite this sketched
-program into a regular ASP program, i.e., we use a standard ASP solver
+program into a regular \acrlong{asp} program, i.e., we use a standard ASP solver
 to complete sketches.
 
 
