@@ -12,10 +12,10 @@ In this chapter, we introduce commonly used formalisms and definitions. We start
 In this section, we describe the syntax and semantics of \acrshort{fol},
 for an extensive overview of \acrshort{fol}, we refer to \textcite{fo_overview}.
 
-A formal language is a triple: \textit{vocabulary}, \textit{syntax} and \textit{semantics}. Vocabulary is the set of symbols that can be used. Syntax is the set of rules on how these symbols can be combined together. And semantics is the way to interpret the statements. We omit the vocabulary, if it is clear from the context.
+A formal language is a triple: \textit{vocabulary}, \textit{syntax} and \textit{semantics}. The vocabulary is the set of symbols that can be used. The syntax is the set of rules on how these symbols can be combined together. And the semantics is the way to interpret the statements. We omit the vocabulary, when it is clear from the context.
 
-For each predicate $p$ and each function symbol $f$ in the vocabulary, we assume a natural number $n$ called \textit{arity} to be given, written as $p/n$ and $f/n$. This number indicates the number of parameters it takes, we often omit the arity if it is clear from the context. Propositional symbols are zero-arity predicates and constants are zero-arity functions. 
-We assume propositional symbols \textit{true}, $\top$ and \textit{false}, $\bot$ to be always in the vocabulary.
+For each predicate $p$ and each function symbol $f$ in the vocabulary, we assume a natural number $n$ called \textit{arity} to be given, written as $p/n$ and $f/n$. This number indicates the number of parameters it takes; we often omit the arity when it is clear from the context. Propositional symbols are zero-arity predicates and constants are zero-arity functions. 
+We assume propositional symbols \textit{true} and \textit{false}, whose domains are $\top$ and $\bot$ correspondingly, to be always in the vocabulary.
 
 \begin{example}[Predicates and functions]\label{example:predicates_and_functions}
   Consider the famous problem of coloring a map, as in Figure \ref{fig:petersen_coloring}. The vocabulary would contain a predicate symbol \textit{border/2} and a function \textit{coloring/1}, together with a set of constants representing countries, such as \textit{belgium}, \textit{netherlands}, etc.
@@ -24,13 +24,13 @@ We assume propositional symbols \textit{true}, $\top$ and \textit{false}, $\bot$
 A \textit{structure} associates values with the predicates and functions from the vocabulary. A structure $I$ consists of
 
 \begin{itemize}
-  \item A domain $D^I$, which we also refer as the \textit{universe}. The domain defines what are the possible values to be used.
+  \item A domain $D^I$, which we also refer to as the \textit{universe}. The domain defines what are the possible values to be used.
   \item For each predicate $p/n$, the set of its values $p^I \subseteq \overbrace{D^I \times \dots \times D^I}^{n}$
   \item For each function symbol $f/n$,  $f^I$ the mapping  $\overbrace{D^I \times \dots \times D^I}^{n} \mapsto D^I$
 \end{itemize}
 We call the set of values $p^I$ for a predicate $p$  and the mapping $f^I$ for a function $f$ an \textit{interpretation}.
 
-We assume the set of inequalities $\{ =, \neq, <, >, \leq, \geq \}$,  arithmethic $\{+, -, *, \div \}$ and true $\top$, false $\bot$ to be interpreted by any interpretation in a standard way.
+We assume the set of inequalities $\{ =, \neq, <, >, \leq, \geq \}$,  arithmetic $\{+, -, *, \div \}$ and true $\top$, false $\bot$ to be interpreted by any interpretation in a standard way.
 
 \begin{example}[Interpretaion of map coloring]
   Consider the predicate and the function from Example \ref{example:predicates_and_functions}. Then, $I$ can be the following:
@@ -63,14 +63,14 @@ A \textit{formula} is defined as follows
   \item if $\phi$ and $\psi$ are formulae, then $\phi \wedge \psi$ and $\phi \vee \psi$ are formulae
 \end{itemize}
 
-We call a \textit{literal} an atom or a negation of an atom. An expressions of the form $a \rightarrow b$ is a shorthand for $\lnot a \vee b$, and $a \leftrightarrow b$ is a shorthand for $a \rightarrow b \wedge b \rightarrow a$. A \textit{sentence} is a formula without free, i.e., non-quantified, variables. A set of sentences  is called a \textit{theory}.
+We call a \textit{literal} an atom or the negation of an atom. An expression of the form $a \rightarrow b$ is a shorthand for $\lnot a \vee b$, and $a \leftrightarrow b$ is a shorthand for $a \rightarrow b \wedge b \rightarrow a$. A \textit{sentence} is a formula without free, i.e., non-quantified, variables. A set of sentences  is called a \textit{theory}.
 
 \begin{example}[Formula]\label{example:formula}
   As in previous examples, we consider the problem of map coloring. The following formula:
   \begin{equation*}
     \forall X,Y{:}~\textit{border}(X,Y) \rightarrow \textit{coloring}(X) \neq \textit{coloring}(Y)
   \end{equation*}
-has an indented meaning of enforcing the country colours to be different.
+has an indented meaning of enforcing the colours of adjacent countries to be different.
 \end{example}
 
 
@@ -93,20 +93,20 @@ The truth assignment of a structure $I$ over formulae is defined inductively as 
 We say that $I$ is a \textit{model} of or $I$ \textit{satisfies} a sentence $\phi$ iff $\phi^I$ is true, written as $I \models \phi$.
 
 \begin{example}[Formula evalution]
-  Assume, that domain contains only two countries \textit{belgium} and \textit{netherlands} and two colors \textit{green} and \textit{red}. Let us show that $I$ with $\textit{border}$ being true for $(\textit{belgium,netherlands})$ and \textit{coloring} mapping \textit{belgium} to \textit{green} and \textit{netherlands} to \textit{red} is a model of the formula in Example \ref{example:formula}.
+  Assume, that the domain contains only two countries \textit{belgium} and \textit{netherlands} and two colors \textit{green} and \textit{red}. Let us show that $I$ with $\textit{border}$ being true for $(\textit{belgium,netherlands})$ and \textit{coloring} mapping \textit{belgium} to \textit{green} and \textit{netherlands} to \textit{red} is a model of the formula in Example \ref{example:formula}.
 
   \begin{tabular}{l r}
 $(\forall X,Y{:}~\textit{border}(X,Y) \rightarrow \textit{coloring}(X) \neq \textit{coloring}(Y))^I$  & iff \\
 for all $d_1,d_2 \in D$ holds $(\textit{border}(d_1,d_2))^I \rightarrow (\textit{coloring}(d_1) \neq \textit{coloring}(d_2))^I$ & iff \\
-$d_1 \neq \textit{belgium}$ and $d_2 \neq \textit{netherlands}$  the formula holds trivially & and if\\
-$d_1  = \textit{belgium}$ and $d_2 = \textit{netherlands}$, then $(\textit{belgium}, \textit{netherlands})$ in $\textit{border}^I$ & and\\ 
+for $d_1 \neq \textit{belgium}$ and $d_2 \neq \textit{netherlands}$  the formula holds trivially & and if\\
+for $d_1  = \textit{belgium}$ and $d_2 = \textit{netherlands}$, then $(\textit{belgium}, \textit{netherlands})$ in $\textit{border}^I$ & and\\ 
 $f(\textit{belgium})^I = \textit{green} \neq \textit{red} = f(\textit{netherlands})^I$ & holds since \\
 $\textit{green} \neq \textit{red}$  is true &
   \end{tabular}
 \end{example}
 
 
-\paragraph{Herbrant Interpretation} The \textit{Herbrant Universe} is the set of all terms over the vocabulary without variables. A \textit{Herbrant Interpretaion} has the Herbrant Universe as its domain and interprets each symbol and function by itself. Any model that contains \acrlong{una} (\acrshort{una}) \parencite{UNA} and \acrlong{dca} (\acrshort{dca}) \parencite{DCA} are equivalent to a Herbrant model.
+\paragraph{Herbrand Interpretation} The \textit{Herbrand Universe} is the set of all terms over the vocabulary without variables. A \textit{Herbrand Interpretaion} has the Herbrand Universe as its domain and interprets each symbol and function by itself. Any model that contains \acrlong{una} (\acrshort{una}) \parencite{UNA} and \acrlong{dca} (\acrshort{dca}) \parencite{DCA} are equivalent to a Herbrand model.
 
 
 \section{Answer Set Programming}
@@ -182,7 +182,7 @@ where $a_1, \dots, a_n$ are classic literals and $k_1, \dots, k_n$ are integer c
 
 
 \section{Constraint Programming}
-A detailed introduction to \acrlong{cp}(\acrshort{cp}) can be found in the ''Handbook of Constraint Programming`` \parencite{handbookcp}. A basic concept here is of a variable $v$ which always has an associated domain $d$, a domain here is simply a set of constants. An example of domains is Boolean domain \{ True, False \}. A constraint $c$ is an expression of the form \textit{name(vars)}, where \textit{vars} is a list of variable names and \textit{name} is the type of constraints from a predefined set of constraint classes. Examples of classes of constraints are comparisons,   arithmetic operations, list and set constraints (all-different, permutations, etc). We denote a set of all variables as $V$, of all domains as $D$ and of constraints as $C$, then a triple $(V,D,C)$ is a constraint programming model and finding an assingment $A$ for $V$ over $D$ satisfying all constraints $C$ is a \acrlong{csp} (\acrshort{csp}).
+A detailed introduction to \acrlong{cp}(\acrshort{cp}) can be found in the ''Handbook of Constraint Programming`` \parencite{handbookcp}. A basic concept here is of a variable $v$ which always has an associated domain $d$, a domain here is simply a set of constants. An example domain is the Boolean domain \{ True, False \}. A constraint $c$ is an expression of the form \textit{name(vars)}, where \textit{vars} is a list of variable names and \textit{name} is the type of constraints from a predefined set of constraint classes. Examples of classes of constraints are comparisons,   arithmetic operations, list and set constraints (all-different, permutations, etc). We denote a set of all variables as $V$, of all domains as $D$ and of constraints as $C$, then a triple $(V,D,C)$ is a constraint programming model and a \acrlong{csp} (\acrshort{csp}) is the problem of finding an assignment $A$ for $V$ over $D$ satisfying all constraints $C$.
 
 Let us demonstrate how it is possible to model the map coloring problem in \acrshort{cp}\footnote{based on the encoding from www.hakank.org/minizinc/map.mzn}
 \begin{lstlisting}
@@ -230,7 +230,7 @@ An IDP program has three parts: \textit{Vocabulary} that defines the terminology
 
 
 \section{Comparison Between Terminologies}
-Since some readers might be more familiar with Constraint Programming than with Answer Set Programming or First Order Logic, in Table \ref{tab:terminology_comparison} we present here terminology comparison \parencite{phd_broes}.
+Since some readers might be more familiar with Constraint Programming than with Answer Set Programming or First Order Logic, in Table \ref{tab:terminology_comparison} we present a terminologies comparison \parencite{phd_broes}.
 
 In this thesis we use Answer Set Programming terminology, unless specified otherwise.
 \begin{table}
@@ -238,9 +238,9 @@ In this thesis we use Answer Set Programming terminology, unless specified other
   \begin{tabular}{c | c | c}
     \textbf{First Order} & \textbf{Constraint Programming} & \textbf{Answer Set Programming}\\ \hline
     variable & --         & variable\\
-    constant & variable   & constant \\
+    constant & Boolean variable   & constant \\
     sentence & constraint & rule/constraint \\
-    precicate symbol & Boolean variable array & predicate symbol\\
+    predicate symbol & Boolean variable array & predicate symbol\\
     function symbol &  variable array & function symbol\\
     atomic sentence & -- & fact\\
     interpretation & assignment & set of atoms\\
@@ -252,161 +252,8 @@ In this thesis we use Answer Set Programming terminology, unless specified other
 \end{table}
 
 
-
-\section{Pattern Mining}\label{sec:prelim}
-\subsection{Pattern Types} 
-\leanparagraph{Itemsets}
- \emph{Itemsets} represent the most simple setting of frequent pattern mining. Let $\cI$
-be a set of items $\{o_1,o_2,\dotsc,o_n\}$. Then a nonempty subset of $\cI$ is called an \emph{itemset}. A
-\emph{transaction dataset} $D$ is a collection of itemsets, $D = \{t_1 ,\dotsc, t_m \}$, where $t_i\subseteq \cI$.
-For any itemset $\alpha$, we denote the set of transactions that contain $\alpha$ as $D_{\alpha}= \{i\;|\;\alpha \subseteq
-t_i, t_i \in D\}$ and we refer to $|D_{\alpha}|$ as the \emph{support (frequency)} of $\alpha$ in $D$, written $\mi{sup}(\alpha)$. The \emph{relative frequency} of $\mi{\alpha}$ in $D$ refers to the ratio between $\mi{sup}(\alpha)$ and $\mi{|D|}$. %Moreover, we 
-The \emph{cardinality} (or \emph{size}) $|\alpha|$ of an itemset $\alpha$ is %defined as 
-the number of items contained in it. %, i.e., $|\alpha| = |\{o_i \,|\,o_i \in \alpha\}|$.
-
-\begin{definition}[Frequent Itemset]\label{def:frit} 
- For a transaction dataset $D$ and a frequency threshold $\sigma \geq 0$, an itemset $\alpha$ is \emph{frequent} in $D$ if  $\mi{sup}(\alpha)\geq \sigma$.\footnote{In \emph{frequent pattern mining}, often, a \emph{relative threshold}, i.e., $\dfrac{\sigma}{|D|}$ is specified by the user.}
-\end{definition}
-
-
-
-\begin{example}\label{ex:it}
-Consider a transaction dataset $D$ from Tab.~\ref{tab:it}.
-We have %that 
-$\cI=\{a,b,c,d,e\}$ and $|D|=3$. For $\sigma=2$, the following itemsets are frequent: $\alpha_1{=}\{a\}$, $\alpha_2{=}\{b\}$, $\alpha_3{=}\{e\}$, $\alpha_4{=}\{a,e\}$ and $\alpha_5{=}\{b,e\}$.\qed
-\end{example}
-
-\begin{table}[t]
-    \begin{minipage}{.5\linewidth}
-      \centering
-\begin{tabular}{|l|l|l|l|l|l|}
-\hline
-$\mi{ID}$& $\mi{a}$ &$\mi{b}$&$\mi{c}$&$\mi{d}$&$\mi{e}$\\ \hline
-$\mi{1}$ & $\checkmark$ &$\checkmark$ &&$\checkmark$&$\checkmark$\\ \hline
-$\mi{2}$ &  &$\checkmark$ &$\checkmark$&&$\checkmark$\\ \hline
-$\mi{3}$ &$\checkmark$ &&&&$\checkmark$ \\ \hline
-\end{tabular}
-      \caption{Transaction database}
-\label{tab:it}
-    \end{minipage}%
-    \begin{minipage}{.5\linewidth}
-      \centering
-\begin{tabular}{|l|l|}
-\hline
-$\mi{ID}$& Sequence\\ \hline
-$\mi{1}$ & $\tuple{\mi{a\,b\,c\,d\,a\,e\,b}}$ \\ \hline
-$\mi{2}$ & $\tuple{\mi{b\,c\,e\,b}}$\\ \hline
-$\mi{3}$ & $\tuple{\mi{a\,a\,e}}$ \\ \hline
-\end{tabular}
-      \caption{Sequence database}
-\label{tab:seq}
-
-    \end{minipage} 
-\label{tab:ex}
-\end{table}
-
-\leanparagraph{Sequences} A \emph{sequence} is an ordered set of items $\tuple{s_1,\dotsc,s_n}$.
-The setting of \emph{sequence mining} includes two related yet different cases: frequent substrings 
-and frequent subsequences. In this work we focus on the latter. 
-
-
-\begin{definition}[Embedding in a Sequence]\label{def:embseq}
-Let $S=\tuple{s_1,\dotsc,s_m}$ and $S'=\tuple{s_1',\dotsc,s_n'}$ be  two  sequences  of  size $m$ and $n$ respectively  with $m \leq n$.  The  tuple  of  integers $e=(e_1,\dotsc,e_m)$ is an \emph{embedding} of $S$ in $S'$ (denoted $S\sqsubseteq_e S')$ if and only if $e_1< \dotsc < e_m$ and for any $i \in \{1,\ldots,m\}$ it holds that $s_i=s'_{e_i}$.
-\end{definition}
-
-
-\begin{example}\label{ex:seq}
-For a dataset in Tab.~\ref{tab:seq} we have that $\tuple{b\,c\,e\,b} \sqsubset_{e_1} \tuple{\mi{a\,b\,c\,d\,a\,e\,b}}$ for $\mi{e_1}=(2,3,6,7)$ and analogously, $\tuple{\mi{a\,a\,e}}\sqsubset_{e_2} \tuple{\mi{a\,b\,c\,d\,a\,e\,b}}$ with $e_2=(1,5,6)$.
-\end{example}
-
-We are now ready to define an inclusion relation for sequences. 
-
-\begin{definition}[Sequence Inclusion]\label{def:seqinc}
-Given two sequences $S = \tuple{s_1,\dotsc, s_n}$ and $S'=\tuple{s_1',\dotsc, s_m'}$, of %length 
-size $m$ and $n$ resp. with $n \leq m$, we say that $S$ is \emph{included} in $S'$ or $S$ is a \emph{subsequence} of $S'$ denoted by $S \sqsubseteq S'$ iff an embedding $e$ of $S$ in $S'$ exists, i.e.
-\begin{equation}
-S \sqsubseteq S' \leftrightarrow \exists e_1<\dotsc<e_m \text{ and }\forall i \in 1\dotsc m: s_i=s_{e_i}'.
-\end{equation}
-\end{definition}
-
-\begin{example}
-  In Ex.~\ref{ex:seq} we have  $\tuple{b\,c\,e\,b} \sqsubset \tuple{\mi{a\,b\,c\,d\,a\,e\,b}}$ but  $\tuple{\mi{a\,a\,e}} \not \sqsubset \tuple{\mi{b\, c\, e\, b}}$. \qed
-\end{example}
-
-For a given sequence $S$ and a sequential dataset $D=\{S_1,\dotsc,S_n\}$ we denote by $D_S$ the subset of $D$ s.t. $S \sqsubseteq S'$ for all $S' \in D_S$. The support of $S$ is $\mi{sup}(S)=|D_S|$ . 
-%Let $D_S$ be the subset of $D$ such that $S\sqsubseteq S'$ for all $S' \in D_S$ for a given sequential dataset $D=\{S_1,\dotsc, S_n\}$ and a sequence $S$.
-
-\begin{definition}[Frequent Sequence]\label{def:frseq} For a sequential dataset $D=\{S_1,\dotsc, S_n\}$ and a frequency threshold $\sigma \geq 0$, a sequence $S$ is \emph{frequent} in $D$ if $\mi{sup}(S)\geq \sigma$. %, where $\sigma \geq 0$ is a user-specified minimum \emph{support}. 
-\end{definition}
-
-\begin{example}
-For a dataset in Tab.~\ref{tab:seq} and $\sigma=2$, it holds that $\tuple{\mi{b\,c\,e\,b}}$ and $\tuple{a\,a\,e}$ are frequent, while $\tuple{\mi{b\,d\,b}}$ is not. \qed
-\end{example}
-
-Note that $\sqsubseteq$ and $\subseteq$ are incomparable relations. Indeed, consider two sequences $s_1=\tuple{a\,b}$ and $s_2=\tuple{b\,a\,a}$. While $s_1\subset s_2$, we clearly have that $s_1 \not \sqsubset s_2$.
-
-\subsection{Condensed Pattern Representations under Constraints}
-In data mining, constraints are typically specified by the user to encode domain background knowledge. \cite{DBLP:conf/cpaior/NegrevergneG15} distinguish four types of constraints : constraints 1) over the pattern (e.g., restriction on its %length
-size), 2) over the cover set (e.g., minimal frequency), 3) over the inclusion relation (e.g., maximal allowed gap in sequential patterns) and 4) over the solution set (e.g., condensed representations).  
-
-Orthogonally, constraints can be classified into \emph{local} and \emph{global} ones.  
-A constraint is \emph{local} if deciding whether a given pattern satisfies it is possible without looking at other patterns. For example, minimal frequency or maximal pattern %length 
-size are local constraints. On the contrary, deciding whether a pattern satisfies a \emph{global} constraint requires comparing it to other patterns. All constraints from the 4th group are global ones. We are interested in global constraints related to condensed representations. 
-
-The order in which constraints are applied influences the solution set \parencite{DBLP:journals/kais/BonchiL06}. %In this work w
-%We take the same view a
-As in \parencite{DBLP:journals/kais/BonchiL06} in this work we %and %aim at 
-apply %ing 
-global constraints only after local ones.
-
-We now present the notions required in our pattern mining framework. Here, the definitions are given for itemsets; for sequences they are identical up to substitution of $\subset$ with $\sqsubset$ (subsequence relation). First, to rule out patterns that do not satisfy some of the local constraints, we introduce the notion of validity.
-
-\begin{definition}[Valid pattern under constraints]\label{def:val}
-  Let $C$ be a constraint function from \patternspace to $\{ \top, \bot \}$ and let $p$ be a pattern in \patternspace, then the pattern $p$ is called \emph{valid} iff $C(p) = \top$, otherwise it is referred as \emph{invalid}.
-\end{definition}
-
-
-\begin{example}\label{ex:valid}
-Let $C$ be a constraint function checking whether a given pattern is of size %has length 
-at least 2. Then for Example~\ref{ex:it}, we have $C(\alpha_i)=\bot$, $i=1..3$ and $C(\alpha_j)=\top$, $j=4..5$. \qed
-\end{example}
-
-For detecting patterns that satisfy a given global constraint, the notion of \emph{dominance} is of crucial importance. Intuitively, a dominance relation reflects pairwise preference ($\subpattern$)
-between patterns and it is specific for each mining setting.  In this work we primarily focus on global constraints related to maximal, closed, free and skyline condensed representations, for which $\subpattern$ is defined as follows:
-
-\begin{itemize}
-\item[(i)] \textbf{Maximal.} For itemsets $p,q$, $p \subpattern q$ holds iff $p \subset q$
-\item[(ii)] \textbf{Closed.} For itemsets $p,q$, $p \subpattern q$ holds iff $p \subset q \wedge \mi{sup}(p) = \mi{sup}(q)$ 
-\item[(iii)] \textbf{Free.} For itemsets $p,q$, $p \subpattern q$ holds iff $q \subset p \wedge \mi{sup}(p) = \mi{sup}(q)$ 
-\item[(iv)] \textbf{Skyline.} For itemsets $p,q$, $p \subpattern q$ holds iff 
-\begin{itemize}
-\item[(a)] $\mi{sup}(p) \leq \mi{sup}(q)$ and $\size(p) < \size(q)$ or 
-\item[(b)] $\mi{sup}(p) < \mi{sup}(q) $ and $\size(p) \leq \size(q)$
-\end{itemize}
-\end{itemize}
-
-Dominated patterns under constraints are now formally defined.
-
-\begin{definition}[Dominated pattern under constraints]\label{def:dom}
- Let $C$ be a constraint function, and let $p$ be a pattern, then $p$ is called \emph{dominated} iff there exists a pattern $p' \in \patternspace$ such that $p \subpattern p'$ and $p'$ is valid under $C$.
-\end{definition}
-
-\begin{example}
-In Ex.~\ref{ex:it} for the maximality constraint we have that $\alpha_1$ is dominated by $\alpha_4$, $\alpha_2$ by $\alpha_5$, while $\alpha_3$ both by $\alpha_4$ and $\alpha_5$. \qed
-\end{example}
-
-Exploiting the above definitions we obtain condensed patterns under constraints.
-
-\begin{definition}[Condensed pattern under constraints]\label{def:con}
-Let $p$ be a pattern from \patternspace, and let $C$ be a constraint function, then a pattern $p$ is called \emph{condensed} under constraints iff it is valid and not dominated under $C$. 
-\end{definition}
- \begin{example}
-For the constraint function selecting maximal itemsets of size at most $2$ and %length 
-size at least $2$, $\alpha_4$ and $\alpha_5$ from Ex.~\ref{ex:it} are condensed patterns. \qed
- \end{example}
-
-\subsection{Relational Pattern Mining}
-The taks of relational pattern mining is to mine queries in a logical and relational learning setting. Starting with the work the Warmr system \parencite{warmr}, there has been a line of work that focusses on the following frequent query mining problem \parencite{bagm,farmer,condensed_luc}:
+\section{Relational Pattern Mining}
+The task of relational pattern mining is to mine queries in a logical and relational learning setting. Starting with the work the Warmr system \parencite{warmr}, there has been a line of work that focusses on the following frequent query mining problem \parencite{bagm,farmer,condensed_luc}:
 
 \noindent
 {\bf Given:} \vspace{-8pt}

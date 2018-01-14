@@ -544,6 +544,158 @@ While a number of individual methods tackling selective constraint-based mining 
   \label{tab:comparison}
 \end{table}
 
+
+\section{Pattern Types}\label{sec:prelim}
+\leanparagraph{Itemsets}
+ \emph{Itemsets} represent the most simple setting of frequent pattern mining. Let $\cI$
+be a set of items $\{o_1,o_2,\dotsc,o_n\}$. Then a nonempty subset of $\cI$ is called an \emph{itemset}. A
+\emph{transaction dataset} $D$ is a collection of itemsets, $D = \{t_1 ,\dotsc, t_m \}$, where $t_i\subseteq \cI$.
+For any itemset $\alpha$, we denote the set of transactions that contain $\alpha$ as $D_{\alpha}= \{i\;|\;\alpha \subseteq
+t_i, t_i \in D\}$ and we refer to $|D_{\alpha}|$ as the \emph{support (frequency)} of $\alpha$ in $D$, written $\mi{sup}(\alpha)$. The \emph{relative frequency} of $\mi{\alpha}$ in $D$ refers to the ratio between $\mi{sup}(\alpha)$ and $\mi{|D|}$. %Moreover, we 
+The \emph{cardinality} (or \emph{size}) $|\alpha|$ of an itemset $\alpha$ is %defined as 
+the number of items contained in it. %, i.e., $|\alpha| = |\{o_i \,|\,o_i \in \alpha\}|$.
+
+\begin{definition}[Frequent Itemset]\label{def:frit} 
+ For a transaction dataset $D$ and a frequency threshold $\sigma \geq 0$, an itemset $\alpha$ is \emph{frequent} in $D$ if  $\mi{sup}(\alpha)\geq \sigma$.\footnote{In \emph{frequent pattern mining}, often, a \emph{relative threshold}, i.e., $\dfrac{\sigma}{|D|}$ is specified by the user.}
+\end{definition}
+
+
+\begin{example}\label{ex:it}
+Consider a transaction dataset $D$ from Tab.~\ref{tab:it}.
+We have %that 
+$\cI=\{a,b,c,d,e\}$ and $|D|=3$. For $\sigma=2$, the following itemsets are frequent: $\alpha_1{=}\{a\}$, $\alpha_2{=}\{b\}$, $\alpha_3{=}\{e\}$, $\alpha_4{=}\{a,e\}$ and $\alpha_5{=}\{b,e\}$.\qed
+\end{example}
+
+\begin{table}[t]
+    \begin{minipage}{.5\linewidth}
+      \centering
+\begin{tabular}{|l|l|l|l|l|l|}
+\hline
+$\mi{ID}$& $\mi{a}$ &$\mi{b}$&$\mi{c}$&$\mi{d}$&$\mi{e}$\\ \hline
+$\mi{1}$ & $\checkmark$ &$\checkmark$ &&$\checkmark$&$\checkmark$\\ \hline
+$\mi{2}$ &  &$\checkmark$ &$\checkmark$&&$\checkmark$\\ \hline
+$\mi{3}$ &$\checkmark$ &&&&$\checkmark$ \\ \hline
+\end{tabular}
+      \caption{Transaction database}
+\label{tab:it}
+    \end{minipage}%
+    \begin{minipage}{.5\linewidth}
+      \centering
+\begin{tabular}{|l|l|}
+\hline
+$\mi{ID}$& Sequence\\ \hline
+$\mi{1}$ & $\tuple{\mi{a\,b\,c\,d\,a\,e\,b}}$ \\ \hline
+$\mi{2}$ & $\tuple{\mi{b\,c\,e\,b}}$\\ \hline
+$\mi{3}$ & $\tuple{\mi{a\,a\,e}}$ \\ \hline
+\end{tabular}
+      \caption{Sequence database}
+\label{tab:seq}
+
+    \end{minipage} 
+\label{tab:ex}
+\end{table}
+
+\leanparagraph{Sequences} A \emph{sequence} is an ordered set of items $\tuple{s_1,\dotsc,s_n}$.
+The setting of \emph{sequence mining} includes two related yet different cases: frequent substrings 
+and frequent subsequences. In this work we focus on the latter. 
+
+
+\begin{definition}[Embedding in a Sequence]\label{def:embseq}
+Let $S=\tuple{s_1,\dotsc,s_m}$ and $S'=\tuple{s_1',\dotsc,s_n'}$ be  two  sequences  of  size $m$ and $n$ respectively  with $m \leq n$.  The  tuple  of  integers $e=(e_1,\dotsc,e_m)$ is an \emph{embedding} of $S$ in $S'$ (denoted $S\sqsubseteq_e S')$ if and only if $e_1< \dotsc < e_m$ and for any $i \in \{1,\ldots,m\}$ it holds that $s_i=s'_{e_i}$.
+\end{definition}
+
+
+\begin{example}\label{ex:seq}
+For a dataset in Tab.~\ref{tab:seq} we have that $\tuple{b\,c\,e\,b} \sqsubset_{e_1} \tuple{\mi{a\,b\,c\,d\,a\,e\,b}}$ for $\mi{e_1}=(2,3,6,7)$ and analogously, $\tuple{\mi{a\,a\,e}}\sqsubset_{e_2} \tuple{\mi{a\,b\,c\,d\,a\,e\,b}}$ with $e_2=(1,5,6)$.
+\end{example}
+
+We are now ready to define an inclusion relation for sequences. 
+
+\begin{definition}[Sequence Inclusion]\label{def:seqinc}
+Given two sequences $S = \tuple{s_1,\dotsc, s_n}$ and $S'=\tuple{s_1',\dotsc, s_m'}$, of %length 
+size $m$ and $n$ resp. with $n \leq m$, we say that $S$ is \emph{included} in $S'$ or $S$ is a \emph{subsequence} of $S'$ denoted by $S \sqsubseteq S'$ iff an embedding $e$ of $S$ in $S'$ exists, i.e.
+\begin{equation}
+S \sqsubseteq S' \leftrightarrow \exists e_1<\dotsc<e_m \text{ and }\forall i \in 1\dotsc m: s_i=s_{e_i}'.
+\end{equation}
+\end{definition}
+
+\begin{example}
+  In Ex.~\ref{ex:seq} we have  $\tuple{b\,c\,e\,b} \sqsubset \tuple{\mi{a\,b\,c\,d\,a\,e\,b}}$ but  $\tuple{\mi{a\,a\,e}} \not \sqsubset \tuple{\mi{b\, c\, e\, b}}$. \qed
+\end{example}
+
+For a given sequence $S$ and a sequential dataset $D=\{S_1,\dotsc,S_n\}$ we denote by $D_S$ the subset of $D$ s.t. $S \sqsubseteq S'$ for all $S' \in D_S$. The support of $S$ is $\mi{sup}(S)=|D_S|$ . 
+%Let $D_S$ be the subset of $D$ such that $S\sqsubseteq S'$ for all $S' \in D_S$ for a given sequential dataset $D=\{S_1,\dotsc, S_n\}$ and a sequence $S$.
+
+\begin{definition}[Frequent Sequence]\label{def:frseq} For a sequential dataset $D=\{S_1,\dotsc, S_n\}$ and a frequency threshold $\sigma \geq 0$, a sequence $S$ is \emph{frequent} in $D$ if $\mi{sup}(S)\geq \sigma$. %, where $\sigma \geq 0$ is a user-specified minimum \emph{support}. 
+\end{definition}
+
+\begin{example}
+For a dataset in Tab.~\ref{tab:seq} and $\sigma=2$, it holds that $\tuple{\mi{b\,c\,e\,b}}$ and $\tuple{a\,a\,e}$ are frequent, while $\tuple{\mi{b\,d\,b}}$ is not. \qed
+\end{example}
+
+Note that $\sqsubseteq$ and $\subseteq$ are incomparable relations. Indeed, consider two sequences $s_1=\tuple{a\,b}$ and $s_2=\tuple{b\,a\,a}$. While $s_1\subset s_2$, we clearly have that $s_1 \not \sqsubset s_2$.
+
+\subsection{Condensed Pattern Representations under Constraints}
+In data mining, constraints are typically specified by the user to encode domain background knowledge. \cite{DBLP:conf/cpaior/NegrevergneG15} distinguish four types of constraints : constraints 1) over the pattern (e.g., restriction on its %length
+size), 2) over the cover set (e.g., minimal frequency), 3) over the inclusion relation (e.g., maximal allowed gap in sequential patterns) and 4) over the solution set (e.g., condensed representations).  
+
+Orthogonally, constraints can be classified into \emph{local} and \emph{global} ones.  
+A constraint is \emph{local} if deciding whether a given pattern satisfies it is possible without looking at other patterns. For example, minimal frequency or maximal pattern %length 
+size are local constraints. On the contrary, deciding whether a pattern satisfies a \emph{global} constraint requires comparing it to other patterns. All constraints from the 4th group are global ones. We are interested in global constraints related to condensed representations. 
+
+The order in which constraints are applied influences the solution set \parencite{DBLP:journals/kais/BonchiL06}. %In this work w
+%We take the same view a
+As in \parencite{DBLP:journals/kais/BonchiL06} in this work we %and %aim at 
+apply %ing 
+global constraints only after local ones.
+
+We now present the notions required in our pattern mining framework. Here, the definitions are given for itemsets; for sequences they are identical up to substitution of $\subset$ with $\sqsubset$ (subsequence relation). First, to rule out patterns that do not satisfy some of the local constraints, we introduce the notion of validity.
+
+\begin{definition}[Valid pattern under constraints]\label{def:val}
+  Let $C$ be a constraint function from \patternspace to $\{ \top, \bot \}$ and let $p$ be a pattern in \patternspace, then the pattern $p$ is called \emph{valid} iff $C(p) = \top$, otherwise it is referred as \emph{invalid}.
+\end{definition}
+
+
+\begin{example}\label{ex:valid}
+Let $C$ be a constraint function checking whether a given pattern is of size %has length 
+at least 2. Then for Example~\ref{ex:it}, we have $C(\alpha_i)=\bot$, $i=1..3$ and $C(\alpha_j)=\top$, $j=4..5$. \qed
+\end{example}
+
+For detecting patterns that satisfy a given global constraint, the notion of \emph{dominance} is of crucial importance. Intuitively, a dominance relation reflects pairwise preference ($\subpattern$)
+between patterns and it is specific for each mining setting.  In this work we primarily focus on global constraints related to maximal, closed, free and skyline condensed representations, for which $\subpattern$ is defined as follows:
+
+\begin{itemize}
+\item[(i)] \textbf{Maximal.} For itemsets $p,q$, $p \subpattern q$ holds iff $p \subset q$
+\item[(ii)] \textbf{Closed.} For itemsets $p,q$, $p \subpattern q$ holds iff $p \subset q \wedge \mi{sup}(p) = \mi{sup}(q)$ 
+\item[(iii)] \textbf{Free.} For itemsets $p,q$, $p \subpattern q$ holds iff $q \subset p \wedge \mi{sup}(p) = \mi{sup}(q)$ 
+\item[(iv)] \textbf{Skyline.} For itemsets $p,q$, $p \subpattern q$ holds iff 
+\begin{itemize}
+\item[(a)] $\mi{sup}(p) \leq \mi{sup}(q)$ and $\size(p) < \size(q)$ or 
+\item[(b)] $\mi{sup}(p) < \mi{sup}(q) $ and $\size(p) \leq \size(q)$
+\end{itemize}
+\end{itemize}
+
+Dominated patterns under constraints are now formally defined.
+
+\begin{definition}[Dominated pattern under constraints]\label{def:dom}
+ Let $C$ be a constraint function, and let $p$ be a pattern, then $p$ is called \emph{dominated} iff there exists a pattern $p' \in \patternspace$ such that $p \subpattern p'$ and $p'$ is valid under $C$.
+\end{definition}
+
+\begin{example}
+In Ex.~\ref{ex:it} for the maximality constraint we have that $\alpha_1$ is dominated by $\alpha_4$, $\alpha_2$ by $\alpha_5$, while $\alpha_3$ both by $\alpha_4$ and $\alpha_5$. \qed
+\end{example}
+
+Exploiting the above definitions we obtain condensed patterns under constraints.
+
+\begin{definition}[Condensed pattern under constraints]\label{def:con}
+Let $p$ be a pattern from \patternspace, and let $C$ be a constraint function, then a pattern $p$ is called \emph{condensed} under constraints iff it is valid and not dominated under $C$. 
+\end{definition}
+ \begin{example}
+For the constraint function selecting maximal itemsets of size at most $2$ and %length 
+size at least $2$, $\alpha_4$ and $\alpha_5$ from Ex.~\ref{ex:it} are condensed patterns. \qed
+ \end{example}
+
+
 \section{Hybrid ASP-based Mining Approach}\label{sec:problem}
 
 % The goal of this work is to allow for hybradisation between highly optimized generic solvers and specialized pattern mining implementations within a generic framework for pattern mining under both local and global constraints.
