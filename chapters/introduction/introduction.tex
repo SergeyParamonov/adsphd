@@ -14,21 +14,15 @@ its general structure.
 The ability to write down a model and to simply push a button to get the
 answer is an appealing idea. It is one of the holy grails of
 Artificial Intelligence, called Declarative Programming, where one
-specifies what to do and not how to. Today in the age of data, we would like
-to write models, feed them with data and find the insight slipping
-away from a human eye. What we do not really want is to write
-a lot of tedious code. Once we have written a model, we would like
-to add a feature to it and get an updated answer. Unsurprisingly, it is
-not an easy task. To tackle it we need first to introduce Data Mining
-problems and then attack them with the most powerful weapon -- Logic.
-Since in this thesis, we are
-concerned with Relational Data and Relational Data Mining Problems 
-and Logic is one of the best modelling tool to handle relational data
-problems, we will use Logic Programming to model and solve Relational
-Data Mining Problems.
+specifies what the problem is and not how to solve it. Today in the age of data, we would like
+to say what we are looking for, feed the data in and, as a result,
+(almost magically) find new insights. What we do not really want is to write
+a lot of tedious code. Once we have written a model, we would like to
+be able to add a feature or constraint and to get an updated answer.
+Unsurprisingly, this is hard. 
 
 \section{Data Mining}
-Data Mining is the scientific area concerned with turning data into knowledge. 
+Data Mining is concerned with turning data into knowledge. 
 The amount of data available and generated today is truly enormous. 
 Data Mining is devoted to structuring, filtering, classifying and extracting useful patterns from this data.
 
@@ -41,10 +35,10 @@ At a high level it can be formalized as follows:
 let $D$ be a dataset, $P$ be the language of allowed patterns and
 $\phi$ be a predicate of
 interest, the pattern mining problem is the problem of finding
-all objects $p$ in $P$ such that $\phi(p,D)$ holds.
+all patterns $p$ in $P$ such that $\phi(p,D)$ holds.
 Simply speaking, we enumerate objects that have a certain property of
 interest.
-Various measures of relevance or ``interestingness'' of a pattern exist, which lead to an extensive research of multiple types of patterns \parencite{tias_topk}.
+Various measures of relevance or ``interestingness'' of a pattern exist \parencite{tias_topk}.
 
 
 Many Data Mining problems, and especially pattern mining
@@ -55,10 +49,12 @@ problems, are \textbf{combinatorial problems}, which in turn have two main compo
 \end{center}
 
 Therefore, it seems natural to model pattern mining problems 
-using systems designed to perform search in declarative manner, such as \acrlong{cp} or \acrlong{asp}. %(which we discuss later in detail).
+using systems designed to perform search in declarative manner, such
+as \acrlong{cp} \parencite{handbookcp} or \acrlong{asp}
+\parencite{whatisasp}. %(which we discuss later in detail).
 
-
-
+\section{Constraint Programming}
+\comment{TODO: fill in}
 
 \section{Constraint Learning}
 Constraint Learning is the research field concerned with finding
@@ -82,7 +78,7 @@ properties that hold in the data (or its parts).
 Therefore, we consider constraint learning and pattern mining to be interconnected, and both problems play a central role in this thesis.
 
 \section{Logic Programming}
-In his seminal work Sir Bob \textcite{kowalski} proclaimed:
+In his seminal work Robert \textcite{kowalski} proclaimed:
 \begin{center}
   Algorithm = Logic + Control.
 \end{center}
@@ -111,7 +107,7 @@ The following notation in Prolog (Programming in logic)
 \parencite{prolog_original} mimics the logical implication:
 
 \begin{equation*}
-  \forall X: \textit{person}(X) \wedge \overline{\textit{allergic}(X)}
+  \forall X: \textit{person}(X) \wedge \text{not } \textit{allergic}(X)}
   \implies \textit{likes\_sushi}(X)
 \end{equation*}
 Therefore, we can think of Logic Programming as executable Logic, that
@@ -125,29 +121,29 @@ that naturally support constraints and various types of logical
 inference.
 
 
-\section{Contribution}
+\section{Contributions}
 Given the abundance of relational data (such as spreadsheets, graphs
 or logical structures) and of various machine learning and data
 problems, a natural question arises: \textit{``How can we model
 relational data mining problems?''}. This thesis introduces a number
-of foundational relational problems and offers a uniform view on them.
+of relational problems and offers a uniform view on them.
 Since the data and problems are relational, we approach them using
 relational methods, such as logic programming. 
 
 The \textbf{main contribution} of this thesis is in the novel problems
-it offers. Concretely, the thesis investigates the following questions:
+it offers and in the unified relational modelling approach to these problems. Concretely, the thesis investigates the following questions:
 \begin{itemize}
   \item \cone: What are the challenges and advantages of generalizing
     classic data mining problems, such as the Boolean Matrix
     Factorization problem, into the relation setting?
   \item \ctwo: What practical problems are intrinsically relational and
     how can they be modelled and used in practice?
-  \item \cthree: \textit{(the inverse problem)} given a relational
+  \item \cthree: \textit{(the inverse problem)} Given a relational
     model, can we mark some parts of it to be uncertain and in what
     setting would it be applicable?
   \item \cfour: 
 %  Similarly to unstructured constraint-based itemset mining: 
-    can we apply declarative relational mining
+    Can we apply declarative relational mining
     techniques to structured pattern mining, such as sequence, graph
     and query mining?
 \end{itemize}
@@ -173,8 +169,10 @@ have to give up the i.i.d. assumption. This setting, referred to as the
 machine learning and data mining algorithms and 
 makes the problem essentially relational.
 
-This leads us to \cthree: if we already have a relational model but
-something changes over time or due to changes in the specification, then we would like
+This leads us to \cthree: assume we already have a constraint model of a relational
+data mining problem and due to relational dependencies in the data we are
+forced to give up the i.i.d. assumption and, as a consequence,
+standard techniques. When something changes over time or due to changes in the specification, we would like
 to be able to indicate uncertainty in some parts of the model. These
 uncertain or, \textit{open}, parts are called \textit{sketched} and
 the whole sketched model is referred to as a \textit{sketch} and the related
@@ -203,7 +201,7 @@ how various problems can be modelled within the framework by adding
 or modifying the constraints. Then, we show how the framework can be
 used for new and interesting applications and propose Answer Set
 Programming as a method to solve the problem in the general case.
-For each problem we provide an extensive experimental evidence,
+For each problem we provide extensive experimental evidence,
 including solver parameter tuning. The chapter consists of the
 research previously published in the following paper:
 
@@ -224,7 +222,7 @@ CSV. The formulae are lost. Can we reconstruct them? We can already
 see that the problem setting is different from the standard machine
 learning problem. In a spreadsheet, columns are no longer variables
 and rows are no longer records. Textual and numeric data are mixed.
-Spreadsheet functions, like Fuzzy-lookup, are unorthodox and unseen in
+Spreadsheet functions, such as Fuzzy-lookup, are unorthodox and unseen in
 the constraint programming and constraint learning research communities.
 
 The chapter consists of the research previously published in the following papers:
@@ -236,7 +234,8 @@ Samuel Kolb (*), Sergey Paramonov (*), Tias Guns, Luc De Raedt:
 
 
 Sergey Paramonov (*), Samuel Kolb (*), Tias Guns, Luc De Raedt:
-TaCLe: Learning constraints in tabular data. CIKM. Sheridan
+TaCLe: Learning constraints in tabular data. Conference on Information
+and Knowledge Management. Sheridan
 Communications, 2017.
 \end{addmargin}
 
@@ -276,12 +275,14 @@ developed for particular pattern mining problems.
 The chapter consists of the research previously published in the following papers:
 \begin{addmargin}[2em]{2em}
 Sergey Paramonov, Matthijs van Leeuwen, Marc Denecker, Luc De Raedt:
-An Exercise in Declarative Modeling for Relational Query Mining. ILP, 
+An Exercise in Declarative Modeling for Relational Query Mining.
+Inductive Logic Programming, 
 2015.
 
 
 Sergey Paramonov, Daria Stepanova, Pauli Miettinen:
-Hybrid ASP-Based Approach to Pattern Mining. RuleML+RR, 2017.
+Hybrid ASP-Based Approach to Pattern Mining.  International Joint
+Conference on Rules and Reasoning (RuleML+RR), 2017.
 \end{addmargin}
 
 \textbf{Chapter} \ref{ch:conclusions} summarizes the thesis and
