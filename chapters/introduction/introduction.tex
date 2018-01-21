@@ -53,8 +53,22 @@ using systems designed to perform search in declarative manner, such
 as \acrlong{cp} \parencite{handbookcp} or \acrlong{asp}
 \parencite{whatisasp}. %(which we discuss later in detail).
 
-\section{Constraint Programming}
-\comment{TODO: fill in}
+\section{Constraint Programming} \comment{ADDED}
+\acrlong{cp} is a declarative methodology for solving combinatorial
+problems. The essence of this methodology is in writing a set of
+constraints, such as $X + Y > Z$, and finding a solution to them, such
+as $X = 1, Y = 2$ and $Z = 0$. This set of constraints is referred as
+a \textit{specification} or a \textit{model}; for this, multiple \acrlong{cp}
+languages exist, such as MiniZinc \parencite{minizinc} or Essence
+\parencite{essence}. A \textit{solution} for
+a model is an assignment, as for example, the one we just indicated, that satisfies
+\textit{all} constraints. This general methodology is declarative,
+since a user writes a set of constraints corresponding to the
+properties of her problem and a \acrshort{cp} solver is looking for a
+solution: this clearly demonstrates that it is a burden of the solver
+to figure out \textit{how} to find a solution, while it is the user's
+responsibility to specify \textit{what} the problem is in terms of
+writing these constraints.
 
 \section{Constraint Learning}
 Constraint Learning is the research field concerned with finding
@@ -107,7 +121,7 @@ The following notation in Prolog (Programming in logic)
 \parencite{prolog_original} mimics the logical implication:
 
 \begin{equation*}
-  \forall X: \textit{person}(X) \wedge \text{not } \textit{allergic}(X)}
+  \forall X: \textit{person}(X) \wedge \text{not } \textit{allergic}(X)
   \implies \textit{likes\_sushi}(X)
 \end{equation*}
 Therefore, we can think of Logic Programming as executable Logic, that
@@ -132,20 +146,23 @@ relational methods, such as logic programming.
 
 The \textbf{main contribution} of this thesis is in the novel problems
 it offers and in the unified relational modelling approach to these problems. Concretely, the thesis investigates the following questions:
-\comment{TODO: clarify}
+                       
 \begin{itemize}
   \item \cone: What are the challenges and advantages of generalizing
     classic data mining problems, such as the Boolean Matrix
     Factorization problem, into the relation setting?
-  \item \ctwo: What practical problems are intrinsically relational and
-    how can they be modelled and used in practice?
-  \item \cthree: \textit{(the inverse problem)} Given a relational
-    model, can we mark some parts of it to be uncertain and in what
-    setting would it be applicable?
+  \item \ctwo: Is there a clearly relational problem, such based on a
+    standard relational data as spreadsheets, of a practical
+    value that cannot be directly modelled by the machine learning standard techniques and
+    how our relational approach can solve this problem?
+  \item \cthree: Given a relational model, represented as a set of logic
+    programming rules, can we mark some parts of it, e.g., atoms,
+    operators or constants, to be uncertain and reconstruct the model
+    using a number of positive and negative examples?
   \item \cfour: 
 %  Similarly to unstructured constraint-based itemset mining: 
-    Can we apply declarative relational mining
-    techniques to structured pattern mining, such as sequence, graph
+    How can we apply declarative relational mining
+    techniques, such as logic programming, to structured frequent pattern mining, such as sequence, graph
     and query mining?
 \end{itemize}
 
@@ -163,14 +180,15 @@ breaks in the relational setting. If we look at a spreadsheet, it is
 typically one or more tables with relationships between them or
 within the table itself, usually
 in a form of a formula, a macro or of some other constraint (e.g., a
-C# or VB script). If we
+C\# or VB script). If we
 want to detect these connections between tables or their parts, we
 have to give up the i.i.d. assumption. This setting, referred to as the
 \textit{Tabular constraint learning}, breaks the standard
 machine learning and data mining algorithms and 
 makes the problem essentially relational.
 
-This leads us to \cthree: assume we already have a constraint model of a relational
+Addressing \cthree: assume we already have a logic programming or a
+constraint model of a relational
 data mining problem and due to relational dependencies in the data we are
 forced to give up the i.i.d. assumption and, as a consequence,
 standard techniques. When something changes over time or due to changes in the specification, we would like
@@ -185,7 +203,7 @@ Finally, with respect to \cfour, if we look at the area of itemset mining, where
 has been successfully applied, then the natural question to ask is:
 if \acrshort{cp} has been successful for unstructured, or
 non-relational, pattern mining, can we model its \textit{structured},
-or \textit{relational}, version using logic programming? To answer
+or \textit{relational} version, using logic programming? To answer
 this question we look into \textit{sequence}, \textit{graph} and
 \textit{query mining} and attack them using logic programming and
 hybrid approaches based on logic programming.

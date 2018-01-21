@@ -95,11 +95,11 @@ We say that $I$ is a \textit{model} of or $I$ \textit{satisfies} a sentence $\ph
 \begin{example}[Formula evalution]
   Assume, that the domain contains only two countries \textit{belgium} and \textit{netherlands} and two colors \textit{green} and \textit{red}. Let us show that $I$ with $\textit{border}$ being true for $(\textit{belgium,netherlands})$ and \textit{coloring} mapping \textit{belgium} to \textit{green} and \textit{netherlands} to \textit{red} is a model of the formula in Example \ref{example:formula}.
 
-  \begin{tabular}{l r}
-$(\forall X,Y{:}~\textit{border}(X,Y) \rightarrow \textit{coloring}(X) \neq \textit{coloring}(Y))^I$  & iff \\
+  \begin{tabular}{l l}
+$(\forall X,Y{:}~\textit{border}(X,Y) \rightarrow \textit{coloring}(X) \neq \textit{coloring}(Y))^I$ & iff \\
 for all $d_1,d_2 \in D$ holds $(\textit{border}(d_1,d_2))^I \rightarrow (\textit{coloring}(d_1) \neq \textit{coloring}(d_2))^I$ & iff \\
 for $d_1 \neq \textit{belgium}$ and $d_2 \neq \textit{netherlands}$  the formula holds trivially & and if\\
-for $d_1  = \textit{belgium}$ and $d_2 = \textit{netherlands}$, then $(\textit{belgium}, \textit{netherlands})$ in $\textit{border}^I$ & and\\ 
+for $d_1  = \textit{belgium}$ and $d_2 = \textit{netherlands}$,then $(\textit{belgium},\textit{netherlands})$ in $\textit{border}^I$ & and\\ 
 $f(\textit{belgium})^I = \textit{green} \neq \textit{red} = f(\textit{netherlands})^I$ & holds since \\
 $\textit{green} \neq \textit{red}$  is true &
   \end{tabular}
