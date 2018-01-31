@@ -1,48 +1,11 @@
 \chapter{Abstract} \label{ch:abstract}
-\comment{Overall message?}
+This goal of Data Mining is to discover new knowledge in the data. Many models, systems and techniques have been developed. For these systems and models to work efficiently a number of assumptions must hold: a common assumption is that of the data independence. However, in complex and interconnected data, such as spreadsheets or relational tables in databases, this assumption often does not hold. This makes modelling relational data mining problems non-trivial. This thesis studies a number of relational data mining problems and demonstrates how they can be modelled and solved.
 
-\comment{What data mining is}\\
-Data Mining is the process of discovering new knowledge in data.
-The Data Mining research community makes use of the  \textit{data
-independence assumption}, i.e., which states that the collected data points are independent from each other.
+In this thesis we propose a general, \textit{declarative}, view on a class of relational data mining problems using Logic Programming. In a declarative approach one specifies \textit{what} is the problem, instead of specifying \textit{how} to solve it. Logic Programming offers a methodology in which a problem is formulated using logical rules and an inference engine finds an answer. 
 
-\comment{What relational means}\\
-However, in reality, it is often the case that the objects are 
-intrinsically connected and related to each other by means of relations. 
-This setting is called \textit{relational} and the associated task 
-is referred to as \textit{relational learning}.
+The first contribution of this thesis is that it shows how a classic problem of Boolean Matrix Factorization can be generalized into the relational setting and model a class of data mining problems, we have named this problem \textit{Relational Data Factorization}. The second contribution of this thesis is that we propose the novel problem of \textit{Tabular Constraint Learning}, where one recovers Excel-like formulae in spreadsheets, and an Inductive Logic Programming-based approach to find them in raw textual and numeric data. The third contribution of this thesis is in the introduction of \textit{Sketched Answer Set Programming}, which allows one to mark parts of a logic program as \textit{uncertain}, or \textit{open}, and recover, or \textit{synthesize}, the program using a number of positive and negative examples. Finally, we apply our modeling approach to pattern mining and show how it can be used to model a number of structured, such as sequence, graph and query, pattern mining problems as well as unstructured, i.e., itemset mining. 
 
-\comment{Relational problems}\\
-Electronic tables, spreadsheets, and databases are all examples of
-relational data that are in wide use today. The objects are connected
-by means of relations and constraints. These are
-tables and formulae in spreadsheets, and  schema relations and integrity
-constraints in databases.
-
-\comment{Key issue}\\
-We argue that a general approach and characterization for modelling and solving data mining  
-problems in the relational setting are missing. The goal of this thesis
-is to fill in this gap.
-
-
-\comment{Contribution}\\
-First, we demonstrate how constraint learning problem in the relation
-setting is different from the classical machine learning, and we
-propose a system named TaCLe as the first working in this setting.
-
-Secondly, we demonstrate how relational approach can be used to
-generalize the classical problem of Boolean Matrix Factorization into the Relational
-Data Factorization. This allows one to model a spectrum of classical data
-mining problems and introduces new ones as well.
-
-Thirdly, we demonstrate how existing relational reasoning formalisms,
-such as Answer Set Programming, can be enhanced by sketching, a relational learning
-technique.
-
-Finally, we demonstrate how relational approaches can be used
-to mine relational patterns. This is known as structured pattern mining in
-data mining community.
-
+Therefore, we investigate how a number of important relational data mining problems can be modelled using a unified relational view, based on logic programming. We conclude on this with open problems and remaining computational challenges.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Keep the following \cleardoublepage at the end of this file, 
