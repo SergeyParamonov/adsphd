@@ -402,7 +402,7 @@ class App:
             Required settings:
                 - basename
                 - cleanfiles
-        
+
             :returns: Return code
         """
         returncode = 1
@@ -434,7 +434,7 @@ Naive compilation script for the ADSPhD class. No file dependency checks
 are performed. Use TeXnicCenter, Texmaker, latexmk, rubber, SCons or
 make for such a feature.''',
             epilog='''
-Settings: Open run.py with a text editor and change values in the settings 
+Settings: Open run.py with a text editor and change values in the settings
 definition
             ''')
     parser.add_argument('--verbose', '-v', action='count',      help='Verbose output')
@@ -453,7 +453,7 @@ definition
         return
 
     initapplications()
-    
+
     if len(args.target) == 0:
         print("No targets given, using default target: compile")
         compile()
@@ -464,8 +464,8 @@ definition
             knowntargets[target]()
         else:
             print("Unknown target")
-    os.system('evince thesis.pdf &')
-    
+    os.system('open thesis.pdf')
+
 
 
 if __name__ == "__main__":
