@@ -10,7 +10,15 @@ describes the future work specific for a particular area or a problem,
 while in this chapter we describe possible future directions from the
 perspective of the thesis as a whole.
 
+First, we would like to outline possibilities of combining techniques
+and problems from various chapters and sources. Then we will outline general 
+directions of research for relational data mining.
+
 \subsection{Pindakaas}
+In this subsection we outline possibility to expand TaCLe to work in
+the supervised setting. We also propose here a language extension to
+handle nested functions and make the system robust to the noise.
+
 If we recap the key features of FlashFill \parencite{flashfill} and of TaCLe
 \parencite{tacle}, then we would highlight the following:
 
@@ -70,9 +78,6 @@ learning robust under the noise.
     \item Search for the best fitting formula, i.e., $L(f(\bar x),y)$
     \item Penalize complexity with of a formula, i.e., $\mathcal{C}(f)$ is the measure of complexity
   \end{itemize}
-
-
-
 
 \paragraph{Noise handling} FlashFill is highly sensitive to the noise,
 see Figure \ref{fig:flashfill_noise},
@@ -134,11 +139,14 @@ TaCLe and FlashFill in Table \ref{tab:pindakaas_features}.
 \end{table}
 
 
-
 A possible visual interface is depicted in Figure \ref{fig:visual_interface}.
 
 \subsection{Spreadsheet formula sketching}
-Let us suggest a mix between TaCLe and ASP sketching:
+In this subsection we investigate a possible combination of TaCLe and
+ASP sketching, into \textit{Spreadsheet Formula Sketching (SFS)}.
+
+Let us outline how we see the possible problem definition by
+outlining an example.
 
 \textbf{Problem:} a set of partially specified constraints (or formulae, equations), can we complete them given examples?
  
@@ -167,9 +175,42 @@ Let us suggest a mix between TaCLe and ASP sketching:
 This combines ideas from both \acrshort{skasp} and \acrshort{tacle}.
   
 
+\section{Relational Data Mining in Future Years}
+It is important to outline not only particular applications developed
+or inspiring with this thesis but also to give a perspective on the
+development of the overall research direction and the field as a
+whole.
+
+As indicated in \ref{ch:StructuredMining}, hybridization of
+declarative models is promising and fruitful research direction. It
+allows one to combine highly efficient specialized algorithms with
+general solvers to create, on the one hand, efficient and scalable
+systems; and on the other hand, general system that can handle not
+only particular restricted problem but the whole class of pattern
+mining problems. Similar to the Dominance Programming for Itemset
+Mining \cite{dominanceprogramming} and our hybridization approach structured mining \cite{ruleml_hybrid}, we can foresee creation of 
+general mining languages that handle various types of data and
+multiple types condensed representations, while demonstrating close to
+state-of-art performance. These languages would allow a user to
+specify all needed building blocks to generate an executable model
+that can find all condensed patterns within reasonable time.
+
+On the relational learning side, inspired by the results of TaCLe
+\cite{tacle} and \cite{flashfill}, we envision an intelligent
+assistant that can help user by analyzing tabular data in a
+spreadsheet and suggest possible cleaning transformations, usage of
+Excel-like formulae and data compression. The later idea of data
+compression, which can be seen as a form of cleaning, connects to the
+ideas of Relational Factorization in Chapter \cite{ch:ReDF}.
+Similarly, as indicated in \textit{Spreadsheet Formula Sketching}
+paragraph, the assistant can allow the user to specify some of the
+formulae or constraints, while leaving certain parts open. Then, the
+system can infer possible substitutions from the given tabular data.
+
+
 \section{Summary and Conclusions}
 In the introduction chapter we have identified the key research
-questions. Now we are going to review these questions and the analyze the answers provided in this thesis.
+questions. Now we are going to review these questions and to analyze the answers provided in this thesis.
 
 \begin{description}
 \item[\cone] \textit{What are the challenges and advantages of generalizing
@@ -189,8 +230,10 @@ also demonstrates that general relational methods are well-suited for
 system prototyping.
 
 \begin{description}
-\item[\ctwo] \textit{What practical problems are intrinsically relational and
-  how can they be modelled and used in practice?}
+    \item[\ctwo] \textit{How can the constraint learning problem be formulated
+   and modelled in the relational setting, where data is
+   represented as spreadsheets, i.e., connected relations, and constraints are
+   tabular Excel-like formulae?}
 \end{description}
 
 As has been shown in Chapter \ref{ch:TaCLe}, the problems related to
@@ -204,9 +247,10 @@ popular Excel function in the spreadsheet data as within a table as
 well as between multiple tables.
 
 \begin{description}
-\item[\cthree] \textit{Looking at the inversed problem: given a relational
-    model, can we mark some parts of it to be uncertain and in what
-  setting would it be applicable?}
+    \item[\cthree] \textit{Given a relational model, represented as a set of logic
+    programming rules, can we mark some parts of it such as atoms,
+    operators or constants to be uncertain and reconstruct the model
+    using a number of positive and negative examples?}
 \end{description}
 
 As we have demonstrated in Chapter \ref{ch:Sketching}, given a
@@ -220,10 +264,8 @@ and the models were updated.
 
 
 \begin{description}
-\item[\cfour]  \textit{Similarly to unstructured constraint-based itemset
-    mining: can we apply declarative relational mining
-    techniques to structured pattern mining, such as sequence, graph
-  and query mining?}
+\item[\cfour]  \textit{How can we apply declarative relational mining
+    techniques, such as logic programming, to structured frequent pattern mining, such as sequence, graph and query mining?}
 \end{description}
 
 As indicated in Chapter \ref{ch:StructuredMining}, we have applied 
