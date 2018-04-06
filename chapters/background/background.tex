@@ -99,8 +99,8 @@ We say that $I$ is a \textit{model} of or $I$ \textit{satisfies} a sentence $\ph
 $(\forall X,Y{:}~\textit{border}(X,Y) \rightarrow \textit{coloring}(X) \neq \textit{coloring}(Y))^I$ & iff \\
 for all $d_1,d_2 \in D$ holds $(\textit{border}(d_1,d_2))^I \rightarrow (\textit{coloring}(d_1) \neq \textit{coloring}(d_2))^I$ & iff \\
 for $d_1 \neq \textit{belgium}$ and $d_2 \neq \textit{netherlands}$  the formula holds trivially & and if\\
-for $d_1  = \textit{belgium}$ and $d_2 = \textit{netherlands}$,then $(\textit{belgium},\textit{netherlands})$ in $\textit{border}^I$ & and\\ 
-$f(\textit{belgium})^I = \textit{green} \neq \textit{red} = f(\textit{netherlands})^I$ & holds since \\
+for $d_1  = \textit{belgium}$ and $d_2 = \textit{netherlands}$,then $(\textit{belgium,netherlands})$ in $\textit{border}^I$ & and\\ 
+      $f(\textit{belgium})^I = \textit{green} \neq \textit{red} = f(\textit{netherlands})^I$ holds & since \\
 $\textit{green} \neq \textit{red}$  is true &
   \end{tabular}
 \end{example}
@@ -126,10 +126,41 @@ where $a_1, \dots, a_n, b_1, \dots, b_k,c_1, \dots c_h$ are atoms of a function-
 
 If a disjunctive datalog program $P$ has variables, then its semantics are considered to be the same as that of its grounded version, written as \textit{ground(P)}, i.e. all variables are substituted with constants from the Herbrand Universe $H_P$ (the constants occurring in the program). The semantics of a program with variables is defined by the semantics of the corresponding grounded version.
 
+\begin{example}
+Let us demonstrate a simple example of an ASP program, it has four rules with variables and four facts, all predicates here are binary, except for \texttt{drive}, which is an unary predicate. The rule in Line 3 makes the connections undirected, while Lines 6 and 7 compute transitive closure of \texttt{road} predicate that are not blocked. The last route defines unary predicate \texttt{drive} as all cities reachable from \textit{berlin}.
+    \begin{lstlisting}[caption=An example of an ASP program (from \textcite{ASPbook}); demonstrate possible route calculations for train connections around Berlin, label=lst:example_asp_program,basicstyle=\ttfamily]
+road(berlin,potsdam).
+road(potsdam,werder).
+road(werder,brandenburg).
+road(X,Y)  :- road(Y,X).
+blocked(werder,brandenburg).
+route(X,Y) :- road(X,Y), not blocked(X,Y).
+route(X,Y) :- route(X,Z), route(Z,Y).
+drive(X)   :- route(berlin ,X).
+\end{lstlisting}
+\end{example}
+
 An interpretation $I$ w.r.t. to a program $P$ is a set of ground atoms of $P$. Let $P$ be a positive disjunctive datalog program (i.e. without negation), then an interpretation $I$ is called closed under $P$, if for every $r \in \textit{ground}(P)$ it holds that $H(r) \cap I \ne \emptyset$ whenever $B(r) \subseteq I$. 
 \begin{definition}[Answer set of a positive program \parencite{eiter}]
 An answer set of a positive program $P$ is a minimal (under set inclusion) interpretation among all interpretations that are closed under $P$.
 \end{definition}
+
+\begin{example}
+An answer set of the program in Example \ref{lst:example_asp_program} would be the set: \{
+\small
+    \begin{tabular}{l l l}
+    road(berlin,potsdam)     &road(potsdam,werder)   &road(werder,brandenburg) \\ 
+    road(potsdam,berlin)     &road(werder,potsdam)   &road(brandenburg,werder)\\ 
+    route(berlin,potsdam)    &route(potsdam,werder)  &route(brandenburg,werder)  \\
+    route(werder,potsdam)    &route(potsdam,berlin)  &route(berlin,berlin) \\
+    route(werder,berlin)     &route(potsdam,potsdam) &route(brandenburg,potsdam) \\
+    route(berlin,werder)     &route(werder,werder)   &route(brandenburg,berlin) \\
+    drive(potsdam)           &drive(berlin)          &drive(werder) \\
+    blocked(werder,brandenburg) && 
+\end{tabular}
+\normalsize
+ \}
+\end{example}
 
 Let us introduce the concept of a reduct \parencite{whatisasp}.
 \begin{definition}[Gelfond-Lifschitz reduct] 
@@ -168,6 +199,20 @@ where $l$ and $u$ are constant numbers, each $a_i$ is a literal. The atom is tru
 
 Another construct is \textit{maximization} \parencite{ASPbook, leone} (\textit{minimization} is defined analogously) stated as $\#\textit{maximize}\{ a_1=k_1, \dots, a_n=k_n \}$, 
 where $a_1, \dots, a_n$ are classic literals and $k_1, \dots, k_n$ are integer constants (possibly negative). The semantics of this constraint are as follows: a model $I$ is selected if the weighted sum of $[a_i]*k_i$ is maximal in $I$, where $[\cdot]$ are Iverson brackets, i.e. $[a]$ is equal to $1$ iff $a$ is true in $I$ and $0$ otherwise.
+
+\begin{example}
+    Let us demonstrate how \textit{minimization} statement can be used in an ASP program. We use a standard problem of finding a Hamiltonian cycle, where the predicate \texttt{cost(X,Y,C)} is added and \texttt{C} represent the cost of picking a particular edge to be present in the cycle. Then the program not only finds a Hamiltonian cycle, but also minimizes its costs.
+    \begin{lstlisting}[caption=ASP encoding of the Hamiltonian cycle problem (due to \textcite{ASPbook}), label=lst:example_asp_coloring,basicstyle=\ttfamily]
+1 { cycle(X,Y) : edge(X,Y) } 1 :- node(X). 
+1 { cycle(X,Y) : edge(X,Y) } 1 :- node(Y).
+reached(Y) :- cycle(a,Y).
+reached(Y) :- cycle(X,Y), reached(X).
+:- node(Y), not reached(Y).
+#minimize [ cycle(X,Y) = C : cost(X,Y,C) ].
+\end{lstlisting}
+\end{example}
+
+We assume that arithmetic operators $\{ +, -, \times, / \}$ are present in the language and have the standard interpretation.
 
 \begin{example}[Map Coloring in ASP]
   Let us demonstrate how the problem of map coloring discussed before can be expressed in ASP. 
