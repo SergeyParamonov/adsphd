@@ -2,7 +2,7 @@
 \epigraph{From now on you shall be called Brian that is called Brian.}{The Life of Brian}
 In this chapter, we introduce commonly used formalisms and definitions. We start we classic First Order Logic, then proceed by introducing Answer Set Programming and Constraint Programming. Then, to help the reader we demonstrate a connection between the formalisms. After we describe Inductive Logic Programming and Pattern Mining.
 
-\section{First Order Logic}
+\section{First order logic}
 \begin{figure}[t]
   \centering
   \includegraphics[width=0.4\textwidth]{Petersen_graph_coloring.png}
@@ -106,10 +106,10 @@ $\textit{green} \neq \textit{red}$  is true &
 \end{example}
 
 
-\paragraph{Herbrand Interpretation} The \textit{Herbrand Universe} is the set of all terms over the vocabulary without variables. A \textit{Herbrand Interpretaion} has the Herbrand Universe as its domain and interprets each symbol and function by itself. Any model that contains \acrlong{una} (\acrshort{una}) \parencite{UNA} and \acrlong{dca} (\acrshort{dca}) \parencite{DCA} are equivalent to a Herbrand model.
+\paragraph{Herbrand interpretation} The \textit{Herbrand Universe} is the set of all terms over the vocabulary without variables. A \textit{Herbrand Interpretaion} has the Herbrand Universe as its domain and interprets each symbol and function by itself. Any model that contains \acrlong{una} (\acrshort{una}) \parencite{UNA} and \acrlong{dca} (\acrshort{dca}) \parencite{DCA} are equivalent to a Herbrand model.
 
 
-\section{Answer Set Programming}
+\section{Answer set programming}
 \acrlong{asp} (\acrshort{asp}) is a logic programming paradigm for solving combinatorial and constraint optimization problems \parencite{whatisasp}.
 
 Contrary to the programming language Prolog, which is based on a proof-theoretic approach to answer queries, ASP follows a model generation approach. It has been shown to be effective for a wide range of constraint satisfaction problems \parencite{ASPbook}.
@@ -225,8 +225,38 @@ We assume that arithmetic operators $\{ +, -, \times, / \}$ are present in the l
 \end{lstlisting}
 \end{example}
 
+\paragraph{ASP systems: Clasp and WASP}
+In this thesis we make use of two existing ASP systems Clasp \parencite{clasp} and WASP \parencite{wasp}. We mostly focus on the former and use the second to provide an experimental comparison on how two different system can execute the models with respect to runtime and memory usage.
 
-\section{Constraint Programming}
+Clasp extends the standard ASP theory described here with a number of features such as incremental grounding, preferences, Satisfiability Modulo Theories, various solving parameters such as brave and cautious reasoning, parallel executions, heuristics and meta-programming \parencite{ASPbook}.
+
+A typical modelling approach in ASP and in actual development with Clasp and WASP follows guess and check paradigm. Where at first we define potential stable model candidates 
+(typically through non-deterministic constructs) and then eliminate invalid candidates (typically through integrity constraints) \parencite{clasp, ASPbook, whatisasp}, which in a nutshell allows us to write the following formula for ASP modelling:
+
+\begin{center}
+    {\bfseries ASP program = Data + Generator + Tester ( + Optimizer)} \footnote{\url{https://www.cs.uni-potsdam.de/~torsten/Potassco/Slides/asp.pdf}}
+\end{center}
+
+We follow this modelling paradigm throughout the thesis. To demonstrate it, consider as an example, $n$-queen modelling problem, where one needs to put a number of queens on the board such that no queen attack another. This can be modelled as in Listing \ref{lst:n_queens_example_modelling}. First we specify data as facts, in Lines \ref{background:line:data1} and \ref{background:line:data2}, then we define the set of possible answer sets using a choice rule in Line \ref{background:line:choice} and finally we validate them in Lines \ref{background:line:int1},\ref{background:line:int2} and \ref{background:line:int3}.
+
+\begin{figure}[H] 
+\begin{Verbatim}[fontsize=\small,numbers=left,xleftmargin=0mm,commandchars=\\\{\},frame=single]
+% Data specifying the board
+col(1..k).\label{background:line:data1}
+row(1..k).\label{background:line:data2}
+% Choice rule to specify possible stable models
+k \{ queen(Row,Col) : col(Col), row(Row) \} k. \label{background:line:choice}
+% Integrity constraint to validate the candidate models
+:- queen(Rw,Cw), queen(Rb,Cb), Rw  = Rb, Cw != Cb. \label{background:line:int1}
+:- queen(Rw,Cw), queen(Rb,Cb), Rw != Rb, Cw  = Cb. \label{background:line:int2}
+:- queen(Rw,Cw), queen(Rb,Cb), Rw != Rb, | Rw - Rb | = | Cw - Cb |.\label{background:line:int3}
+\end{Verbatim}
+\caption{An ASP guess-and-check paradigm modelling example on the $n$-queen problem}
+\label{lst:n_queens_example_modelling}
+\end{figure}
+
+
+\section{Constraint programming}
 A detailed introduction to \acrlong{cp}(\acrshort{cp}) can be found in the ''Handbook of Constraint Programming`` \parencite{handbookcp}. A basic concept here is of a variable $v$ which always has an associated domain $d$, a domain here is simply a set of constants. An example domain is the Boolean domain \{ True, False \}. A constraint $c$ is an expression of the form \textit{name(vars)}, where \textit{vars} is a list of variable names and \textit{name} is the type of constraints from a predefined set of constraint classes. Examples of classes of constraints are comparisons,   arithmetic operations, list and set constraints (all-different, permutations, etc). We denote a set of all variables as $V$, of all domains as $D$ and of constraints as $C$, then a triple $(V,D,C)$ is a constraint programming model and a \acrlong{csp} (\acrshort{csp}) is the problem of finding an assignment $A$ for $V$ over $D$ satisfying all constraints $C$.
 
 Let us demonstrate how it is possible to model the map coloring problem in \acrshort{cp}\footnote{based on the encoding from www.hakank.org/minizinc/map.mzn}
@@ -243,7 +273,78 @@ forall(i,j in 1..n where i < j /\ conn[i,j] = 1) (
       )
 \end{lstlisting}
 
+Let us introduce the key definitions from constraints programming formally.
+\begin{definition}[\acrlong{csp}(\acrshort{csp})]
+    A \acrshort{csp} is a triple $(V,D,C)$ where
+    \begin{itemize}
+        \item $V$ is a finite set of variables (a set of distinct symbols)
+        \item $D$ is a domain that maps every variable $v$ in $V$ to a set of its possible values $D_v$ (a set of district symbols, disjoint from the variable symbols)
+        \item $C$ is a finite set of constraints (language dependent)
+    \end{itemize}
+\end{definition}
 
+A solution $A$ is a mapping function from $V$ to $D$ such that for every constraint it holds that for every constraint $c$ in $C$, the constraint $c^A$, which is the constraint $c$ where each variable $v$ is replaced with $A(v)$, holds.
+
+In case of the problem above, each \texttt{conn[i,j]} and \texttt{country[i]} represents a separate variable, together they compose $V$. The domain $D$ here is defined at the beginning of the program, where we specify that \texttt{conn[i,j]} can be either one or zero and \texttt{country[i]} can be mapped to a color value, which is represented as a number from 1 to 4 here. Assuming that for example there is only one connection \texttt{conn[1,2]} and two countries one and two, then solution assignment $A$ maps \texttt{country[1]} to one and \texttt{country[2]} to two (connection \texttt{conn[1,2]} is indeed also mapped to one, which would be specified as a separate constraint).
+
+A constraint optimization problem is a \acrshort{csp} $(V,D,C)$ extended with an objective function $f_o$ from $V$ to $R^1$, then the problem is to find a solution to the original \acrshort{csp} such that the score defined by $f_o$ is maximal (or minimal).
+
+Let us demonstrate this on an example. 
+\begin{example}[Constrained Pizza Selection Problem]\label{example:pizza}
+    Peter, Alina, Ronald and Sergey decided to order three pizzas in a trattoria: margaritha ($m$), veggie ($g$) and meat-lovers ($l$) -- each pizza can be shared by at most two people and everyone specified pizzas they can eat, togehter with their preferrences for the selected pizzas on the scale from one to ten. Can we help them to share the pizzas in an optimal way?
+
+
+    We start with modelling the domain, each user respectively gets his or her own variable: $v_p$ for Peter and $v_a,v_r$ and $v_s$ respectively. Domain of each variable is the pizza they can eat:
+    \begin{equation}
+        D_{v_a} = \{g,l\}, D_{v_s} = \{ m, l \}, D_{v_r} = \{g,m\}, D_{v_p} = \{ l\}.
+    \end{equation}
+
+    Then, we need to model the fact that all pizza being eaten by someone, since we do not like wasting food:
+    \begin{equation}
+        \exists i,j,h: v_i = g \wedge v_j = m \wedge v_h = l. 
+    \end{equation}
+    Also, we need to model the fact that if two people share a pizza, no-else is eating it:
+    \begin{equation}
+        \forall i,j,h: i \neq j \wedge v_i = v_j \wedge h \neq i \wedge h \neq j \implies v_i \neq v_h \wedge v_j \neq v_h.
+    \end{equation}
+    To specify preferences over the selection, we introduce the scoring function $f_o$ as the following mapping:
+
+        \begin{equation*}
+            \begin{aligned}
+                v_r:~&g \mapsto 10,  &m \mapsto 1; \\
+                v_a:~&g \mapsto 5,   &l \mapsto 7; \\
+                v_s:~&m \mapsto 2,   &l \mapsto 7; \\
+                v_p:~&l \mapsto 5;   &  \\
+            \end{aligned}
+        \end{equation*}
+\end{example}
+
+A typical approach to solving a constraint satisfaction problem is to use a form of search over the variable values in their domains, we present here an overview over a possible searching procedure, for details we refer to \textcite{tias_phd}.
+
+Algorithm \ref{algo:simple_search} demonstrates how we can solve a \acrshort{csp}. First, we propagate all possible deterministic assignments. Then we make a decision which variable we are going to split, i.e., we investigate two cases separately when it can take certain values and when it cannot. For each of this cases we call the procedure itself recursively. If in certain moment, we have derived that all variables have only one value, then it is a solution, if in certain point of propagating values using given constraints we established that no value is left for a variable, we return a failure for this particular case.
+
+
+\begin{algorithm}[t]
+    \begin{algorithmic}[1]
+        \footnotesize
+        \State $D \gets \textit{propagate}(D)$
+        \If{ $\exists v: D_v = \emptyset$}
+        \State \Return $\bot$
+        \EndIf
+        \If{$\exists v \in V: |D_v| > 1$}
+        \State $v = \textit{select\_variable}(V)$ \Comment{pick the most promising variable}
+        \State $D_s = \textit{split}(D_v)$  \Comment{$D_v$ is the domain of $v$}
+        \State $\texttt{search}(D \cup \{ v \mapsto D_s \})$ \Comment{recursive DFS-like search}
+        \State $\texttt{search}(D \cup \{ v \mapsto D_v / D_s \})$
+        \Else
+        \State \Return \textit{assignment}
+        \EndIf
+    \end{algorithmic}
+    \caption{Simple constraint propagate-and-search algorithm: search(D)}
+    \label{algo:simple_search}
+\end{algorithm}
+
+Consider again Example \ref{example:pizza}, at the beginning when no decision on splitting is made, we cannot propagate any constraint. Then according to a heuristic (typically solver and problem dependant), we pick $v_r$ to split into two cases $v_r = g$ and $v_r = m$. In case of $v_r = g$, we propagate the constraints and establish that no domain has changed, since sharing constraint can be still satisfied by multiple assignments (no deterministic decision can be enforced), the same holds for the first constraint enforcing that each pizza gets a person to eat it. Then, we have to pick a new variable, e.g., $v_a$ and we need to consider cases again: $v_a = g$ and $v_a=m$. Then we do a recursive call in which $v_r=g \wedge v_a=g$, in this case we propagate first sharing constraint to establish that $v_s \neq v_p$ and then due to constraint that all pizzas must be taken we establish that $v_s = m$ and $v_p = l$. Is this solution optimal? If we assume that quality of an assignment $A$ is $\sum_{v \in V} f(v)$, then the quality of $A = 10 + 5 + 5 +2 = 22$, while the other assignment  $v_r = g, v_a = l, v_g = g, v_p = l$ sums up to $10+7+2+5 = 24$. For an extended discussion on how to find an optimal or a preferred solution, we refer to Chapter \ref{ch:sketching}.
 
 \section{\fod and the IDP System}
 The knowledge based language \fod is the extension of First Order Logic with a number of features, such as, inductive definitions and aggregates. The IDP system \parencite{idppaper} is the reasoning system that accepts as input the \fod language and is able to perform a number of reasoning tasks: such as finding logical models, model checking and theorem proving.
@@ -251,81 +352,103 @@ The knowledge based language \fod is the extension of First Order Logic with a n
 Let us illustrate an inductive definition and an IDP program by example, see Listing \ref{lst:idp_reachability}, where Reach(x,y) is an example of an inductive definition, defined via the base case and the inductive step (see the Theory part).
 \begin{lstlisting}[caption=An example of an inductive definition in FO(.) and of an IDP program,label=lst:idp_reachability]
 vocabulary V{
-  type Node
+    type Node
   Edge(Node, Node)
   Reach(Node, Node)
 }
 
 theory T:V{
-  { 
+    { 
     Reach(x,y)<- Edge(x,y).
     Reach(x,y) <-?z : Edge(x,z) & Reach(z,y).
   }
 }
 
 structure S:V{
-  Node = {1;2;3}
+    Node = {1;2;3}
   Edge = {1,2; 2,3; 3,1} 
 }
 \end{lstlisting}
 
 An IDP program has three parts: \textit{Vocabulary} that defines the terminology and concepts of a problem, \textit{Structure} that sets certain values to true or false, and \textit{Theory} introduces constraints.
 
+IDP and its language FO(.) can be seen as executable logic we have discussed before, for example the sushi problem can be encoded in IDP as in Listing \ref{lst:idp_sushi}. First, we define vocabulary, which corresponds to vocabulary in first order logic, except for the extra type information. Facts and domains are specified in the structure section, as we see for example with the declaration of the domain for the type person, for which actual values are assigned in the section structure. The theory section defines the actual clauses or constraints, which indeed corresponds to the first order sentences, the only constraint here one to one maps to Eq. \ref{eq:sushi}, which a classical logical implication. The procedure \texttt{main} is a directive to the system to extend the given structure satisfying the constraints in the theory.
+
+\begin{lstlisting}[caption=Encoding sushi preferences problem, label=lst:idp_sushi,basicstyle=\ttfamily]
+vocabulary V{
+  type person
+  allergic(person)
+  vegan(person)
+  likes_sushi(person)
+}
+theory T:V{
+!x[person]: ~allergic(x) & ~vegan(x) => likes_sushi(x).
+}
+
+structure S:V{
+  person = {peter; alina; ronald}
+  vegan = {ronald}
+  allergic = {peter}
+}
+
+procedure main(){
+  M = modelexpand(T,S)[1]
+  print(M)
+}
+\end{lstlisting}
+
+Therefore, when we write a first order model for a problem, we can always map it to the language of FO(.), furthermore provided language extensions make modeling of relational problems more natural and convenient
 
 
-
-\section{Comparison Between Terminologies}
+\section{Comparison between terminologies}
 Since some readers might be more familiar with Constraint Programming than with Answer Set Programming or First Order Logic, in Table \ref{tab:terminology_comparison} we present a terminologies comparison \parencite{phd_broes}.
 
 In this thesis we use Answer Set Programming terminology, unless specified otherwise.
 \begin{table}
-  \centering
-  \begin{tabular}{c | c | c}
-    \textbf{First Order} & \textbf{Constraint Programming} & \textbf{Answer Set Programming}\\ \hline
-    variable & --         & variable\\
-    constant & Boolean variable   & constant \\
-    sentence & constraint & rule/constraint \\
-    predicate symbol & Boolean variable array & predicate symbol\\
-    function symbol &  variable array & function symbol\\
-    atomic sentence & -- & fact\\
-    interpretation & assignment & set of atoms\\
-    theory & model & program \\
-    model & solution & answer set
-  \end{tabular}
-  \caption{Mapping between terms in ASP, CP and FO}
-  \label{tab:terminology_comparison}
+    \centering
+    \begin{tabular}{c | c | c}
+        \textbf{First Order} & \textbf{Constraint Programming} & \textbf{Answer Set Programming}\\ \hline
+        variable & --         & variable\\
+        constant & Boolean variable   & constant \\
+        sentence & constraint & rule/constraint \\
+        predicate symbol & Boolean variable array & predicate symbol\\
+        function symbol &  variable array & function symbol\\
+        atomic sentence & -- & fact\\
+        interpretation & assignment & set of atoms\\
+        theory & model & program \\
+        model & solution & answer set
+    \end{tabular}
+    \caption{Mapping between terms in ASP, CP and FO}
+    \label{tab:terminology_comparison}
 \end{table}
 
+%   \section{Relational pattern mining}
+%   The task of relational pattern mining is to mine queries in a logical and relational learning setting. Starting with the work the Warmr system \parencite{warmr}, there has been a line of work that focusses on the following frequent query mining problem \parencite{bagm,farmer,condensed_luc}:
 
-\section{Relational Pattern Mining}
-The task of relational pattern mining is to mine queries in a logical and relational learning setting. Starting with the work the Warmr system \parencite{warmr}, there has been a line of work that focusses on the following frequent query mining problem \parencite{bagm,farmer,condensed_luc}:
+%   \noindent
+%   {\bf Given:} \vspace{-8pt}
+%   \begin{itemize}
+%   \item a relational database $D$,
+%   \item the entity of interest determining the \keypred/1 predicate,
+%   \item a frequency threshold $t$,
+%   \item a language ${\cal L}$ of logical queries of the form $\keypred(X) \leftarrow b_1, ..., b_n$ defining $key/1$ ($b_i$'s are atoms).
+%   \end{itemize}\vspace{-5pt}
+%   {\bf Find:} all queries $c \in {\cal L}$ s.t. $\freqpred(c,D) \geq t$, where ${\freqpred(c,D) = |\{\theta \mid D \cup c \models key(X)\theta \}|}$.
 
-\noindent
-{\bf Given:} \vspace{-8pt}
-\begin{itemize}
-\item a relational database $D$,
-\item the entity of interest determining the \keypred/1 predicate,
-\item a frequency threshold $t$,
-\item a language ${\cal L}$ of logical queries of the form $\keypred(X) \leftarrow b_1, ..., b_n$ defining $key/1$ ($b_i$'s are atoms).
-\end{itemize}\vspace{-5pt}
-{\bf Find:} all queries $c \in {\cal L}$ s.t. $\freqpred(c,D) \geq t$, where ${\freqpred(c,D) = |\{\theta \mid D \cup c \models key(X)\theta \}|}$.
+%   Notice that the substitutions $\theta$ only substitute variables $X$ that occur in \keypred. 
 
-Notice that the substitutions $\theta$ only substitute variables $X$ that occur in \keypred. 
+%   Here we focus our attention on graph data, as this forms the simplest truly relational learning setting and allows us to focus on what is essential for extending the declarative modeling paradigm to a relational setting. 
+%    
+%   As an example, consider a graph database $D$, represented by the facts 
+%   \begin{equation*}
+%   \{ \edge(g_1,1,2),~ \edge(g_1,2,3),~ \edge(g_1,1,3),~ \edge(g_2,1,2),~ \edge(g_2,2,3), \dots \},
+%   \end{equation*}
+%   where the ternary relation $\edge(g,e_1,e_2)$ states that in graph $g$ there is an edge between $e_1$ and $e_2$ (we assume graphs to be undirected, so there is also always an edge between $e_2$ and $e_1$). The frequency of $\textit{key}(K) \leftarrow \edge(K,B,C), \edge(K,C,D), \edge(K,B,D)$ in this database is 2 as the query returns $g_1$ and $g_2$. If $key(g)$ holds,  then the graph $g$ is subsumed by the query specified defined in the body of the clause for \keypred.
+%   In this section we briefly recap the necessary background both from the field of pattern mining.
 
-Here we focus our attention on graph data, as this forms the simplest truly relational learning setting and allows us to focus on what is essential for extending the declarative modeling paradigm to a relational setting. 
- 
-As an example, consider a graph database $D$, represented by the facts 
-\begin{equation*}
-\{ \edge(g_1,1,2),~ \edge(g_1,2,3),~ \edge(g_1,1,3),~ \edge(g_2,1,2),~ \edge(g_2,2,3), \dots \},
-\end{equation*}
-where the ternary relation $\edge(g,e_1,e_2)$ states that in graph $g$ there is an edge between $e_1$ and $e_2$ (we assume graphs to be undirected, so there is also always an edge between $e_2$ and $e_1$). The frequency of $\textit{key}(K) \leftarrow \edge(K,B,C), \edge(K,C,D), \edge(K,B,D)$ in this database is 2 as the query returns $g_1$ and $g_2$. If $key(g)$ holds,  then the graph $g$ is subsumed by the query specified defined in the body of the clause for \keypred.
-In this section we briefly recap the necessary background both from the field of pattern mining.
+%   Let $\mi{D}$ be a dataset, $\patternspace$ a language for expressing pattern properties or defining subgroups of the
+%   data, and $\mi{q}$ a selection predicate. %Then t
+%   The task of pattern mining is to find $\mi{Th}(\patternspace,D, \mi{q})= \{\phi \in \patternspace\, |\, \mi{q}(D, \phi) \text{ is true}\}$ (see the seminal work by \cite{DBLP:journals/datamine/MannilaT97}). 
 
-Let $\mi{D}$ be a dataset, $\patternspace$ a language for expressing pattern properties or defining subgroups of the
-data, and $\mi{q}$ a selection predicate. %Then t
-The task of pattern mining is to find $\mi{Th}(\patternspace,D, \mi{q})= \{\phi \in \patternspace\, |\, \mi{q}(D, \phi) \text{ is true}\}$ (see the seminal work by \cite{DBLP:journals/datamine/MannilaT97}). 
-
-Pattern mining has been mainly studied for % in three settings: 
-itemsets, sequences, graphs and queries. These settings are determined by the language of $\patternspace$. 
-
-
+%   Pattern mining has been mainly studied for % in three settings: 
+%   itemsets, sequences, graphs and queries. These settings are determined by the language of $\patternspace$. 

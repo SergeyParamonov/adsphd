@@ -1,16 +1,39 @@
-\chapter{Constraint Sketching}\label{ch:Sketching}
-Answer Set Programming (ASP) is a powerful modeling formalism for combinatorial problems. However, writing ASP models can be hard. We propose a novel method, called \acrlong{skasp} (\acrshort{skasp}), aimed at facilitating this proposal. In SkASP, the user writes partial ASP programs, in uncertain parts are left open and marked with question marks. In addition, the user provides a number of positive and negative examples of the desired program behaviour.  SkASP then synthesises a complete ASP program by  rewriting the SkASP program into another ASP program, which can then solved by traditional methods.  We evaluate our approach on 21 well known puzzles and combinatorial problems inspired by Karp’s 21 NP-complete problems and on publicly available ASP encodings.
+\chapter{Constraint sketching} \label{ch:sketching}
+Answer Set Programming (ASP) is a powerful modeling formalism for combinatorial problems. However, writing ASP models can be hard. We propose a novel method, called Sketched Answer Set Programming (SkASP), aimed at facilitating this proposal. In SkASP, the user writes partial ASP programs, in uncertain parts are left open and marked with question marks. In addition, the user provides a number of positive and negative examples of the desired program behaviour. SkASP then synthesises a complete ASP program by rewriting the SkASP program into another ASP program, which can then solved by traditional methods. We evaluate our approach on 21 well known puzzles and combinatorial problems inspired by Karp’s 21 NP-complete problems and on publicly available ASP encodings.
+
+\newcommand{\addedsket}[1]{#1\xspace}
+%   \newcommand{\sketchedeq}{\ensuremath{X~?{=}~Y}\xspace}
+%   \newcommand{\sketchedplus}{\ensuremath{X~?{+}~Y}\xspace}
+%   \newcommand{\reified}{\textit{reified}\xspace}
+%   \newcommand{\fail}{\textit{fail}\xspace}
+%   \newcommand{\domaineq}{\textit{domain\_eq}\xspace}
+%   \newcommand{\queen}{\textit{queen}\xspace}
+%   \newcommand{\qone}{\ensuremath{\textbf{Q}_1}\xspace}
+%   \newcommand{\qtwo}{\ensuremath{\textbf{Q}_2}\xspace}
+%   \newcommand{\qthree}{\ensuremath{\textbf{Q}_3}\xspace}
+%   \newcommand{\qfour}{\ensuremath{\textbf{Q}_4}\xspace}
+%   \newcommand{\qfive}{\ensuremath{\textbf{Q}_5}\xspace}
+%   \newcommand{\eplus}{\ensuremath{\mathbf{E}^+}\xspace}
+%   \newcommand{\eminus}{\ensuremath{\mathbf{E}^-}\xspace}
+%   \newcommand{\dist}{\ensuremath{\textit{dist}}\xspace}
+%   \newcommand{\samepref}{\ensuremath{\mathds{1}}\xspace}
+%   \newcommand{\metae}{\textit{metaE(\ensuremath{P,S,\eplus,\eminus})}\xspace}
+%   \newcommand{\metad}{\textit{metaD(\ensuremath{S,D})}\xspace}
+%   \newcommand{\metar}{\textit{metaR(\ensuremath{S,D})}\xspace}
+%   \newcommand{\metac}{\textit{metaC(\ensuremath{P})}\xspace}
+%\newtheorem{definition}{Definition}
+%\newtheorem{theorem}{Theorem}
 
 \section{Introduction}\label{sec:intro}
 Many AI problems can be formulated as constraint satisfaction problems that can
-be solved by state-of-the-art constraint programming (CP)  \parencite{handbookcp} or answer set programming (ASP) techniques \parencite{whatisasp}. 
+be solved by state-of-the-art constraint programming (CP)  \cite{handbookcp} or answer set programming (ASP) techniques \cite{whatisasp}. 
 Although these frameworks provide declarative representations that are in principle
 easy to understand, writing models in such languages is not always easy.
 
 %is notoriously hard to debug models written in such languages. 
 
 On the other hand, for traditional programming languages, there has been significant attention for techniques that are able
-to complete \parencite{sketching_phd_thesis} or learn a program from examples \parencite{gulwani2015inductive}. 
+to complete \cite{sketching_phd_thesis} or learn a program from examples \cite{gulwani2015inductive}. 
 The idea of program sketching is to start from a sketched program and some examples
 to complete the program. A sketched program is essentially a program where some of the tests and constructs
 are left open because the programmer might not know what exact instruction to use.  For instance, 
@@ -18,9 +41,9 @@ when comparing two variables $X$ and $Y$, the programmer might not know whether 
 $X~{?}{=}~Y$ instead (while also specifying the domain of ${?}{=}$, that is, which concrete operators are allowed). 
 By providing a few examples of desired program behaviour and a sketch, the target program can then be automatically found.
 Sketching is thus a form of "lazy" programming as one does not have to fill out all details in the programs; 
-it can also be considered for program synthesis although there are strong syntactic restrictions on 
+it can also be considered as program synthesis although there are strong syntactic restrictions on 
 the programs that can be derived; and it can be useful for repairing programs once a bug in a program has been detected.
-Sketching has been used successfully in a number of applications \parencite{sketching_original,sketch_recent,jsketch} to synthesise imperative programs.
+Sketching has been used successfully in a number of applications \cite{sketching_original,sketch_recent,jsketch} to synthesise imperative programs.
 It is these capabilities that this paper brings to the field of ASP.
 
 
@@ -29,31 +52,28 @@ one needs to solve %a variation of a well known problem, called
 the Peacefully Coexisting Armies of Queens, a version of the $n$-queens problem with black and white queens, where queens of the same color do not attack each other. 
 One might come up with the following sketched program (where 
 $R_w$ ($C_b$) stand for the variable representing the row (column) of a white (black) queen): 
-\begin{lstlisting}[caption=Peacefully Coexisting Armies of Queens,label=lst:queens,basicstyle=\scriptsize\ttfamily]
+\begin{lstlisting}[caption=Peacefully Coexisting Armies of Queens,label=lst:queens,basicstyle=\small\ttfamily]
 :- queen(w,Rw,Cw), queen(b,Rb,Cb), Rw ?= Rb.
 :- queen(w,Rw,Cw), queen(b,Rb,Cb), Cw ?= Cb.
 :- queen(w,Rw,Cw), queen(b,Rb,Cb), Rw ?+ Rb ?= Cw ?+ Cb.
 \end{lstlisting}
-This program might have been inspired by a solution written in the constraint programming language Essence available from the CSP library \parencite{csplib:prob110}.  
+This program might have been inspired by a solution written in the constraint programming language Essence available from the CSP library \cite{csplib:prob110}.  
 Intuitively, the sketched ASP specifies constraints on the relationship between two queens on the rows (first rule), columns (second rule) and diagonals (third rule), %If no solutions can be found by the ASP solver, or when some solutions found turn out to be errors, the program needs to be debugged.  A common debugging technique is commenting out constraints. In the above example, if any of the constraints 
 but it expresses also uncertainty about the particular operators that should be used between the variables 
 through the built-in alternatives for ${?}{=}$  (which can be instantiated to one of $=,\neq,<,>,\leq,\geq$) and for ${?}+$ (for arithmetic operations). 
 When providing an adequate set of examples to the ASP, the SkASP solver will then produce the correct program.
 
 
-%\luc{Again put this in a figure, left with the wrong, middle the sketch, rigth the correct program?}
-%is commented out, no solution to the ASP problem exists. 
-%It basically states that it is unknown whether the $\neq$ is correct in the first two rules, and whether the arithmetic operation is correct.  
 
-The key contributions of this paper are the following: 1) we adapt the notion sketching for use with Answer Set Programming;
+The key contributions of this paper are the following: 1) we adapt the notion of sketching for use with Answer Set Programming;
 2) we develop an approach (using ASP itself) for computing solutions to a sketched Answer Set Program;
 3) we contribute some simple complexity results on sketched ASP; 
-and 4) we investigate its effectiveness and limitations on a dataset of 21 typical ASP programs. 
+and 4) we investigate the effectiveness and limitations of sketched ASP on a dataset of 21 typical ASP programs. 
 
 
 
 \input{chapters/Sketching/the_table}
-\section{ASP and Sketching }\label{sec:formal}
+\section{ASP and sketching }\label{sec:formal}
 We extend the syntax of ASP with \textit{sketched} language constructions. 
 Instead of allowing atoms of the form $p(t_1, ...,t_n)$, where $p/n$ is a predicate
 and the $t_i$ are terms (variables or constants), we now allow to use
@@ -68,17 +88,32 @@ We also provide some syntactic sugar for some special cases and variants,
 in particular, we use a {\em sketched inequality} \sketchedeq, a  {\em sketched} arithmetic operator \sketchedplus (strictly speaking, this is not a sketched predicate but an operator, but we only make this distinction where needed), and {\em sketched negation} ${?}\textit{not } p(X)$.  The domain of \sketchedeq is the set $\{=,\neq,<,>,\geq,\leq,\top\}$, where $\top$ is the atom that is always satisfied by its arguments, the domain of \sketchedplus is the set $\{ +, -, \times, \div, \dist \}$ where $\dist(a,b)$ is defined as $| a - b |$, and the domain of ${?}\textit{not}$  is $\{\emptyset, not\}$. An example of sketched inequality can be seen in Line 3 of Figure \ref{lst:sudoku}, examples of sketched predicates and negation in Line 4 of Figure \ref{lst:ham} and sketched arithmetic in Line 5 of Figure \ref{lst:queens}.
 
 
-\textit{A sketched variable} is a sketched predicate, a sketched negation, a sketched inequality or a sketched arithmetic operator. The set of all sketched variables is referred as $S$. 
-Predicate $p$ \textit{directly positively (negatively) depends} on $q$ iff $q$ occurs positively (negatively) in the body of a rule with $p$ in the head or $p$ is a sketched predicate and $q$ is in its domain; $p$ {\em depends on} $q$ iff $q$ is in the transitive closure of predicates on which $p$ directly depends. A sketch is \textit{stratified} iff there is no negative cyclic dependency. We restrict programs the stratified case.
+\textit{A sketched variable} is a sketched predicate, a sketched negation, a sketched inequality or a sketched arithmetic operator. The set of all sketched variables is referred to  as $S$. 
+\addedsket{Predicate $p$ \textit{directly positively (negatively) depends} on $q$ iff $q$ occurs positively (negatively) in the body of a rule with $p$ in the head or $p$ is a sketched predicate and $q$ is in its domain; $p$ {\em depends on} $q$ iff $q$ is in the transitive closure of predicates on which $p$ directly depends. A sketch is \textit{stratified} iff there is no negative cyclic dependency. We restrict programs the stratified case.}
 An \textit{example} is a set of ground atoms. 
 
-A \textit{preference} is a function from $S$ to $\mathbb{Z}$. A substitution $\theta$ is \textit{preferred} over $\theta'$ given preferences $f$ iff for all $s_i \mapsto d_i \in \theta$ and $s_{i} \mapsto d_{i}' \in \theta'$ it holds that $f(d_i) \geq f(d_{i}')$ and at least one inequality is strict. First, when $f(\theta)$ is constant,
+A \textit{preference} is a function from $\Theta$ (possible substitutions) to $\mathbb{Z}$. A substitution $\theta$ is \textit{preferred} over $\theta'$ given preferences $f$ iff for all $s_i \mapsto d_i \in \theta$ and $s_{i} \mapsto d_{i}' \in \theta'$ it holds that $f(s_i \mapsto d_i) \geq f(s_i \mapsto d_{i}')$ and at least one inequality is strict. First, when $f(\theta)$ is constant,
 all substitutions are equal and there are no preferences. Because specifying preferences might impose an extra burden on the user, we also provide default preferences for the built-in sketched variables (like inequality, etc), cf. the experimental section.
 
+\textit{The Language of Sketched Answer Set Programming (SkASP)}
+supports some of the language features of ASP. 
+The language of SkASP has the following characteristics:
 
+\begin{itemize}
+\item it allows for a set of rules of the form $a \leftarrow b_1, \dots, b_n, \textit{not }c_1, \dots, \textit{not }c_m.$;
+\item atoms (such as a predicate $p/n$ or comparison $\leq$) and operators (such as arithmethic $+,-,\times$, etc) in these rules can be sketched; 
+\item aggregates can be used in the body of the rules as well (stratified; see Extension Section \ref{section:aggregates});
+\item the SkASP program has to be stratified; 
+\item the choice rules are not allowed.
+\end{itemize}
+%Supporting choice rules is an issue for further research. 
 
-\begin{definition}[Sketched Answer Set Problem (SkASP)]
-  Given  a sketched answer set program $P$ with sketched variables $S$ of domain $D$ and preferences $f$, and positive and negative sets of examples \eplus and \eminus, the \emph{Sketched Answer Set Problem} is to find all substitutions $\theta:S\mapsto D$ preferred by $f$ such that $P\theta \cup e$ has an answer for all $e$ in \eplus and for no $e$ in \eminus. 
+The key idea behind our method is that the SkASP program is rewritten into a normal ASP program (with choice rules, etc.) in order to obtain a solution through the use of an ASP solver.
+That explains also Theorem \ref{theorem:complexity_sat}: the language of SkASP stays within the complexity bounds of normal ASP, which makes the rewriting possible (SkASP$\mapsto$ASP).
+
+Let us now formally introduce the problem of SkASP.
+\begin{definition}[The Problem of Sketched Answer Set Programming]
+  Given  a sketched answer set program $P$ with sketched variables $S$ of domain $D$ and preferences $f$, and positive and negative sets of examples \eplus and \eminus, the \emph{Sketched Answer Set Problem} is to find all substitutions $\theta:S\mapsto D$ preferred by $f$ such that $P\theta \cup \{e\}$ has an answer for all $e$ in \eplus and for no $e$ in \eminus. 
 %
 The decision version 
 %\emph{SkASP-dec} 
@@ -86,12 +121,11 @@ of SkASP  asks whether there exists such a substitution $\theta$.
 \end{definition}
 %E.g., Figure \ref{lst:ham} represents a sketch of Hamiltonian Cycle. %with $P$ being the rules in Lines \ref{line:reached}, \ref{line:reached2}, \ref{line:ham_constraint} and $S{=}\{ {?}p, {?}q, {?}\textit{not} \}$, $D {=} \{ \{\textit{reached/1}, \textit{node/1} \}_p, \{\textit{reached/1}, \textit{node/1} \}_q, \{\emptyset, \textit{not} \}_{\textit{not}} \}$, \\$\eplus {=} \{\{ \textit{cycle}(a,b),\textit{cycle}(b,c),\textit{cycle}(c,a)\} \}$, $\eminus  {=} \{ \{ \textit{cycle}(a,b),\textit{cycle}(b,a) \} \}$ and $f\equiv 1$. 
 
-
-\section{Rewriting Schema}\label{sec:method}
+\section{Rewriting schema}\label{sec:method}
 %\textbf{Combinatorial explosion.} 
 One might consider a baseline approach that would enumerate all instances of the ASP sketch, and in this way produce
 one ASP program for each assignment that could then be tested on the examples. 
-This naive grounding and testing approach is, however, infeasible: the number of possible combinations grows exponentially with the number of sketched variables. E.g., for the Radio Frequency Problem there are around $10^5$ possible assignments to the sketched variables. Multiplied by the number of examples, around a million ASP programs would have to be generated and tested. This is  infeasible in practice.   
+This naive grounding and testing approach is, however, infeasible: the number of possible combinations grows exponentially with the number of sketched variables. E.g., for the sketch of the Radio Frequency Problem \cite{fap} there are around $10^5$ possible assignments to the sketched variables. Multiplied by the number of examples, around a million ASP programs would have to be generated and tested. This is  infeasible in practice.   
 
 
 
@@ -103,14 +137,14 @@ The original SkASP problem is then turned into an ASP problem
 on these decision variables and solutions to the ASP problem allow to reconstruct the SkASP substitution.
 
 
-The rewriting procedure has four major steps: \textit{example expansion}, \textit{substitution generation}, \textit{predicate reification} and \textit{constraint splitting}. (Here we follow the notation on meta-ASP already used in the literature \parencite{inductive_asp,asp_meta}.) 
+The rewriting procedure has four major steps: \textit{example expansion}, \textit{substitution generation}, \textit{predicate reification} and \textit{constraint splitting}. \addedsket{(Here we follow the notation on meta-ASP already used in the literature \cite{inductive_asp,asp_meta}.)} 
 
 \vspace{3pt}
 \textbf{Example Identifiers} 
 To allow the use of multiple examples in the program, every relevant predicate is extended with
 an extra argument that represents the example identifier.  The following steps are used
-to accommodate this in the program,denoted as \metae.
-% \skadded{more formal} a) each ground atom $e(\bar x)$ in the set $E^+$ and $E^-$ is rewritten as two facts $e(i_e,\bar x)$ and \textit{positive($i_e$)} (\textit{negative($i_e$)} respectively), where $i_e$ is the index of the example, e.g. in the Hamiltonian path Listing \ref{lst:ham} the first positive example becomes \textit{positive(1). cycle(1,a,b). cycle(1,b,c). cycle(1,c,a).}, similarly for the negative one. b) All predicates in $P$ that transitively depend on the predicates in examples get a fresh variable $E$ as the first argument, e.g., in the same listing the predicate \textit{reached/1} depends on the example but \textit{node} does not. All rules with expanded predicates get $\textit{examples}(E)$ as a guard in the body c) All facts, that predicates depend transitively on the examples, get an extra argument $e_i$, with all values of positive and negative indices, in the same listing we see that the predicate node does not depend on the examples and the facts are not expanded. The first rule in Listing \ref{lst:ham} becomes:
+to accommodate this in the program,\addedsket{ denoted as \metae.}
+% \addedsket{more formal} a) each ground atom $e(\bar x)$ in the set $E^+$ and $E^-$ is rewritten as two facts $e(i_e,\bar x)$ and \textit{positive($i_e$)} (\textit{negative($i_e$)} respectively), where $i_e$ is the index of the example, e.g. in the Hamiltonian path Listing \ref{lst:ham} the first positive example becomes \textit{positive(1). cycle(1,a,b). cycle(1,b,c). cycle(1,c,a).}, similarly for the negative one. b) All predicates in $P$ that transitively depend on the predicates in examples get a fresh variable $E$ as the first argument, e.g., in the same listing the predicate \textit{reached/1} depends on the example but \textit{node} does not. All rules with expanded predicates get $\textit{examples}(E)$ as a guard in the body c) All facts, that predicates depend transitively on the examples, get an extra argument $e_i$, with all values of positive and negative indices, in the same listing we see that the predicate node does not depend on the examples and the facts are not expanded. The first rule in Listing \ref{lst:ham} becomes:
 \begin{enumerate}
 \item
   Let $\textit{SP}$ be the set of all predicates that depend on a predicate occurring in one of the examples. 
@@ -128,11 +162,11 @@ E.g., the rule in Line \ref{line:reached} of Figure \ref{lst:ham} becomes Line \
 
 
 
-%\paragraph{Example Expansion} \skadded{more formal} a) each ground atom $e(\bar x)$ in the set $E^+$ and $E^-$ is rewritten as two facts $e(i_e,\bar x)$ and \textit{positive($i_e$)} (\textit{negative($i_e$)} respectively), where $i_e$ is the index of the example, e.g. in the Hamiltonian path Listing \ref{lst:ham} the first positive example becomes \textit{positive(1). cycle(1,a,b). cycle(1,b,c). cycle(1,c,a).}, similarly for the negative one. b) All predicates in $P$ that transitively depend on the predicates in examples get a fresh variable $E$ as the first argument, e.g., in the same listing the predicate \textit{reached/1} depends on the example but \textit{node} does not. All rules with expanded predicates get $\textit{examples}(E)$ as a guard in the body c) All facts, that predicates depend transitively on the examples, get an extra argument $e_i$, with all values of positive and negative indices, in the same listing we see that the predicate node does not depend on the examples and the facts are not expanded. The first rule in Listing \ref{lst:ham} becomes: \begin{equation*} \textit{reached}(E,Y) \leftarrow \textit{cycle}(E,a,Y),\textit{examples}(E).  \end{equation*}
+%\paragraph{Example Expansion} \addedsket{more formal} a) each ground atom $e(\bar x)$ in the set $E^+$ and $E^-$ is rewritten as two facts $e(i_e,\bar x)$ and \textit{positive($i_e$)} (\textit{negative($i_e$)} respectively), where $i_e$ is the index of the example, e.g. in the Hamiltonian path Listing \ref{lst:ham} the first positive example becomes \textit{positive(1). cycle(1,a,b). cycle(1,b,c). cycle(1,c,a).}, similarly for the negative one. b) All predicates in $P$ that transitively depend on the predicates in examples get a fresh variable $E$ as the first argument, e.g., in the same listing the predicate \textit{reached/1} depends on the example but \textit{node} does not. All rules with expanded predicates get $\textit{examples}(E)$ as a guard in the body c) All facts, that predicates depend transitively on the examples, get an extra argument $e_i$, with all values of positive and negative indices, in the same listing we see that the predicate node does not depend on the examples and the facts are not expanded. The first rule in Listing \ref{lst:ham} becomes: \begin{equation*} \textit{reached}(E,Y) \leftarrow \textit{cycle}(E,a,Y),\textit{examples}(E).  \end{equation*}
 
 \vspace{3pt}
 \textbf{Substitution Generation} 
-We now introduce the decision variables, referred as \metad:
+We now introduce the decision variables, \addedsket{referred as \metad}:
 \begin{enumerate}
 \item
 For each sketched variable $s_i$ with domain $d_i$ 
@@ -142,19 +176,19 @@ For each value $v$ in $d_i$, add the fact $d_i(v)$.
 \end{enumerate}
 This constraint ensures that each answer set has exactly one value from the domain assigned
 to each sketched variable. %, its subset one and only one decision per each sketched variable. 
-This results in a one-to-one mapping between decision atoms and sketching substitution $\theta$. An example can be see in Lines \ref{line:decision1} and \ref{line:decision2} of Figure \ref{lst:rewriting}.
+This results in a one-to-one mapping between decision atoms and sketching substitution $\theta$. An example can be seen in Lines \ref{line:decision1} and \ref{line:decision2} of Figure \ref{lst:rewriting}.
 
 % in the Listing \ref{lst:ham} the first constraint generated would be \begin{equation*} 1~\{~\textit{decision\_p}(X)~:~\textit{domain\_p}(X)~\}~1.  \end{equation*}
 
 \vspace{3pt}
 \textbf{Predicate Reification} 
-We now introduce the reified predicates, referred as \metar
+We now introduce the reified predicates, \addedsket{referred as \metar}
 \begin{enumerate}
 \item
 Replace each occurrence of a sketched atom $s(t_1,...,t_n)$ in a rule of $P$ with the atom $\reified\_s( D, t_1, \dots, t_n)$, 
 and add $\textit{decision}\_s(D)$ to the body of the rule.
 \item
-For each sketched variable $s$ and value $d_i$ in its domain, add the following rule to $P$: %d$\skadded{domains and types are unexplainded}
+For each sketched variable $s$ and value $d_i$ in its domain, add the following rule to $P$: %d$\addedsket{domains and types are unexplainded}
 %\begin{equation*}
 %  \begin{aligned}
 $$\reified\_s(d_i,X_1, \dots, X_n) \leftarrow d_i(X_1, \dots, X_n).$$
@@ -171,7 +205,7 @@ the sketched inequality, negation and arithmetic. Examples of reification can be
 
 \vspace{3pt}
 \textbf{Integrity Constraint Splitting} 
-(referred as \metac)
+\addedsket{(referred as \metac)}
 \begin{enumerate}
   \item Replace each integrity constraint $\leftarrow \textit{body}$ by: 
 $$\leftarrow \textit{body}, \textit{positive}(E) $$
@@ -180,76 +214,147 @@ $$\textit{negsat}(E) \leftarrow \textit{body}, \textit{negative}(E) $$
 And add the rule to the program:
 $$ \leftarrow \textit{negative}(E), \textit{not} ~ \textit{negsat}(E).$$ 
 \end{enumerate}
-This will ensure that all positives and none of the negatives have a solution. For example, the constraint in Line \ref{line:ham_constraint} of Figure \ref{lst:ham} is rewritten into a positive constraint in Lines \ref{line:positive_rewritten1}, \ref{line:positive_rewritten2} and into a negative in Lines \ref{line:negative_rewritten1}, \ref{line:negative_rewritten2}.
+This will ensure that all positives and none of the negatives have a solution. For example, the constraint in Line \ref{line:ham_constraint} of Figure \ref{lst:ham} is rewritten into a positive constraint in Lines \ref{line:positive_rewritten1}, \ref{line:positive_rewritten2},\ref{line:positive_rewritten3} and into a negative in Lines \ref{line:negative_rewritten1}, \ref{line:negative_rewritten2}, \ref{line:negative_rewritten3}.
 
 
 Another important result is that the preferences do not affect the decision complexity. Proofs can be found in the supplementary materials. 
 \begin{theorem}[Sound and Complete Sketched Rewriting]
-  A sketched ASP program $(P, S, D, f, \eplus,\eminus)$ has a satisfying substitution $\theta$ iff \skadded{the meta program $T=$ \mbox{$\metae\cup\metad \cup \metar \cup \metac$} has an answer set.}
+  A sketched ASP program $(P, S, D, f, \eplus,\eminus)$ has a satisfying substitution $\theta$ iff the meta program \\$T=$ \mbox{$\metae\cup\metad \cup \metar \cup \metac$} has an answer set.
   \label{theorem:rewriting}
 \end{theorem}
-Interestingly, the sketched ASP problem has the same complexity as the original ASP program.
+Interestingly, the sketched ASP problem is in the same complexity class as the original ASP program.
 \begin{theorem}[Complexity of Sketched Answer Set Problem]
-  The decision version of SkASP is NP-complete.
+  The decision version of propositional SkASP is in NP.
   \label{theorem:complexity_sat}
 \end{theorem}
-\begin{proof} \emph{Membership.}
+\begin{proof} 
 Follows from the encoding of SkASP into a fragment of ASP which is in NP. 
-
-\emph{Completeness.}
-Let $P'$ be an arbitrary answer set program, then the question of whether it has an AS is reduced to asking if an empty $\theta$ satisfies the following SkASP: consider $S = \emptyset, \eminus = \emptyset,\eplus = \{ \emptyset \},f\equiv1$ and $P=P'$. If $\theta$ satisfies the SkASP, then $P$ and consequently $P'$ have an answer set.
 \end{proof}
 \textbf{Dealing with preferences} 
 Preferences are, as we shall show in our experiments, useful to restrict the number of solutions.
-We have implemented preferences using a post-processing approach (which will also allow to apply the schema to other formalisms such as CP or IDP \parencite{idp}).
+We have implemented preferences using a post-processing approach (which will also allow to apply the schema to other formalisms such as CP or IDP \cite{idp}).
 We first generate the set of all solutions $O$ (without taking into account the preferences), and then post-process $O$. Basically, we filter out
 from $O$ any solution that is not preferred (using tests on pairs $(o,o')$ from $O \times O$). %and filter out using the set $N$ to filter out not preferred substitutions.
 The preferences introduce a partial order on the solutions. 
-\skadded{Assume ${?}p$ (${?}q$) can take value  $p_1$ ($q_1$) with preference of $1$ and $p_2$ ($q_2$) with $2$. If $(p_1,q_2)$ and $(p_2,q_1)$ are the only solutions, they are kept because they are incomparable ($(1,2)$ is not dominated by $(2,1)$ (and vice versa). If $(p_1,q_1)$ is also solution, 
+\addedsket{For example, assume ${?}p$ (${?}q$) can take value  $p_1$ ($q_1$) with preference of $1$ and $p_2$ ($q_2$) with $2$. If $(p_1,q_2)$ and $(p_2,q_1)$ are the only solutions, they are kept because they are incomparable -- $(1,2)$ is not dominated by $(2,1)$ (and vice versa). If $(p_1,q_1)$ is also solution, 
 $(p_1,q_2)$ and $(p_2,q_1)$ are removed because they are dominated by $(p_1,q_1)$. }
+
+While the number of potential Answer Sets is in general exponential for
+a sketched ASP, the number of programs actually satisfying the
+examples is typically rather small (in our experiments, below 10000-20000). If that is not the case, then the problem is 
+under-constrained and it needs more examples. No user would be able to
+go over a million of proposed programs. Consequently, we  implement
+the preference handling as a post-processing mechanism. This allows us
+to apply our method to Constraint Programming and Constraint Logic Programming.
+
+%%%%%%%%\textbf{Implementation details}
+%%%%%%%%An overview of the implementation to post-process the solutions is given in Algorithm \ref{algo:preferences}. Simply speaking, it iterates over the pairs of solutions and checks pairwise dominance, to optimize the iteration, we only consider each pair once and maintain a set of dominated solutions that can be skipped and do not need to be checked, here we use the transitive property of the Pareto dominance, if $\theta$ dominates $\theta'$, then $\theta$ also dominates $\theta''$, provided that $\theta'$ dominates $\theta''$.
+
+%%%%%%%%\begin{algorithm}[H]
+%%%%%%%%  \DontPrintSemicolon
+%%%%%%%%  \KwData{A set of solutions $O$, preferences $f$}
+%%%%%%%%  \KwResult{A set of preferred solutions $S$}
+%%%%%%%%  $\textit{dominated} \gets \emptyset$
+
+%%%%%%%%  \For{$o \in O$}{
+%%%%%%%%    \If{$o \in \textit{dominated}$}{
+%%%%%%%%      continue \tcc*[r]{discard dominated solutions} 
+%%%%%%%%    }
+%%%%%%%%  \For{$o' \in O$}{
+%%%%%%%%    \If{\textit{index($o$)} $>$ \textit{index($o'$)} or $o' \in \textit{dominated}$}{
+%%%%%%%%      continue\tcc*[r]{the use symmetry of prefences}
+%%%%%%%%    }
+%%%%%%%%    \textit{update\_dominance($o$,$o'$,$f$,\textit{dominated})} \tcc*[r]{check if either dominates and update the \textit{dominated} set}
+%%%%%%%%    }
+%%%%%%%%   }
+%%%%%%%%   $S \gets O \setminus \textit{dominated}$\;
+%%%%%%%%   \Return $S$\tcc*[r]{return all non-dominated}
+%%%%%%%%  \caption{Preference handling: post-processing implementation overview}
+%%%%%%%%  \label{algo:preferences}
+%%%%%%%%\end{algorithm}
+
 %In future work, we plan to make the search more effective by using the preferences
-%in the search process (using ASP extensions \parencite{asprin}) or by formulating the SkASP task as an optimisation problem (using built-in 
+%in the search process (using ASP extensions \cite{asprin}) or by formulating the SkASP task as an optimisation problem (using built-in 
 %ASP constructs).
 
 %While preferences do not affect the decision version SkASP, they have a great practical value. We propose a simple method how to post-process the solutions $O$, by an optimized version of comparing pairs of solutions $(o,o')$ in $O\times O$. We create a set of non-dominating solutions $N$ and then iterate over pairs $(o,o')$, using the set $N$ to filter out not preferred substitutions. Note, the preferences introduce a partial order on the solutions.
 
-\section{System Extension: Aggregates and Use-Case}
-\skadded{An aggregate} \textit{\#agg} \skadded{is a function from a set of tuples to an integer. For example,} $\#\textit{count}\{ C,R: \textit{queen}(C,R) \} $ \skadded{counts the number of queens. Aggregates are often useful for modeling. 
-However, adding aggregates to non-disjunctive ASP raises the complexity of an AS existence check, unless aggregate dependencies are stratified \parencite{aggregates_complexity}. It is possible to add aggregates into our system under the following restrictions: stratified case, aggregates occur in the body in the form ${N = \#\textit{agg}\{ \dots \}}$, sketched with the keyword} \verb|?#| \skadded{, where} \textit{\#agg} \skadded{can be \textit{max}, \textit{min}, \textit{count} and \textit{sum}. This immediately allows us  to model problems such as Equal Subset Sum (for details, see the repository), where we essentially sketch the constraint: }
-\begin{Verbatim}[fontsize=\footnotesize,xleftmargin=0mm]
-:-S1 != S2,S1 = ?#{V,X:val(X,V),subset1(X)}..
+\section{System extension: aggregates and use-case}\label{section:aggregates}
+An aggregate \textit{\#agg} is a function from a set of tuples to an integer. For example,\\$\#\textit{count}\{ Column,Row: \textit{queen}(Column,Row) \}$ counts the number of instances\\\textit{queen(Column,Row)} at the tuple level. Aggregates are often useful for modeling. 
+However, adding aggregates to non-disjunctive ASP raises the complexity of an AS existence check, unless aggregate dependencies are stratified \cite{aggregates_complexity}. It is possible to add aggregates into our system under the following restrictions: stratified case, aggregates occur in the body in the form ${N = \#\textit{agg}\{ \dots \}}$, sketched with the keyword \verb|?#| , where \textit{\#agg} can be \textit{max}, \textit{min}, \textit{count} and \textit{sum}. This immediately allows us  to model problems such as Equal Subset Sum (for details, see the repository), where one needs to split a list of values, specified as a binary predicate   \verb|val(ID,Value)| into two subsets, such as \verb|subset1(ID)| (and \verb|subset2(ID)| respectively), such that the sum of both subsets is equal. Essentially, we sketch the constraint of the form: 
+
+\verb|:- S1 != S2, S1 = ?#{V,X:val(X,V),subset1(X)}...|
+
+Formally, each aggregate can be seen as an expression of the form:
+\begin{equation*}
+	S = \#\textit{agg}\{ Z_1,\dots,Z_n: \textit{cond}\overbrace{X_1,\dots,X_k}^{\textit{internal}}, \overbrace{Y_1,\dots,Y_h}^{\textit{external}},\overbrace{Z_1,\dots,Z_n)}^{\textit{aggregated}} \}, \textit{external}(Y_1,\dots,Y_h)
+\end{equation*}
+	where $S$ is an integer output, and $Y_1,\dots,Y_k$, shortened as $\bar Y$ ($\bar X$ and $\bar Z$ are the same kind of shortening) are bound to other atoms in the rule, to which we refer as \textit{external($\bar Y$)} ("external" with respect to the condition in the aggregate; it is simply shortening for a conjunction of atoms, which share variables with the condition in the predicate). 
+
+To give an example of $\bar X, \bar Y, \bar Z$ in a simple context: if we were to compute an average salary per department in a company, we might have written a rule of the form:
+
+\begin{Verbatim}[fontsize=\small]
+avg_sal(S,Dept) :- S = #avg{Salary:salaries(Name,Salary,Dept)}, 
+                                              department(Dept).
 \end{Verbatim}
 
-\skadded{More formally, each aggregate we consider can be seen as an expression of the form:}
-\begin{equation*}
-  S = \#\textit{agg}\{ Z_1,\dots,Z_n: \textit{cond}(\overbrace{X_1,\dots,X_k}^{\textit{internal}}, \overbrace{Y_1,\dots,Y_h}^{\textit{external}},\overbrace{Z_1,\dots,Z_n)}^{\textit{aggregated}} \}\end{equation*}
-\skadded{where $S$ is an integer output, and $Y_1,\dots,Y_k$, shortened as $\bar Y$ are bound to other atoms in the rule, to which we refer as \textit{external($\bar Y$)}. Then, a sketched aggregate $?\#$, can be reified similarly to the regular sketched atoms, i.e.:}
+	Then, $\bar Z$ consists of the variable \verb|Salary|, \verb|Dept| is the external variable (with respect to the condition in the aggregate), i.e., $\bar Y$ and $\bar X$ is composed out of the variable \verb|Name|, since it is neither used in the aggregation, nor in the other atoms outside of the aggregate.
+
+A sketched aggregate $?\#$, can be reified similarly to the regular sketched atoms, i.e.:
 \begin{equation*}
   \textit{reifed}(S,sum,\bar Y) \leftarrow S = \#\textit{sum} \{ \bar Z : \textit{cond}(\bar X, \bar Y, \bar Z) \}, \textit{external}(\bar Y).
 \end{equation*}
-similarly for other aggregate functions; the same rules, e.g., the example extension, apply to aggregate reification.
+similarly for other aggregate functions; the same rules, e.g., the example extension, apply to aggregate reification. 
 
 
-\skadded{With aggregates we can sketch a significantly larger class of problems. Consider the problem from the Functional Pearls Collection: ``Finding celebrities problem'' \parencite{celebrity_problem} \footnote {\scriptsize ASP code:~ \url{hakank.org/answer_set_programming/finding_celebrities.lp4}}. Problem statement: ``Given a list of people at a party and for each person the list of people they know at the party, we want to find the celebrities at the party.
+\addedsket{With aggregates we can sketch a significantly larger class of problems. Consider the problem from the Functional Pearls Collection: ``Finding celebrities problem'' \cite{celebrity_problem} \footnote {\scriptsize ASP code: \url{hakank.org/answer_set_programming/finding_celebrities.lp4}}. Problem statement: ``Given a list of people at a party and for each person the list of people they know at the party, we want to find the celebrities at the party.
 A celebrity is a person that everybody at the party knows but that only knows other celebrities. At least one celebrity is present at the party.'' The sketch core looks as follows (names are shortened):}
-\begin{Verbatim}[fontsize=\small]
+\begin{Verbatim}[fontsize=\normalsize,numbers=left,xleftmargin=2mm]
 n(N) :- N = ?#{ P : p(P) }.
 :- c(C), p(C), n(N), S = ?#{P : k(P,C), p(P)}, S < N-1.
 :- c(C), p(C), not c(P), k(C,P).
 \end{Verbatim} 
+The last rule is an integrity constraint verifying that no celebrity, \texttt{c}, knows a person who is not a celebrity. The first line sketches a rule that should find what aggregation metric on the people (unary predicate person, \texttt{p}) should be used in the problem. The sketched rule in the second line makes use of this metric, denoted as \texttt{n}, and says that an aggregation should be performed on the binary "knows" predicate, \texttt{k}, (indicating that two persons know each other); so the outcome of the sketched aggregation on the connection between people should be compared to an overall metric on all people individually.
+
+\section{Experimental evaluation}\label{sec:experiments} 
 
 
-\section{Experimental Evaluation}\label{sec:experiments} 
+\begin{table}[h] \rowcolors{2}{gray!25}{white}
+\centering
+\footnotesize 
+\begin{tabular}{l | c c c c c c}
+\textbf{Problem} & \textbf{\# Sketched} &\textbf{\# ?=}& \textbf{\# ?+} & \textbf{\# ?not} &\textbf{\# ?p} & \textbf{\# Rules}\\\hline
+Graph Clique            &        3              &   1  &  0    &    0    &   2   &    4    \\
+3D Matching             &        3              &   3  &  0    &    0    &   0   &    1    \\
+Graph Coloring          &        7              &   4  &  0    &    0    &   3   &    2    \\
+Domination Set          &        3              &   0  &  0    &    1    &   2   &    5    \\
+Exact Cover             &        7              &   2  &  0    &    1    &   4   &    3    \\
+Sudoku                  &        5              &   4  &  0    &    1    &   0   &    4    \\
+B\&W Queens             &        5              &   3  &  2    &    0    &   0   &    3    \\
+Hitting Set             &        3              &   0  &  0    &    1    &   2   &    2    \\
+FAP                     &        3              &   0  &  0    &    1    &   2   &    3    \\
+Feedback Arc Set        &        4              &   0  &  0    &    2    &   2   &    3    \\
+Latin Square            &        4              &   4  &  0    &    0    &   0   &    2    \\
+Edge Domination         &        3              &   0  &  0    &    1    &   2   &    5    \\
+FAP                     &        5              &   3  &  2    &    0    &   0   &    3    \\
+Set Packing             &        4              &   2  &  0    &    0    &   2   &    1    \\
+Clique Cover            &        4              &   3  &  0    &    1    &   0   &    3    \\
+Feedback Set            &        5              &   0  &  0    &    5    &   0   &    3    \\
+Edge Coloring           &        3              &   3  &  0    &    0    &   0   &    3    \\
+Set Splitting           &        5              &   2  &  0    &    1    &   2   &    3    \\
+N Queens                &        6              &   4  &  2    &    0    &   0   &    3    \\
+Vertex Cover            &        3              &   0  &  0    &    1    &   2   &    4    \\
+Subgraph Isomorphism    &        5              &   2  &  0    &    1    &   2   &    4    \\
+\end{tabular}
 
-
-
-
+\caption{Dataset summary: the number of sketched variables, of rules, of particular types of sketched variables, e.g., ``\# ?not'', indicates how many atoms with the sketched negation are in the program.}
+\label{tab:dataset_description}
+\end{table}
 For the experimental evaluation we have created a dataset consisting 
-of 21 classical combinatorial problems among which most are NP-complete. 
-Our dataset contains Graph Clique; 3D Matching; Vertex and Edge Coloring; Vertex and Edge Domination; Exact, Vertex and Clique Covers; Sudoku; Latin Square; B\&W and n-Queens; Hitting Set; Hamiltonian Cycle; Feedback Vertex and Arc Sets; Radio Frequency Assignment (FAP); Set Packing and Splitting; Subgraph Isomorphism. For more detailed dataset description we refer to the supplementary material.
+of 21 classical combinatorial problems among which most are
+NP-complete. For the problem list and precise sketch specifications used in the experiments, we refer to Table \ref{tab:dataset_description}. 
 
-All problems, their code, and implementation details, can be found in the accompanying Github repository:\\
-{\small\url{https://github.com/SergeyParamonov/sketching}}
+All problems, their code, and implementation details, can be found in the accompanying Github repository: {\small\url{https://github.com/for-reviews/sketching}}
 %\paragraph{Examples.} For the experiments measuring the number of solutions, we use the manually created examples that are provided in the Github repository for each sketch. For the experiment in Figure \ref{fig:latin_square_random} we generated random positive and negative examples using the ASP encoding. Since, for all problems stochastic decisions have to be made (such as picking $2$ positive examples out of $7$), the result are averaged over $20$ runs for each experiment.
 
 \textbf{Dataset of Sketches.}
@@ -259,8 +364,8 @@ although there are many example ASP programs available in blogs, books or come w
 these typically employ advanced features (such as incremental grounding, optimization or external sources) which are not supported by SkASP as yet.
 Therefore we had to design our own dataset in a systematic way (and put it in the public domain).
 The dataset is based on a systematic concept (the 21 problems by Karp). When 
-we could find encodings for these problem (such as Sudoku in Figure \ref{lst:sudoku} from \parencite{asp_tutorial_sudoku} and Hamiltonian Cycle in Figure \ref{lst:ham} from \parencite{ASPbook}) we took these problems, in all other cases we developed a solution according to the standard generate and test development methodology of ASP.
-Specifically of \qfive we looked for different encodings in the public domain of ASP’s favorite -- the N-queens problem (these encoding can tacle even its NP-complete version \parencite{complexity_nqueens}).
+we could find encodings for these problem (such as Sudoku in Figure \ref{lst:sudoku} from \cite{asp_tutorial_sudoku} and Hamiltonian Cycle in Figure \ref{lst:ham} from \cite{ASPbook}) we took these problems, in all other cases we developed a solution according to the standard generate and test development methodology of ASP.
+Specifically of \qfive we looked for different encodings in the public domain of ASP’s favorite -- the N-queens problem (these encoding can tacle even its NP-complete version \cite{complexity_nqueens}).
 
 After creating all the ASP programs, we turned them into sketched ASP programs by looking for meaningful opportunities to use 
 sketched variables. We introduced sketched variables to replace operators (such as equalities and inequalities), to replace arithmetic (such as plus and minus)
@@ -274,15 +379,15 @@ tried to select examples that carry different information (again as a user of Sk
 
 %\paragraph{Time taken} All sketching problems in the dataset, which are mentioned in this section, are solved by our method within a few seconds. This is sufficient in practice, which explains why we do not provide further details of the running time for our method.
 
-\textbf{Experimental questions} \skadded{ are designed to evaluate how usable is SkASP in practice. 
+\textbf{Experimental questions} \addedsket{ are designed to evaluate how usable is SkASP in practice. 
   Users want in general to provide only a few examples (\qone-\qthree), to obtain a small number of solutions (ideally only one) (\qone-\qtwo), the examples should be small (\qfour), the solutions should be correct (all), want to know whether and when to use preferences (\qtwo), and how robust the technique is to changes in the encoding (\qfive) as it is well known in ASP that small changes in the encoding can have large effects. Finally, they are typically interested in how the learned programs change as the sketches becomes more complex (\qthree).
 With this in mind,} we have designed and investigated the following experimental questions:
 \begin{itemize}
 \item \qone: What is the relationship between the number of examples and the number of solutions? How many examples does it take to converge?
 \item \qtwo: Are preferences useful?
-\item \qthree: What is the effect of the number of sketched variables on the convergence \skadded{and correctness of the learned programs}?
-\item \skadded{\qfour: Do models learned on examples with small parameter values generalize to models with larger parameter values?}
-\item \skadded{\qfive: What is the effect of encoding variations on the number of solutions and their correctness? }
+\item \qthree: What is the effect of the number of sketched variables on the convergence \addedsket{and correctness of the learned programs}?
+\item \addedsket{\qfour: Do models learned on examples with small parameter values generalize to models with larger parameter values?}
+\item \addedsket{\qfive: What is the effect of encoding variations on the number of solutions and their correctness? }
 \end{itemize}
 
 
@@ -292,30 +397,67 @@ With this in mind,} we have designed and investigated the following experimental
 We use the \textit{default preferences} in the experiments for the built-in inequality sketch \sketchedeq: namely $=$ and $\neq$ have equal maximal preference. A user can redefine the preferences by giving them weights. Our experiments indicate that for other sketched types no default preferences are needed.
 
 
-
-\begin{figure*}[tb]
+\begin{figure}[!thb]
   \centering
-  \begin{subfigure}[t]{0.325\textwidth}
-   \includegraphics[width=\scalefigures\textwidth]{convergence_without_preferences.png}
-   \caption{Convergence without preferences (with 5 sketched variables): B\&W Queens (Sketch \ref{lst:queens}) and FAP converge, while Sudoku does not}
+  \begin{subfigure}[t]{0.49\textwidth}
+    \includegraphics[width=\scalefigures\textwidth]{convergence_without_preferences.png}
+    \caption{Convergence without preferences (with 5 sketched variables): B\&W Queens (Sketch \ref{lst:queens}) and FAP converge, while Sudoku does not}
     \label{fig:convergence_without_preferences}
   \end{subfigure}
- \hfill
- \begin{subfigure}[t]{0.325\textwidth}
-  \includegraphics[width=\scalefigures\textwidth]{average_number_of_solutions.png}
-  \caption{Average number of solutions over the dataset, split into the \textit{easy} group converging without preferences and \textit{hard} not converging }
-  \label{fig:preferences_effect}
+  \hfill
+  \begin{subfigure}[t]{0.49\textwidth}
+    \includegraphics[width=\scalefigures\textwidth]{average_number_of_solutions.png}
+    \caption{Average number of solutions over the dataset, split into the \textit{easy} group converging without preferences and \textit{hard} not converging }
+    \label{fig:preferences_effect}
   \end{subfigure}
-\hfill
-\begin{subfigure}[t]{0.325\textwidth}
-  \includegraphics[width=\scalefigures\textwidth]{number_of_solutions_all.png}
-  \caption{Between 2 and 7 examples are needed to obtain a unique solution (or a small group of equivalent ones) under preferences.}
-  \label{fig:number_of_solutions}
+  \hfill
+  \begin{subfigure}[t]{0.49\textwidth}
+    \includegraphics[width=\scalefigures\textwidth]{number_of_solutions_all.png}
+    \caption{Between 2 and 7 examples are needed to obtain a unique solution (or a small group of equivalent ones) under preferences.}
+    \label{fig:number_of_solutions}
   \end{subfigure}
-  \caption{\qone and \qtwo: convergence without preferences (left), across the dataset (middle), for each problem (right); log-scale}%; converging on the 2nd example are not depicted); log-scale; the number of sketched indicated in parentheses}
-\end{figure*}
+  \hfill
+  \begin{subfigure}[t]{0.49\textwidth}
+    \includegraphics[width=\scalefigures\textwidth]{fap_different_number_of_vars.png}
+    \caption{The effect of the number of sketched variables on the solutions with preferences}
+    \label{fig:fap_with_preferences}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.49\textwidth}
+    \includegraphics[width=\scalefigures\linewidth]{fap_with_preferences.png}
+    \caption{The effect of the number of sketched variables on the solutions without preferences}
+    \label{fig:fap_without_preferences}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.49\textwidth}
+    \includegraphics[width=\scalefigures\linewidth]{precision_n_queens.png}
+    \caption{\addedsket{Dependency between the number of sketched variables and precision}}
+    \label{fig:precision_n_queens}
+  \end{subfigure}
+  \caption{Addressing experimental questions \qone-\qthree. \qone and \qtwo: convergence without preferences (a), across the dataset (b), for each problem (c). \qthree: the effect of different number of sketched variable on the number of solutions and precision, FAP (d, e); $N$-queens (f). log-scale (a-e)}
+\end{figure}
 
-
+\begin{figure}[!thb]
+  \centering
+  \begin{subfigure}[t]{0.49\textwidth}
+    \includegraphics[width=\scalefigures\textwidth]{latin_square_generalization.png}
+    \caption{\addedsket{Measuring the generalized accuracy and number of solutions. Latin Square $4 \times 4$.}}
+    \label{fig:latin_square_generalization}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.49\textwidth}
+    \includegraphics[width=\scalefigures\linewidth]{n_queens_all_models_number_of_solutions_manual.png}
+    \caption{\addedsket{The number of solutions (default preferences) for various $N$-queen encodings}}
+    \label{fig:systematic_solutions}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.49\textwidth}
+    \includegraphics[width=\scalefigures\textwidth]{quees_different_precision.png}
+    \caption{\addedsket{Correctness for $N$-queens various encodings (precision)}}
+    \label{fig:systematic_precision}
+  \end{subfigure}
+  \caption{Addressing experimental questions \qfour and \qfive: generalization accuracy on Latin Square (a), the effect of the encoding variations on the number of solutions (b), on precision (c).}
+\end{figure}
 
 We investigate \qone by measuring the impact of the number of examples 
 on the number of solutions of the 21 SkASP problems. 
@@ -343,29 +485,6 @@ For problems that do not converge after a few examples, we propose to
 use preferences, as provided by our SkASP framework. 
 We use the default preference described earlier. 
 
-\begin{figure*}[tb]
-  \centering
-\begin{subfigure}[t]{0.325\textwidth}
-  \includegraphics[width=\scalefigures\textwidth]{fap_different_number_of_vars.png}
-  \caption{The effect of the number of sketched variables on the solutions with preferences}
-  \label{fig:fap_with_preferences}
-  \end{subfigure}
-    \hfill
-\begin{subfigure}[t]{0.325\textwidth}
-  \includegraphics[width=\scalefigures\linewidth]{fap_with_preferences.png}
-  \caption{The effect of the number of sketched variables on the solutions without preferences}
-  \label{fig:fap_without_preferences}
-  \end{subfigure}
-  \hfill
-\begin{subfigure}[t]{0.325\textwidth}
-  \includegraphics[width=\scalefigures\linewidth]{precision_n_queens.png}
-  \caption{\skadded{Dependency between the number of sketched variables and precision}}
-  \label{fig:precision_n_queens}
-  \end{subfigure}
-  \caption{\qthree: the effect of different number of sketched variable, FAP (left, middle; log-scale); $N$-queens (right)}
-  \label{fig:second_row}
-\end{figure*}
-
 
 We investigate \qtwo by  measuring again the impact of the number of examples 
 on the number of solutions. 
@@ -389,48 +508,23 @@ their actual value (chosen randomly and repeated over multiple runs). As expecte
 the more there are sketched variables in the SkASP, the slower the number 
 of solutions decreases. Furthermore, the number of sketched variables has a greater impact on the convergence without preferences, as we see in Figure \ref{fig:fap_without_preferences}. After 3-5 examples under preferences we have fewer than 10 solutions, while without preferences there are still dozens or hundreds of solutions.
 
-\skadded{To analyze \textit{correctness} in \qthree, we need first to define it. Informally, we mean that the program classifies arbitrary examples correctly, i.e., positive as positive, etc. A typical metric to measure this is \textit{accuracy}. However, there are no well defined arbitrary positive and negative examples for the most problems: what is an arbitrary random example for Feedback Arc Cover? Problems like Sudoku and $N$-queens do have standard examples because they are parameterized with a single parameter, which has a default value. Furthermore, for the standard $8$-queens we know all solutions analytically, i.e., 92 combinations. Another issue is that the negative and positive classes are unbalanced. The usual way to address this issue is to use \textit{precision}, i.e., $\frac{\text{True Positive}}{\text{True+False Positives}}$. (Recall is typically one because the incorrect programs produce way too many solutions that include the correct ones.) In Figure \ref{fig:precision_n_queens}, we see that in all cases we were able to reach the correct solution (here the locations of sketched variables were fixed as specified in the dataset); while increasing the number of sketched variables generally decreases the precision.} % and as Figure \ref{fig:systematic_precision} if we place them differently extra examples might be required to reach the correct solution, even for the same number of sketched variables.
+\addedsket{To analyze \textit{correctness} in \qthree, we need first to define it. Informally, we mean that the program classifies arbitrary examples correctly, i.e., positive as positive, etc. A typical metric to measure this is \textit{accuracy}. However, there are no well defined arbitrary positive and negative examples for the most problems: what is an arbitrary random example for Feedback Arc Cover? Problems like Sudoku and $N$-queens do have standard examples because they are parameterized with a single parameter, which has a default value. Furthermore, for the standard $8$-queens we know all solutions analytically, i.e., 92 combinations. Another issue is that the negative and positive classes are unbalanced. The usual way to address this issue is to use \textit{precision}, i.e., $\frac{\text{True Positive}}{\text{True+False Positives}}$. (Recall is typically one because the incorrect programs produce way too many solutions that include the correct ones.) In Figure \ref{fig:precision_n_queens}, we see that in all cases we were able to reach the correct solution (here the locations of sketched variables were fixed as specified in the dataset); while increasing the number of sketched variables generally decreases the precision.} % and as Figure \ref{fig:systematic_precision} if we place them differently extra examples might be required to reach the correct solution, even for the same number of sketched variables.
 
-\skadded{To investigate \qfour, we have used the Latin Square from Listing \ref{lst:latin_square}. We have used examples for Latin Square $3\times 3$, and verified its correctness on Latin Square $4 \times 4$ (which can be checked analytically because  all solutions are known). We have discovered, that there is an inverse dependency between number of solutions and accuracy, see Figure \ref{fig:latin_square_generalization}. This happens because there are typically very few useful or ``intended'' programs while there are lot of incorrect ones.}
+\addedsket{To investigate \qfour, we have used the Latin Square from Listing \ref{lst:latin_square}. We have used examples for Latin Square $3\times 3$, and verified its correctness on Latin Square $4 \times 4$ (which can be checked analytically because  all solutions are known). We have discovered, that there is an inverse dependency between number of solutions and accuracy, see Figure \ref{fig:latin_square_generalization}. This happens because there are typically very few useful or ``intended'' programs while there are lot of incorrect ones.}
 
 
-To investigate \qfive, we have focused on the $N$-queens problem and collected several encodings from multiple sources: Potascco, Hakank.org, an ASP course by Tran Cao Son\footnote{{\url{www.hakank.org/answer_set_programming/nqueens.lp}\\\url{www.cs.uni-potsdam.de/~torsten/Lehre/ASP/Folien/asp-handout.pdf}\\\url{www.cs.nmsu.edu/~tson/tutorials/asp-tutorial.pdf}}} and our encoding. 
+To investigate \qfive, we have focused on the $N$-queens problem and collected several encodings from multiple sources: Potascco, Hakank.org, an ASP course by Tran Cao Son\footnote{\url{www.hakank.org/answer_set_programming/nqueens.lp}\\\url{www.cs.uni-potsdam.de/~torsten/Lehre/ASP/Folien/asp-handout.pdf}\\\url{www.cs.nmsu.edu/~tson/tutorials/asp-tutorial.pdf}} and our encoding. 
 Whereas all the encodings model the same problem they show significant variations 
 in  expressing constraints. To reduce the bias in how the sketched variables are introduced and systematically measure the parameters, we pick sketched variables randomly (inequalities and arithmetic) and use the same examples from our dataset (randomly picking the correct amount) for all models.
 
-In Figure \ref{fig:systematic_solutions}, we observe that while there is a certain variation in the number of solutions, they demonstrate similar behavior. \skadded{For each encoding we have introduced $5$ sketched variables and measured the number of solutions and the model's precision. In Figure \ref{fig:systematic_precision} we see that there is indeed a slight variation in precision, with 3 out of 4 clearly reaching above 90\% precision, one reaching 100\% and one getting 82\%. Thus, despite variations in encoding, they generaly behave similarly on the key metrics. }  The results have been averaged over $100$ runs.
-
-
-\begin{figure*}[tb]
-  \centering
- \begin{subfigure}[t]{0.325\textwidth}
-  \includegraphics[width=\scalefigures\textwidth]{latin_square_generalization.png}
-  \caption{\skadded{Measuring the generalized accuracy and number of solutions. Latin Square $4 \times 4$.}}
-  \label{fig:latin_square_generalization}
-\end{subfigure}
-\hfill
-\begin{subfigure}[t]{0.325\textwidth}
-  \includegraphics[width=\scalefigures\linewidth]{n_queens_all_models_number_of_solutions_manual.png}
-  \caption{\skadded{The number of solutions (default preferences) for various $N$-queen encodings}}
-  \label{fig:systematic_solutions}
-  \end{subfigure}
-\hfill
- \begin{subfigure}[t]{0.325\textwidth}
-  \includegraphics[width=\scalefigures\textwidth]{quees_different_precision.png}
-  \caption{\skadded{Correctness for $N$-queens various encodings (precision)}}
-  \label{fig:systematic_precision}
-\end{subfigure}
-\caption{\skadded{\qfour and \qfive: generalization (left), effect of the encoding variations on \# solutions (middle), on precision (right)}}
-\end{figure*}
-
-
+In Figure \ref{fig:systematic_solutions}, we observe that while there is a certain variation in the number of solutions, they demonstrate similar behavior. \addedsket{For each encoding we have introduced $5$ sketched variables and measured the number of solutions and the model's precision. In Figure \ref{fig:systematic_precision} we see that there is indeed a slight variation in precision, with 3 out of 4 clearly reaching above 90\% precision, one reaching 100\% and one getting 82\%. Thus, despite variations in encoding, they generaly behave similarly on the key metrics. }  The results have been averaged over $100$ runs.
 
 
 Overall, we observe that only few examples are needed to converge to a unique or a small group of equivalent solutions. An example where such equivalent solutions are found is the \text{edge coloring problem}, where two equivalent (for undirected graphs) constraints are found:
 \begin{equation*}
   \begin{aligned}
- &\leftarrow \textit{color}(X,Y_1,C), \textit{color}(X,Y_2,C),~Y_1 \neq Y_2.\\
- &\leftarrow \textit{color}(X_1,Y,C), \textit{color}(X_2,Y,C),~X_1 \neq X_2.
+    &\leftarrow \textit{color}(X,Y_1,C), \textit{color}(X,Y_2,C),~Y_1 \neq Y_2.\\
+    &\leftarrow \textit{color}(X_1,Y,C), \textit{color}(X_2,Y,C),~X_1 \neq X_2.
   \end{aligned}
 \end{equation*}
 For this problem these two constraints are equivalent and cannot be differentiated by any valid example. %In the experiments we have only two such cases: the one described above and $n$-queens with three symmetric solutions under the default preferences.
@@ -441,48 +535,66 @@ An interesting observation we made on these experiments is that the
 hardness (e.g., in terms of runtime) of searching for a solution of 
 a problem is not directly connected to the hardness of learning the 
 constraints of this problem. This can be explained by the incomparability of the search spaces. 
-The SkASP searches through the search space of sketched variables, 
+SkASP searches through the search space of sketched variables, 
 which is usually much smaller than  the search space of the set of decision variables 
 of the problem to learn.
 
-\section{Related Work}\label{sec:related_work}
+\section{Related work}\label{sec:related_work}
 The problem of sketched ASP is related to a number of topics.
 First, the idea of sketching originates from the area of programming languages, where
-it relates to so called self-completing programs \parencite{sketching_phd_thesis}, typically in C \parencite{sketching_original} and in Java \parencite{jsketch}, where an imperative program has a question mark instead of a constant and a programmer provides a number of examples to find the right substitution for it. While sketching has been used in imperative programming languages, it has -- to the best of the authors' knowledge -- never been applied to ASP and constraint programming.  What is also new is that the sketched ASP is solved using a standard ASP solver, i.e., ASP itself.
+it relates to so called self-completing programs \cite{sketching_phd_thesis}, typically in C \cite{sketching_original} and in Java \cite{jsketch}, where an imperative program has a question mark instead of a constant and a programmer provides a number of examples to find the right substitution for it. While sketching has been used in imperative programming languages, it has -- to the best of the authors' knowledge -- never been applied to ASP and constraint programming.  What is also new is that the sketched ASP is solved using a standard ASP solver, i.e., ASP itself.
 
-Second, there is a connection to the field of inductive (logic) programming (ILP)  \parencite{ilp_book,ilp_original,gulwani2015inductive}
+Second, there is a connection to the field of inductive (logic) programming (ILP)  \cite{ilp_book,ilp_original,gulwani2015inductive}
 as one induces programs from examples of their intended behaviour.  
-An example of such approach is the work on meta-interpretive learning \parencite{MuggletonMLJ14,MuggletonMLJ15} where 
+An example of such approach is the work on meta-interpretive learning \cite{MuggletonMLJ14,MuggletonMLJ15} where 
 a Prolog program is learned from a set of higher-order rules and examples. The higher-order rule acts as a kind of template
 that can be used to complete the program. 
 However, meta-interpretive learning differs from SkASP in that it induces full programs 
 and pursues as other ILP methods a search- and trace-based approach guided by generality, 
 whereas SkASP using a constraint solver (i.e., ASP itself) directly.  Furthermore, the target is different in that ASPs are learned, which include constraints. %rather than Prolog or Datalog programs. % On the other hand, meta-interpretive learning also supports predicate invention. 
-There is also a connection to meta-interpretation in ASP \parencite{asp_meta}, such as rule and decision materialization. The purpose of is, however, different: they aim at synthesizing a program of higher complexity ($\Sigma_2^P$) given programs of lower complexity (\textit{NP} and \textit{Co-NP}).
+There is also a connection to meta-interpretation in ASP \cite{asp_meta}, such as rule and decision materialization. The purpose is, however, different: they aim at synthesizing a program of higher complexity ($\Sigma_2^P$) given programs of lower complexity (\textit{NP} and \textit{Co-NP}).
 
-There are also interesting works in the intersection of ILP, program synthesis and ASP \skadded{\parencite{inductive_asp,inductive_asp2}. The ILASP system \parencite{ILASP_system} learns an ASP program from  examples, and a set of modes, while minimizing a metric, typically the number of atoms. While there are similarities in the definitions and used ASP meta-programming techniques,} the program, learned completely from scratch, is not necessarily the best program from the user's point of view and may limit the possibility to localize the uncertainty based on the user's knowledge of the problem.  \skadded{Indeed, if all sketched predicates are added in the modes with corresponding background knowledge, then the set of hypotheses of sketched ASP is a subset of ILASP. However, if we specify a sketched constraint \texttt{:- p(X),q(Y),X?=Y} with the negative example \texttt{\{p(1),q(2)\}} as modes for ILASP \parencite{ILASP_system}, ILASP would learn a program like \texttt{:- p(X)}, since that is a minimal program in the number of atoms but that is clearly not the program intended by the sketch. Furthermore, we aim at computing the set of preferred programs instead of a single solution. %(For a more detailed comparison, we refer to the supplementary material.) %From the Blumer bound \parencite{Blumer_bound} we know that the PAC bound on the hypothesis error logarithmically depends on the hypothesis size, which gives better generalization error to sketching.
-  SkASP is also related to XHAIL \parencite{xhail} an ILP abduction system, which, however, does not support constraints that are at the core of our system. }
+\begin{table}
+    \small
+  \centering
+  \begin{tabular}{l | c c}
+    \textbf{Feature} & SkASP & ILASP \\\hline 
+    Problem type & Enumeration & Optimization \\
+    Input & Sketch, examples, preferences & Modes, examples\\
+    Intermediate & ASP (+post-processing) & Sets of pos. \& violating solutions\\
+    Output & A set of preferred solutions & A minimal size program\\
+    Backg. knowl. & Yes & Yes\\
+    Single shot & Yes & No \\
+    Local uncertainty & Yes & No \\
+    Supports choices & No & Yes \\
+    Meta-ASP & Yes & Yes \\
+  \end{tabular}
+  \caption{Key feature comparison between SkASP and ILASP}
+  \label{tab:ilasp_table}
+\end{table}
+There are also interesting works in the intersection of ILP, program synthesis and ASP \addedsket{\cite{inductive_asp,inductive_asp2}. The ILASP system \cite{ILASP_system} learns an ASP program from  examples, and a set of modes, while minimizing a metric, typically the number of atoms. While there are similarities in the definitions and used ASP meta-programming techniques,} the program, learned completely from scratch, is not necessarily the best program from the user's point of view and may limit the possibility to localize the uncertainty based on the user's knowledge of the problem.  \addedsket{Indeed, if all sketched predicates are added in the modes with corresponding background knowledge, then the set of hypotheses of sketched ASP is a subset of ILASP. However, if we specify a sketched constraint \texttt{:- p(X),q(Y),X?=Y} with the negative example \texttt{\{p(1),q(2)\}} as modes for ILASP \cite{ILASP_system}, ILASP would learn a program like \texttt{:- p(X)}, since that is a minimal program in the number of atoms but that is clearly not the program intended by the sketch. Furthermore, we aim at computing the set of preferred programs instead of a single solution. For a more detailed feature comparison, we refer to Table \ref{tab:ilasp_table}. %From the Blumer bound \cite{Blumer_bound} we know that the PAC bound on the hypothesis error logarithmically depends on the hypothesis size, which gives better generalization error to sketching.
+SkASP is also related to XHAIL \cite{xhail} an ILP abduction system, which, however, does not support constraints that are at the core of our system. }
 
-Third, there is also work on constraint learning, where the systems such as CONACQ \parencite{original_constraint_learning,besetalAIJ17} and QUACQ \parencite{QUACQ} learn a set of propositional constraints,  and ModelSeeker \parencite{BeldiceanuS12} learns global constraints governing a particular set of examples.  The subject has also been investigated in ILP setting \parencite{lallouet}. 
+Third, there is also work on constraint learning, where the systems such as CONACQ \cite{original_constraint_learning,besetalAIJ17} and QUACQ \cite{QUACQ} learn a set of propositional constraints,  and ModelSeeker \cite{BeldiceanuS12} learns global constraints governing a particular set of examples.  The subject has also been investigated in ILP setting \cite{lallouet}. 
 However, the idea in all these approaches is to learn the complete specification of CSPs from scratch. Our setting is probably more realistic 
 from a user perspective as it allows to use the knowledge that the user no doubt possesses about the underlying problem,
 and also requires much less examples.  On the other hand, SkASP also makes, as other sketching approaches,
 the strong assumption that the intended target program is an instance of the sketched one. This may not always
 be true, for instance, when rules are missing in the program.  This is an interesting issue for further research.
 
-Fourth, our approach is related to debugging of ASP \parencite{debugging_using_meta_asp,debugging_asp}. 
+Fourth, our approach is related to debugging of ASP \cite{debugging_using_meta_asp,debugging_asp}. 
 Unlike SkASP such debuggers can be used to locate bugs, but typically 
 do not provide help in fixing them. On the other hand,
-once a bug is identified, SkASP could be used to repair it by introducing a sketch and a number of examples. \footnote{ {\scriptsize During the experiments, we stumbled upon a peculiar bug. One encoding worked mostly by pure luck. The following constraint \texttt{:-queen(X1,Y1),queen(X2,Y2),X1<X2,abs(Y1-X1)==abs(Y2-X2).} works because \texttt{abs} is not actually absolute value but an 
-uninterpreted function, essentially it checks $X == Y$, and that is indeed the found solution. \skadded{(This kind of bugs would be extremely hard to find using traditional debuggers, since technically the encoding produced correct solutions.)} 
-Also, while working on the aggregate extension use-case, we discovered a subtle bug: the case of a single celebrity was not handled correctly. In both cases, the author has been contacted and models have been updated.}} The approach of \parencite{ilp_debugging_asp} is based on classical ILP techniques of generalization and specification and does not provide the freedom to indicate uncertain parts of the program.
+once a bug is identified, SkASP could be used to repair it by introducing a sketch and a number of examples. \footnote{ {\scriptsize During the experiments, we stumbled upon a peculiar bug. One ASP encoding that we discovered in a public repository worked mostly by pure luck. The following constraint \texttt{:-queen(X1,Y1),queen(X2,Y2),X1<X2,abs(Y1-X1)==abs(Y2-X2).} works because \texttt{abs} is not actually absolute value but an 
+uninterpreted function, essentially it checks $X == Y$, and that is indeed the found solution. \addedsket{(This kind of bugs would be extremely hard to find using traditional debuggers, since technically the encoding produced correct solutions.)} 
+Also, while working on the aggregate extension use-case, we discovered a subtle bug: the case of a single celebrity was not handled correctly. In both cases, the author has been contacted and models have been updated.}} The approach of \cite{ilp_debugging_asp} is based on classical ILP techniques of generalization and specification and does not provide the freedom to indicate uncertain parts of the program.
 
 
 
 % \section{Practical Applications: Query Sketching} \label{sec:applications}
-% \skadded{There is an important area of research in databases, called query-by-example (QBE) \parencite{query_by_example}, where one recovers a query, given a database and positive and negative output tuples. Typically, QBE algorithms have two parts: query-optimization and search. The former is to reduce the search space and the latter is to look for a query. The technique described in this paper, enhanced with the query-optimization methods from QBE would allow to model the search component and port the sketching idea into the database setting, \textit{Query Sketching}.}
+% \addedsket{There is an important area of research in databases, called query-by-example (QBE) \cite{query_by_example}, where one recovers a query, given a database and positive and negative output tuples. Typically, QBE algorithms have two parts: query-optimization and search. The former is to reduce the search space and the latter is to look for a query. The technique described in this paper, enhanced with the query-optimization methods from QBE would allow to model the search component and port the sketching idea into the database setting, \textit{Query Sketching}.}
 
-% \skadded{E.g., consider a standard database setting with an employee database, where a user needs to select all highly-paid employees not from sales departments. The user knows the general structure of the query, i.e. a join between two tables with a filtering condition on columns, but she is unsure of the exact combination of values. Thus, she leaves all the comparisons with constants open.}
+% \addedsket{E.g., consider a standard database setting with an employee database, where a user needs to select all highly-paid employees not from sales departments. The user knows the general structure of the query, i.e. a join between two tables with a filtering condition on columns, but she is unsure of the exact combination of values. Thus, she leaves all the comparisons with constants open.}
 
 
 % \begin{minipage}{0.41\linewidth}
@@ -510,18 +622,7 @@ Also, while working on the aggregate extension use-case, we discovered a subtle 
 % \end{minipage}
 
 
+\section{Discussion and conclusions}\label{sec:discussion}
+Our contribution is four-fold: we have introduced the problem of sketched ASP; we have provided a rewriting schema for SkASP; we have created a dataset of sketches and we have evaluated our approach empirically demonstrating its efficiency and effectiveness.
 
-
-
-\section{Discussion and Conclusions}\label{sec:discussion}
-Our contribution is four-fold: we have introduced the problem of sketched ASP; we have provided a rewriting schema for SkASP; we showed that the complexity of the rewriting is the same as that of the existence of an AS; we have created a dataset of sketches and evaluated our approach empirically demonstrating its efficiency and effectiveness.
-
-User interaction is an interesting direction for future work, namely to suggest constraints and examples. For the former, if we are not able to reject a negative example, we can construct a constraint that would reject the negative examples and none of the positive examples. As for the examples, if we have two solutions to a problem, we can generate an example discriminating between them and ask user to clarify it, while this might not always be possible, since symmetric assignments might lead to semantically identical programs. In practice, however, this might be an important addition to simplify sketching for end users. Another interesting direction is to incorporate \skadded{non-constant} preference handling  into the ASP model using the extensions of ASP for preference handling, such as \textit{asprin} \parencite{asprin}.
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Keep the following \cleardoublepage at the end of this file, 
-% otherwise \includeonly includes empty pages.
-\cleardoublepage
-
+User interaction is an interesting direction for future work, namely to suggest constraints and examples. For the former, if we are not able to reject a negative example, we can construct a constraint that would reject the negative examples and none of the positive examples. As for the examples, if we have two solutions to a problem, we can generate an example discriminating between them and ask user to clarify it, while this might not always be possible, since symmetric assignments might lead to semantically identical programs. In practice, however, this might be an important addition to simplify sketching for end users. Another interesting direction is to incorporate \addedsket{non-constant} preference handling into the ASP model using the extensions of ASP for preference handling, such as \textit{asprin} \cite{asprin}.

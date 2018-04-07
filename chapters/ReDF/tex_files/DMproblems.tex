@@ -27,7 +27,7 @@ Together these two tiles ``cover'' the whole dataset, that is, all cells with va
 
 
 
-\begin{definition}[Maximum $k$-Tiling]
+\begin{definition}[Maximum $k$-tiling]
 Given a binary dataset $D$ and a positive integer $k$, find a tiling \bigT consisting of at most $k$ tiles and maximizing $\textit{area}(\bigT, D)$.
 \end{definition}
 
@@ -128,7 +128,7 @@ To model the variation that tolerates some noise in the data, we can replace  co
 \end{description}
 Both variations show that a slight change of the formulation of property of a solution leads to a small change in the modeling and to a small change in the implementation. 
 
-\subsection{The Discrete Basis Problem (DBP) and Boolean Matrix Factorization (BMF)}
+\subsection{The discrete basis problem (DBP) and boolean matrix factorization (BMF)}
 \label{subsection:bmf}
 BMF has been extensively studied by \cite{conf/icdm/Miettinen12}, resulting in the well-known ASSO algorithm. Let us now show how it can be expressed as ReDF problem. As a starting point we take the same shape (Eq. \ref{tilingshape}) as in the tiling example in Subsection \ref{subsection:tiling}. However, we need to change the constraints to reflect the different properties of the desired solutions: tiles may now overlap, since one is not interested in tiles per se, but in good coverage of the dataset. That is why we remove 
 the \intersectionConstraint and \overcoverageConstraint constraints, and introduce a notion of `overcoverage' instead, by means of the following definition:

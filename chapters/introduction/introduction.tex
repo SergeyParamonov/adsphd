@@ -11,7 +11,7 @@ contributions of the thesis and
 its general structure.
 \end{addmargin}
 
-\section{Data Mining}
+\section{Data mining}
 The ability to write down a model and to simply push a button to get the
 answer is an appealing idea. It is one of the holy grails of
 Artificial Intelligence, called Declarative Programming, where one
@@ -48,7 +48,7 @@ using systems designed to perform search in declarative manner, such
 as \acrlong{cp} \parencite{handbookcp} or \acrlong{asp}
 \parencite{whatisasp}. %(which we discuss later in detail).
 
-\section{Constraint Programming} \comment{ADDED}
+\section{Constraint programming} 
 \acrlong{cp} is a declarative methodology for solving combinatorial
 problems. The essence of this methodology is in writing a set of
 constraints, such as $X + Y > Z$, and finding a solution to them, such
@@ -65,7 +65,7 @@ to figure out \textit{how} to find a solution, while it is the user's
 responsibility to specify \textit{what} the problem is in terms of
 writing these constraints.
 
-\section{Constraint Learning}
+\section{Constraint learning}
 Constraint Learning is the research field concerned with finding
 constraints in the data \parencite{constraint_learning,QUACQ,Conacq}.
 %Let us outline in simple terms, what constraint learning is about.
@@ -85,7 +85,7 @@ characters, for example, we discovered that the "ascending constraint" holds, i.
 characters are sorted or we found that givens graphs are all cyclic.
 Therefore, we consider constraint learning and pattern mining to be interconnected, and both problems play a central role in this thesis.
 
-\section{Logic Programming}
+\section{Logic programming}
 In his seminal work Robert \textcite{kowalski} proclaimed:
 \begin{center}
   Algorithm = Logic + Control.
@@ -118,11 +118,11 @@ simple logical implication:
 The following notation in Prolog (Programming in logic)
 \parencite{prolog_original} mimics the logical implication:
 
-\begin{equation*}
+\begin{equation}\label{eq:sushi}
   \forall X: \textit{person}(X) \wedge \text{not }
     \textit{allergic}(X) \wedge \text{not } \textit{vegan}(X)
   \implies \textit{likes\_sushi}(X)
-\end{equation*}
+\end{equation}
 Therefore, we can think of Logic Programming as executable Logic, that
 we can use to model and solve relational problems.
 
@@ -133,7 +133,7 @@ as \acrlong{asp} (\acrshort{asp}) \parencite{ASPbook,whatisasp} and
 that naturally support constraints and various types of logical
 inference.
 
-\section{Relational Learning}
+\section{Relational learning}
 \sergey{TODO: finish}
 
 \section{Contributions}
@@ -216,7 +216,7 @@ this question we look into \textit{sequence}, \textit{graph} and
 hybrid approaches based on logic programming.
 
 
-\section{Structure of the Thesis}
+\section{Structure of the thesis}
 \textbf{Chapter} \ref{ch:background} introduces background information
 on Logic, Answer Set and Programming and Pattern Mining.
 
@@ -270,7 +270,7 @@ TaCLe: Learning constraints in tabular data.
 \end{addmargin}
 
 
-\textbf{Chapter} \ref{ch:Sketching} introduces the novel problem of
+\textbf{Chapter} \ref{ch:sketching} introduces the novel problem of
 Sketched Answer Set Programming. The idea of sketching takes root in
 imperative programming, when a function in C or Java has a part of it,
 typically a constant, left unspecified. A user then provides a number
@@ -309,7 +309,23 @@ An Exercise in Declarative Modeling for Relational Query Mining.
 Lecture Notes in Computer Science, volume 9575, pages 166-182,
     Springer, Inductive Logic Programming, Kyoto, 20-22 August 2015.
 
+Tias Guns, Sergey Paramonov, Benjamin Negrevergne: On declarative
+    modeling of structured pattern mining, AAAI Workshop on
+    Declarative Learning Based Programming, Phoenix, Arizona USA, 13
+    February 2016.
 
+Matthias van der Hallen, Sergey Paramonov, Michael Leuschel, Gerda
+    Janssens: Knowledge representation analysis of graph mining,
+    Bogaerts, Bart; Harrison, Amelia (eds.), Proceedings of ASPOCP
+    2016, pages 55-76, Workshop on Answer Set Programming and Other
+    Computing Paradigms, New York, 16 October 2016.
+
+Sergey Paramonov, Chen Tao, Tias Guns: Generic mining of condensed
+    pattern representations under constraints, Young Scientist's
+    Second International Workshop on Trends in Information Processing
+    (YSIP2), pages 168-177, CEUR Workshop Proceedings, Young
+    Scientist's International Workshop on Trends in Information
+    Processing, Dombai, Russia, 16-20 May 2017.
 
 Sergey Paramonov, Daria Stepanova, Pauli Miettinen:
 Hybrid ASP-Based Approach to Pattern Mining.  
@@ -322,7 +338,7 @@ Rules and Reasoning - International Joint Conference, RuleML+RR 2017,
 \textbf{Chapter} \ref{ch:conclusions} summarizes the thesis and
 discusses future work possibilities.
 
-\section{Datasets, Code and Experimental Results}
+\section{Datasets, code and experimental results}
 In order to make results repeatable and to follow the Open Source
 spirit, we have opened and published the datasets, use-cases,
 meta-data and other useful information.
