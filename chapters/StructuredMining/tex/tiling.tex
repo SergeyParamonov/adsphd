@@ -55,7 +55,7 @@
     \newcommand{\mZ}{\matr{Z}}
 
 
-\section{Covering with Approximate Patterns}\label{sec:tiling}
+\section{Covering with approximate patterns}\label{sec:tiling}
 
 So far, we have concentrated on exact patterns, that is, patterns that are present exactly in the data; for example, an itemset is present only in transactions that contain every item in the itemset. This is a standard assumption in pattern mining, and it is heavily utilized by the pattern mining algorithms. But it also means that the patterns are not robust against noise: a single item missing from a single transaction can turn a frequent itemset into an infrequent one. To make the patterns more robust to noise, we can consider approximate patterns, that is, patterns that are \revision{considered as} contained in transactions even if the transaction does not contain all of the items in the pattern. In this section, we demonstrate how our hybrid approach can be used also with approximate patterns.
 

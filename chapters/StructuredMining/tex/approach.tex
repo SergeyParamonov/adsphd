@@ -1,4 +1,4 @@
-\section{Hybrid ASP-based Mining Approach}\label{sec:problem}
+\section{Hybrid ASP-based mining approach}\label{sec:problem}
 
 % The goal of this work is to allow for hybradisation between highly optimized generic solvers and specialized pattern mining implementations within a generic framework for pattern mining under both local and global constraints.
 In this section we present our hybrid method for frequent pattern mining. Unlike previous ASP-based mining methods, our approach combines \revision{in the two step procedure, where in the first step, we apply highly optimized algorithms for frequent pattern discovery and, in the second step, we use a declarative ASP solver for their convenient post-processing. Intuitively, our algorithm can be seen as a pipeline where, at the first step, frequent patterns are being generated using highly efficient specialized algorithms and, at the second step, a condensed representation is extracted using a declarative approach based on ASP.} Here, we mainly focus on itemsets, sequence and graph mining. 
@@ -14,7 +14,7 @@ We use Eclat \parencite{eclat} for itemsets, PPIC \parencite{PPIC} for sequences
 
 Finally, from all valid patterns a desired condensed representation is constructed by storing patterns \texttt{i} in the \texttt{selected} predicate if they are not \texttt{dominated} by other valid patterns based on constraints from $\cC_g$. Following the principle of \parencite{DBLP:conf/lpnmr/Jarvisalo11}, for itemsets and sequences in our work every answer set represents a single desired pattern, which satisfies both local and global constraints (for graphs slight variations apply, as we discuss later in this section). The set of all such patterns forms a condensed representation. In what follows we present our encodings of local and global constraints in details. 
 
-\subsection{Encoding Local Constraints} 
+\subsection{Encoding local constraints} 
 
 In our declarative program we specify local constraints by the predicate \texttt{valid}, which reflects the conditions given in Def.~\ref{def:val}. For every constraint in $\cC_l$ we have a set of dedicated rules, stating when a pattern is not valid. 
 For instance, a constraint checking whether the cost of items in a pattern exceeds a given threshold $N$ is encoded as % using the following rule:
@@ -77,7 +77,7 @@ To combine all local constraints from $\cC_l$ we add to a program a generic rule
 % Intuitively, for that we come up with a respective ASP encoding. For every condensed representation we present its dedicated encoding both for itemsets are sequences. 
 
 
-\subsection{Encoding Global Constraints}
+\subsection{Encoding global constraints}
 
 The key for encoding global constraints is the declarative formalization of the dominance relation (Def.~\ref{def:dom}). For example, for itemsets the maximality constraint boils down to pairwise checking of subset inclusion between patterns. For sequences this requires a check of embedding existence between sequences.
 

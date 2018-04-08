@@ -268,7 +268,7 @@ In the general setting, the problem of deciding whether a subgraph isomorphism e
 \end{figure}
 
 
-\subsection{Condensed Pattern Representations under Constraints}
+\subsection{Condensed pattern representations under constraints}
 In data mining, constraints are typically specified by the user to encode domain background knowledge. \textcite{DBLP:conf/cpaior/NegrevergneG15} distinguish four types of constraints: 1) constraints over the pattern (e.g., restriction on its %length
 size), 2) constraints over the cover set (e.g., minimal frequency), 3) constraints over the inclusion relation (e.g., maximal allowed gap in sequential patterns) and 4) constraints over the solution set (e.g., condensed representations).  
 
@@ -337,50 +337,6 @@ Note that various names exist in the literature such the \textit{dominating set}
 
 
 %For brevity we refer to the above constraints as $\mi{max,cl,sky,}$ and $\mi{free}$.
-
-
-\subsection{Answer Set Programming}
-
-Answer Set Programming (ASP) \parencite{GL1988} %has appeared as 
-is a declarative problem solving paradigm oriented towards difficult search problems. ASP has its roots in Logic Programming and Nonmonotonic Reasoning.
-An \emph{ASP program} $\Pi$ is a set of rules of the form
-\begin{equation}
-    \label{eq:asp:rule}
-    \texttt{a\_0 :- b\_1, ..., b\_k, not b\_{k+1}, ..., not b\_m.}
-\end{equation}
-where $0 \leq k \leq m $,  and \texttt{a\_0, b\_1, ..., b\_m} are classical literals, and \,{$\naf$}\,is %denotes 
-default negation. The right-hand side of $r$ is its body, $\mi{Body(r)}$, while the left-hand side is the head, $\mi{Head(r)}$.  $\mi{Body^+(r)}$ and $\mi{Body^-(r)}$ \revision{stand for the positive and negative sets of atoms (respectively) that compose} $\mi{Body(r)}$. A rule $r$ of the form \eqref{eq:asp:rule} is %called 
-a \emph{fact} if $m=0$. We omit the symbol \texttt{:-} when referring to facts.  A rule without head literals is a \emph{constraint}. Moreover, a rule is \emph{positive} if $k=m$.
-
-An ASP program $\Pi$ is \emph{ground} if it consists of only ground rules, i.e. rules without
-variables. Ground instantiation $\mi{Gr}(\Pi)$ of a nonground program $\Pi$ is obtained by substituting variables with constants in all possible ways. The \emph{Herbrand universe}  $\mi{HU}(\Pi)$ (resp. \emph{Herbrand base} $\mi{HB}(\Pi)$) of $\Pi$, is the set of all constants occurring in $\Pi$, (resp. the set of all possible ground atoms that can be formed with predicates and constants occurring in $\Pi$). Any subset of $\mi{HB}(P)$ is a \emph{Herbrand interpretation}. ${\mi{MM}(\Pi)}$ denotes the subset-minimal Herbrand interpretation \revision{that is a \emph{model} of a ground positive program $\Pi$}. 
-
-
-The semantics of an ASP program is given in terms of its answer sets. An interpretation $A$ of $\Pi$ is an \emph{answer set} (or \emph{stable model}) of $\Pi$ iff $A = \mi{MM}(\Pi^A)$, where $\Pi^A$ is the \emph{Gelfond--Lifschitz (GL) reduct} \parencite{GL1988} of $\Pi$, obtained from $Gr(\Pi)$ by removing (i) each rule $r$ such that $\mi{Body}^-(r) \cap A\neq\emptyset$, and (ii) all the negative atoms from the remaining rules. The set of answer sets of a program $\Pi$ is denoted by $AS(\Pi)$.
-
-\begin{example}
-    Consider the program $\Pi$ given as follows:
-    \smallskip
-
-    \small{\leftline{
-        $\renewcommand{\arraystretch}{1.1}
-    \begin{array}{@{\,}l@{~~}l@{}}
-        \texttt{\mbox{(1) }pattern(1); \mbox{(2) }pattern(2); \mbox{(3) }item(1,a);} \\ \texttt{\mbox{(4) }item(1,b); \mbox{(5) }item(2,a);} \\
-        \texttt{\mbox{(6) }not\_subset(I,J):-pattern(I), item(I,V), I != J,} \\
-        \phantom{\texttt{\mbox{(6) }not\_subset(I,J):-}}\texttt{pattern(J), not\ item(J,V).}\\
-    \end{array}$}}
-\smallskip
-
-    \normalsize{The grounding $\mi{Gr}(\Pi)$ of $\Pi$ is obtained from $\Pi$ by  substituting \texttt{I,J} with \texttt{1,2} and \texttt{V} with \texttt{b} resp.
-    The GL-reduct $\Pi^{A'}(\Pi)$ for the interpretation $\mi{A'}$ containing facts of $\Pi$ and \texttt{not\_subset(1,2)} differs from $\mi{Gr}(\Pi)$ only in that \texttt{not\,item(2,b)} is not in the body of the rule. $\mi{A'}$ is the %a 
-    minimal model of $\Pi^{A'}(\Pi)$, and thus it is in $\mi{AS}(\Pi)$. \qed}
-\end{example}
-
-
-Other relevant language constructs include conditional literals and cardinality constraints \parencite{DBLP:journals/ai/SimonsNS02}. The former are of the form \texttt{a:b\_1,...,b\_m}, the latter
-can be written as \texttt{l\{c\_1,...,c\_n\}t}, where \texttt{a} and \texttt{b\_i} are possibly default negated literals and each \texttt{c\_j} is a conditional literal; \texttt{l} and \texttt{t} provide lower and upper bounds on the number of satisfied literals in a cardinality constraint. For instance, \texttt{1\{a(X):b(X)\}3} holds, whenever between $1$ and $3$ instances of \texttt{a(X)} (subject to \texttt{b(X)}) are true. Furthermore, aggregates are of the form \texttt{\#sum\{K: cost(I,K)\}>N}. This atom is true, whenever the sum of all \texttt{K}, such that \texttt{cost(I,K)} is true, exceeds \texttt{N}.
-
-
 
 
 %%% Local Variables:

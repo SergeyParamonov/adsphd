@@ -22,7 +22,7 @@ For \qone we compare our work with the ASP-based model by
 the runtime difference between specialized itemset mining languages \parencite{dp2013}
 and our ASP-based model.  To address \qthree we estimate the runtime effect of adding local constraints. Moreover, for \qfour we compare the performance of our system with two state-of-the-art ASP solvers: Clasp and WASP. Regarding \qfive, we perform the comparison of our hybrid mining system against the existing ILP-based method for graph mining. Finally, to tackle \qsix as a proof of concept we test the effectiveness of our hybrid method for solving the problem from Def.~\ref{def:probtile}. %\comment{PM: What about Q3--6?} 
 
-We report our evaluation results on 2 transaction datasets\!\footnote{From \url{https://dtai.cs.kuleuven.be/CP4IM/datasets/}.}: \textit{Mushrooms} (8124 transactions/119 items) and \textit{Vote} (435/48), 3 sequence datasets (full)\!\footnote{From \url{https://dtai.cs.kuleuven.be/CP4IM/cpsm/datasets.html}.}: \textit{JMLR} (788 sequences/3847 distinct symbols), \textit{Unix Users} (9099/4093), and \textit{iPRG} (8628/21), 3 graph datasets\!\footnote{From \url{https://github.com/amaunz/ofsdata}}: \textit{Yoshida} (265 graphs/20 avg. vertices/23 avg. edges/9 distinct labels), \textit{Nctrer} (232/19/20/9) and \textit{Bloodbarr}(413/21/23/9), and 2 datasets for the tiling problem: \emph{Divorce}\footnote{\url{https://sparse.tamu.edu/Pajek/divorce}}  (50 transactions/9 items) and \emph{Glass}\footnote{\url{http://cgi.csc.liv.ac.uk/\textasciitilde frans/KDD/Software/LUCS-KDD-DN/DataSets/dataSets.html}} (214/48).
+We report our evaluation results on 2 transaction datasets\!\footnote{From \url{https://dtai.cs.kuleuven.be/CP4IM/datasets/}.}: \textit{Mushrooms} (8124 transactions/119 items) and \textit{Vote} (435/48), 3 sequence datasets (full)\!\footnote{From \url{https://dtai.cs.kuleuven.be/CP4IM/cpsm/datasets.html}.}: \textit{JMLR} (788 sequences/3847 distinct symbols), \textit{Unix Users} (9099/4093), and \textit{iPRG} (8628/21), 3 graph datasets\!\footnote{From \url{https://github.com/amaunz/ofsdata}}: \textit{Yoshida} (265 graphs/20 avg. vertices/23 avg. edges/9 distinct labels), \textit{Nctrer} (232/19/20/9) and \textit{Bloodbarr}(413/21/23/9), and 2 datasets for the tiling problem: \emph{Divorce}\footnote{\url{https://sparse.tamu.edu/Pajek/divorce}}  (50 transactions/9 items) and \emph{Glass}\footnote{{\scriptsize\url{http://cgi.csc.liv.ac.uk/\textasciitilde frans/KDD/Software/LUCS-KDD-DN/DataSets/dataSets.html}}} (214/48).
 %\comment{PM: How about the tiling data sets? They should be mentioned here, too.}
 %
 % We evaluated our hybrid mining approach %is performed 
@@ -213,12 +213,12 @@ bringing additional performance benefits. The choice of an ASP solver plays a cr
 
 % Please add the following required packages to your document preamble:
 % \usepackage{multirow}
-\begin{table}[]
+\begin{table}[] \small
 \centering
 \begin{tabular}{rrrrrrrrrr}
 \hline
 \multicolumn{1}{l}{\multirow{3}{*}{$n$/$\sigma$}} & \multicolumn{2}{c}{\revision{greedy}}                                                           & \multicolumn{7}{c}{hybrid}                                                                                                                                                                                                                                                              \\ \cline{2-10} 
-\multicolumn{1}{l}{}                         & \multicolumn{1}{c}{\multirow{2}{*}{$k$}} & \multicolumn{1}{c}{\multirow{2}{*}{error}} & \multicolumn{3}{c}{first}                                                      & \multicolumn{1}{c}{\multirow{2}{*}{$k$ opt}} & \multicolumn{1}{c}{\multirow{2}{*}{error opt}} & \multicolumn{1}{c}{\multirow{2}{*}{time all}} & \multicolumn{1}{l}{\multirow{2}{*}{$|$all solutions$|$}} \\ \cline{4-6}
+\multicolumn{1}{l}{}                         & \multicolumn{1}{c}{\multirow{2}{*}{$k$}} & \multicolumn{1}{c}{\multirow{2}{*}{error}} & \multicolumn{3}{c}{first}                                                      & \multicolumn{1}{c}{\multirow{2}{*}{$k$ opt}} & \multicolumn{1}{c}{\multirow{2}{*}{error opt}} & \multicolumn{1}{c}{\multirow{2}{*}{time all}} & \multicolumn{1}{l}{\multirow{2}{*}{$|$sols$|$}} \\ \cline{4-6}
 \multicolumn{1}{l}{}                         & \multicolumn{1}{c}{}                   & \multicolumn{1}{c}{}                       & \multicolumn{1}{l}{$k$} & \multicolumn{1}{l}{error} & \multicolumn{1}{l}{time} & \multicolumn{1}{c}{}                       & \multicolumn{1}{c}{}                           & \multicolumn{1}{c}{}                          & \multicolumn{1}{l}{}                                 \\ \hline
 3/59                                           & 1                                       & 51                                          & 1                      & 59                         & 38.961                    & 1                                           & 51                                              & 38.962                                         & 5                                                     \\
 4/54                                           & 1                                       & 51                                          & 2                      & 51                         & 38.127                    & 1                                           & 51                                              & 38.135                                         & 8                                                     \\
@@ -227,17 +227,19 @@ bringing additional performance benefits. The choice of an ASP solver plays a cr
 \end{tabular}
 \caption{Addressing \qsix: approximate tiling problem  solution using specialized native algorithm for tile candidate generation and ASP encoding for selecting the resulting tiling (Divorce dataset)}
 \label{til:div}
+\normalsize
 \end{table}
 
 
 % Please add the following required packages to your document preamble:
 % \usepackage{multirow}
 \begin{table}[]
+\small
 \centering
 \begin{tabular}{rrrrrrrrrr}
 \hline
 \multicolumn{1}{c}{\multirow{3}{*}{$n$/$\sigma$}} & \multicolumn{2}{c}{\revision{greedy}}                                                           & \multicolumn{7}{c}{hybrid}                                                                                                                                                                                                                                                              \\ \cline{2-10} 
-\multicolumn{1}{c}{}                         & \multicolumn{1}{c}{\multirow{2}{*}{$k$}} & \multicolumn{1}{c}{\multirow{2}{*}{error}} & \multicolumn{3}{c}{first}                                                      & \multicolumn{1}{c}{\multirow{2}{*}{$k$ opt}} & \multicolumn{1}{c}{\multirow{2}{*}{error opt}} & \multicolumn{1}{c}{\multirow{2}{*}{time all}} & \multicolumn{1}{c}{\multirow{2}{*}{$|$all solutions$|$}} \\ \cline{4-6}
+\multicolumn{1}{c}{}                         & \multicolumn{1}{c}{\multirow{2}{*}{$k$}} & \multicolumn{1}{c}{\multirow{2}{*}{error}} & \multicolumn{3}{c}{first}                                                      & \multicolumn{1}{c}{\multirow{2}{*}{$k$ opt}} & \multicolumn{1}{c}{\multirow{2}{*}{error opt}} & \multicolumn{1}{c}{\multirow{2}{*}{time all}} & \multicolumn{1}{c}{\multirow{2}{*}{$|$sols$|$}} \\ \cline{4-6}
 \multicolumn{1}{c}{}                         & \multicolumn{1}{c}{}                   & \multicolumn{1}{c}{}                       & \multicolumn{1}{c}{$k$} & \multicolumn{1}{c}{error} & \multicolumn{1}{c}{time} & \multicolumn{1}{c}{}                       & \multicolumn{1}{c}{}                           & \multicolumn{1}{c}{}                          & \multicolumn{1}{c}{}                                 \\ \hline
 3/214                                          & 1                                       & 184                                         & 1                      & 196                        & 294.172                   & 3                                           & 88                                              & 294.173                                        & 7                                                     \\
 4/168                                          & 3                                       & 142                                         & 2                      & 154                        & 1194.088                  & 3                                           & 142                                             & 1194.093                                       & 2                                                     \\
@@ -246,6 +248,7 @@ bringing additional performance benefits. The choice of an ASP solver plays a cr
 \end{tabular}
 \caption{Addressing \qsix: approximate tiling problem solution using specialized native algorithm for tile candidate generation and ASP encoding for selecting the resulting tiling (Glass dataset)}
 \label{til:glass}
+\normalsize
 \end{table}
 
 %%% Local Variables:
