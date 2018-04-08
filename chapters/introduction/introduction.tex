@@ -133,8 +133,20 @@ as \acrlong{asp} (\acrshort{asp}) \parencite{ASPbook,whatisasp} and
 that naturally support constraints and various types of logical
 inference.
 
-\section{Relational learning}
-\sergey{TODO: finish}
+\section{Relational and logical learning}
+Typical machine learning and data mining systems work with propositional representations, logical and relational learning has arisen to overcome this limitation and work with expressive knowledge representation languages such as first order logic \parencite{luc_book}.
+
+Classical machine learning algorithms such as induction of decision trees
+\parencite{decision_trees} or Bayesian networks \parencite{pearl} work with limited representations (which can be typically mapped to a propositional language). This representation does not allow to represent naturally problems involving multiple complex objects together with the relationships between them. This limitation has been pointed out by a number of researchers, e.g., in the seminal work of \textcite{plotkin}, who has introduced a richer representation language based on the first order logic. This approached allowed to represent a non-fixed amount of complex objects together with their relationships, we call this setting \textit{relational}.
+
+Let us indicate why it is important to look into the relational
+machine learning setting. To do so, we will describe a problem where
+the number of entities and relationships between them is not fixed,
+which makes it complicated if not practically impossible to employ the
+standard machine learning techniques based on  fixed feature vectors
+or attribute-value representations, while using logical and relational models appears natural and elegant. Further in the chapters we elaborate on other problems and examples.
+
+A very well familiar to a reader spreadsheet with its formulae is an excellent example of relational data: it contains a number of relations or \textit{tables}, and their number is never fixed in advance, since a spreadsheet might contain an arbitrary number of them. Also, it combines both textual and numeric data. Furthermore, formulae and constraints over the tables play a role of relationships we have described earlier. These properties of the data itself make problem hard to model using traditional propositional approaches, while this can be clearly seen as a first order problem. This gives us confidence that for a number of important problems it is essential to look into rich knowledge representation languages.
 
 \section{Contributions}
 Given the abundance of relational data (such as spreadsheets, graphs

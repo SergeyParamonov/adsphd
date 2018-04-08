@@ -44,7 +44,7 @@ Sketching is thus a form of "lazy" programming as one does not have to fill out 
 it can also be considered as program synthesis although there are strong syntactic restrictions on 
 the programs that can be derived; and it can be useful for repairing programs once a bug in a program has been detected.
 Sketching has been used successfully in a number of applications \cite{sketching_original,sketch_recent,jsketch} to synthesise imperative programs.
-It is these capabilities that this paper brings to the field of ASP.
+It is these capabilities that this chapter brings to the field of ASP.
 
 
 As a motivating example assume 
@@ -65,7 +65,7 @@ When providing an adequate set of examples to the ASP, the SkASP solver will the
 
 
 
-The key contributions of this paper are the following: 1) we adapt the notion of sketching for use with Answer Set Programming;
+The key contributions of this chapter are the following: 1) we adapt the notion of sketching for use with Answer Set Programming;
 2) we develop an approach (using ASP itself) for computing solutions to a sketched Answer Set Program;
 3) we contribute some simple complexity results on sketched ASP; 
 and 4) we investigate the effectiveness and limitations of sketched ASP on a dataset of 21 typical ASP programs. 
@@ -354,7 +354,7 @@ For the experimental evaluation we have created a dataset consisting
 of 21 classical combinatorial problems among which most are
 NP-complete. For the problem list and precise sketch specifications used in the experiments, we refer to Table \ref{tab:dataset_description}. 
 
-All problems, their code, and implementation details, can be found in the accompanying Github repository: {\small\url{https://github.com/for-reviews/sketching}}
+All problems, their code, and implementation details, can be found in the accompanying Github repository: {\small\url{https://github.com/SergeyParamonov/sketching}}
 %\paragraph{Examples.} For the experiments measuring the number of solutions, we use the manually created examples that are provided in the Github repository for each sketch. For the experiment in Figure \ref{fig:latin_square_random} we generated random positive and negative examples using the ASP encoding. Since, for all problems stochastic decisions have to be made (such as picking $2$ positive examples out of $7$), the result are averaged over $20$ runs for each experiment.
 
 \textbf{Dataset of Sketches.}

@@ -237,9 +237,10 @@ A typical modelling approach in ASP and in actual development with Clasp and WAS
     {\bfseries ASP program = Data + Generator + Tester ( + Optimizer)} \footnote{\url{https://www.cs.uni-potsdam.de/~torsten/Potassco/Slides/asp.pdf}}
 \end{center}
 
-We follow this modelling paradigm throughout the thesis. To demonstrate it, consider as an example, $n$-queen modelling problem, where one needs to put a number of queens on the board such that no queen attack another. This can be modelled as in Listing \ref{lst:n_queens_example_modelling}. First we specify data as facts, in Lines \ref{background:line:data1} and \ref{background:line:data2}, then we define the set of possible answer sets using a choice rule in Line \ref{background:line:choice} and finally we validate them in Lines \ref{background:line:int1},\ref{background:line:int2} and \ref{background:line:int3}.
+We follow this modelling paradigm throughout the thesis. To demonstrate it, consider as an example, $n$-queen modelling problem, where one needs to put a number of queens on the board such that no queen attacks another. This can be modelled as in Listing \ref{lst:n_queens_example_modelling}. First we specify data as facts, in Lines \ref{background:line:data1} and \ref{background:line:data2}, then we define the set of possible answer sets using a choice rule in Line \ref{background:line:choice} and finally we validate them in Lines \ref{background:line:int1},\ref{background:line:int2} and \ref{background:line:int3}.
 
 \begin{figure}[H] 
+\renewcommand\figurename{Listing}
 \begin{Verbatim}[fontsize=\small,numbers=left,xleftmargin=0mm,commandchars=\\\{\},frame=single]
 % Data specifying the board
 col(1..k).\label{background:line:data1}
@@ -291,7 +292,7 @@ A constraint optimization problem is a \acrshort{csp} $(V,D,C)$ extended with an
 
 Let us demonstrate this on an example. 
 \begin{example}[Constrained Pizza Selection Problem]\label{example:pizza}
-    Peter, Alina, Ronald and Sergey decided to order three pizzas in a trattoria: margaritha ($m$), veggie ($g$) and meat-lovers ($l$) -- each pizza can be shared by at most two people and everyone specified pizzas they can eat, togehter with their preferrences for the selected pizzas on the scale from one to ten. Can we help them to share the pizzas in an optimal way?
+	Peter, Alina, Ronald and Sergey decided to order three pizzas in a trattoria: margarita ($m$), veggie ($g$) and meat-lovers ($l$) -- each pizza can be shared by at most two people and everyone specified pizzas they can eat, together with their preferences for the selected pizzas on the scale from one to ten. Can we help them to share the pizzas in an optimal way?
 
 
     We start with modelling the domain, each user respectively gets his or her own variable: $v_p$ for Peter and $v_a,v_r$ and $v_s$ respectively. Domain of each variable is the pizza they can eat:
@@ -322,7 +323,6 @@ Let us demonstrate this on an example.
 A typical approach to solving a constraint satisfaction problem is to use a form of search over the variable values in their domains, we present here an overview over a possible searching procedure, for details we refer to \textcite{tias_phd}.
 
 Algorithm \ref{algo:simple_search} demonstrates how we can solve a \acrshort{csp}. First, we propagate all possible deterministic assignments. Then we make a decision which variable we are going to split, i.e., we investigate two cases separately when it can take certain values and when it cannot. For each of this cases we call the procedure itself recursively. If in certain moment, we have derived that all variables have only one value, then it is a solution, if in certain point of propagating values using given constraints we established that no value is left for a variable, we return a failure for this particular case.
-
 
 \begin{algorithm}[t]
     \begin{algorithmic}[1]
@@ -374,7 +374,7 @@ An IDP program has three parts: \textit{Vocabulary} that defines the terminology
 
 IDP and its language FO(.) can be seen as executable logic we have discussed before, for example the sushi problem can be encoded in IDP as in Listing \ref{lst:idp_sushi}. First, we define vocabulary, which corresponds to vocabulary in first order logic, except for the extra type information. Facts and domains are specified in the structure section, as we see for example with the declaration of the domain for the type person, for which actual values are assigned in the section structure. The theory section defines the actual clauses or constraints, which indeed corresponds to the first order sentences, the only constraint here one to one maps to Eq. \ref{eq:sushi}, which a classical logical implication. The procedure \texttt{main} is a directive to the system to extend the given structure satisfying the constraints in the theory.
 
-\begin{lstlisting}[caption=Encoding sushi preferences problem, label=lst:idp_sushi,basicstyle=\ttfamily]
+\begin{lstlisting}[caption=Encoding sushi preferences problem, label=lst:idp_sushi,basicstyle=\ttfamily, basicstyle=\small]
 vocabulary V{
   type person
   allergic(person)
@@ -400,27 +400,27 @@ procedure main(){
 Therefore, when we write a first order model for a problem, we can always map it to the language of FO(.), furthermore provided language extensions make modeling of relational problems more natural and convenient
 
 
-\section{Comparison between terminologies}
-Since some readers might be more familiar with Constraint Programming than with Answer Set Programming or First Order Logic, in Table \ref{tab:terminology_comparison} we present a terminologies comparison \parencite{phd_broes}.
+%%%%\section{Comparison between terminologies}
+%%%%Since some readers might be more familiar with Constraint Programming than with Answer Set Programming or First Order Logic, in Table \ref{tab:terminology_comparison} we present a terminologies comparison \parencite{phd_broes}.
 
-In this thesis we use Answer Set Programming terminology, unless specified otherwise.
-\begin{table}
-    \centering
-    \begin{tabular}{c | c | c}
-        \textbf{First Order} & \textbf{Constraint Programming} & \textbf{Answer Set Programming}\\ \hline
-        variable & --         & variable\\
-        constant & Boolean variable   & constant \\
-        sentence & constraint & rule/constraint \\
-        predicate symbol & Boolean variable array & predicate symbol\\
-        function symbol &  variable array & function symbol\\
-        atomic sentence & -- & fact\\
-        interpretation & assignment & set of atoms\\
-        theory & model & program \\
-        model & solution & answer set
-    \end{tabular}
-    \caption{Mapping between terms in ASP, CP and FO}
-    \label{tab:terminology_comparison}
-\end{table}
+%%%%In this thesis we use Answer Set Programming terminology, unless specified otherwise.
+%%%%\begin{table}
+%%%%	\centering
+%%%%	\begin{tabular}{c | c | c}
+%%%%		\textbf{First Order} & \textbf{Constraint Programming} & \textbf{Answer Set Programming}\\ \hline
+%%%%		variable & --         & variable\\
+%%%%		constant & Boolean variable   & constant \\
+%%%%		sentence & constraint & rule/constraint \\
+%%%%		predicate symbol & Boolean variable array & predicate symbol\\
+%%%%		function symbol &  variable array & function symbol\\
+%%%%		atomic sentence & -- & fact\\
+%%%%		interpretation & assignment & set of atoms\\
+%%%%		theory & model & program \\
+%%%%		model & solution & answer set
+%%%%	\end{tabular}
+%%%%	\caption{Mapping between terms in ASP, CP and FO}
+%%%%	\label{tab:terminology_comparison}
+%%%%\end{table}
 
 %   \section{Relational pattern mining}
 %   The task of relational pattern mining is to mine queries in a logical and relational learning setting. Starting with the work the Warmr system \parencite{warmr}, there has been a line of work that focusses on the following frequent query mining problem \parencite{bagm,farmer,condensed_luc}:
