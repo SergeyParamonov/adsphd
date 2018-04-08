@@ -1,0 +1,39 @@
+
+\section{Related Work}\label{sec:relwork}
+
+Pattern mining approaches, especially frequent (closed or maximal) itemset, sequence, and subgraph mining are amongst the foundational methods in data mining (see, e.g., \textcite{aggarwal15data} for a recent textbook on the topic), and have been studied actively since mid-nineties \parencite{agrawal93mining,DBLP:books/mit/fayyadPSU96/AgrawalMSTV96}. These problems are considered local and exhaustive, as the goal is always to enumerate all patterns that satisfy the (local) frequency constraint (together with some global constraints, such as closedness). In addition, the patterns have to be exact, that is, they have to be present in the data. The exactness was relaxed in later work \parencite{pensa05towards}, while \textcite{tiling} considered the problem of summarizing the data using closed itemsests, that is, tiling. These two approaches, non-exact patterns and summarization using them, were combined by \textcite{miettinen08discrete} in their work on Boolean matrix factorization. 
+
+The problem of enhancing pattern mining by injecting various user-specified constraints has recently gained increasing attention. On the one hand, optimized dedicated approaches exist, in which some of the constraints are deeply integrated into the mining algorithm (e.g., \textcite{DBLP:conf/kdd/PeiH00}).  On the other hand, %purely 
+declarative methods based on Constraint Programming \parencite{sky2014,DBLP:conf/cpaior/NegrevergneG15,DBLP:journals/corr/MetivierLC13}, SAT solving \parencite{DBLP:conf/pakdd/JabbourSS15,DBLP:conf/cikm/JabbourSS13} and ASP \parencite{DBLP:conf/lpnmr/Jarvisalo11,DBLP:conf/ijcai/GebserGQ0S16,DBLP:journals/corr/GuyetMQ14} have been proposed. 
+
+Techniques from the last group are the closest to our work. However, in contrast to our method, they typically focus only on one particular pattern type and consider local constraints and condensed representations in isolation \parencite{DBLP:conf/dmkd/PeiHM00,clospan}. %(with exceptions 
+\textcite{dp2013} and \textcite{DBLP:journals/ai/GunsDNTR17} focused on CP-based rather than ASP-based itemset mining and did not take into account sequences unlike we do. \textcite{DBLP:conf/ijcai/GebserGQ0S16} studied declarative sequence mining with ASP, but in contrast to our approach, optimized algorithms for frequent pattern discovery are not exploited in their method.
+A theoretical framework for structured pattern mining was proposed by \textcite{DBLP:conf/aaai/GunsPN16}, whose main goal was to formally define the core components of the main mining tasks and compare dedicated mining algorithms to their declarative versions. While generic, this work did not take into account local and global constraints and neither has it been implemented.
+
+\textcite{DBLP:conf/lpnmr/Jarvisalo11} and \textcite{DBLP:conf/ijcai/GebserGQ0S16} considered purely declarative ASP methods; unlike our approach, they do not admit integration of optimized mining algorithms and thus %which 
+lack 
+practicality. In fact, the need for such an integration in the context of complex structured mining was even explicitly stated
+by \textcite{query_mining_ilp} and by \textcite{KR_Graphs}, which study formalizations of graph mining problems using logical means. \revision{While the ASP \parencite{DBLP:conf/ijcai/GebserGQ0S16} and CP models \parencite{DBLP:conf/cpaior/NegrevergneG15} for frequent pattern mining cannot be hybridized completely out-of-the-box, due to dependencies between constraints and assumptions on the input-output structure, in principle, as we see from our work that it is possible to re-use ideas and the general modelling approach to turn them into hybrid models to reach more practical performance, for example, our ASP model for sequence mining is inspired by the non-hybrid ASP model of \textcite{DBLP:conf/ijcai/GebserGQ0S16}. The main observation here is that typically these systems have a number of constraint groups: to generate patterns, check patterns validity and perform dominance or group-property checks. Our hybridization idea suggests to replace one of these groups with a highly optimized solver, while keeping the other groups (with minor changes to adapt for the input-output structure) in the model to guarantee generality.}
+
+
+
+
+
+\section{Conclusion}\label{sec:conc}
+
+We have presented a hybrid approach for condensed itemset, sequence and graph mining, which uses the optimized dedicated algorithms to determine the frequent patterns and post-filters them using a declarative ASP program. The idea of exploiting ASP for pattern mining is not new; it was studied for both itemsets and sequences. However, unlike previous methods we made steps towards optimizing the declarative techniques by making use of the existing specialized methods and also integrated the dominance programming machinery in our implementation to allow for combining local and global constraints on a generic level. Moreover, using the example of the approximate tile selection problem, we have demonstrated that our hybrid method can be further generalized to other data mining tasks.
+
+
+%\section{Future Work}\label{sec:futwork}
+One of the possible future directions is to extend the proposed approach to an iterative technique, where dedicated data mining and declarative methods are interlinked and applied in an alternating fashion. More specifically, all constraints can be split into two parts: those that can be effectively handled using declarative means and those for which specialized algorithms are much more scalable. Answer set programs with external computations \parencite{hp} could be possibly exploited in this mining context. % Then the pattern selection can be done iteratively. For example, let the constraints be given as (1) frequency (2) closed (3) length (4) gap size. We can first apply dedicated algorithms to get patterns that satisfy the frequency constraint. Then select only closed patterns among them using declarative means. After that the original transaction database can be filtered by removing transactions, in which none of the computed closed patterns appears. Then the final check can be applied to test the gap constraint. In other words our hybrid approach can be generalized resulting in the iterative application of the dedicated algorithms and declarative pruning methods.
+
+
+Another promising but challenging research stream concerns the integration of data \emph{decomposition} techniques into our approach. Here, one can divide a given dataset into several parts, such that the frequent patterns are identified in these parts separately, and then the results are effectively combined; such data decomposition is expected to yield further computational gains. 
+
+% In fact decomposition can be performed at different levels. First possibility is to split the original dataset into components and then apply our hybrid approach on each component separately. Second option would be perform data splitting on the pattern level, i.e., once the frequent patterns are computed, we could come up with their splitting and then perform post-processing on every pattern group considered individually. Yet combinations of the two strategies are possible.
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../aspmining_tplp"
+%%% End:

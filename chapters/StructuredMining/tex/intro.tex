@@ -1,0 +1,65 @@
+
+
+\section{Introduction}\label{sec:intro}
+\leanparagraph{Motivation} 
+Availability of vast amounts of data from different domains has led to an increasing interest in the development of scalable and flexible methods for data analysis.
+A key feature of flexible data analysis methods is their ability to incorporate users' background knowledge and different criteria of interest. They are often provided in the form of \emph{constraints} to the valid set of answers, the most common of which is the frequency threshold: a pattern is only considered interesting if it appears often enough. Mining all frequent (and otherwise interesting) patterns is a very general problem in data analysis, with applications in medical treatments, customer shopping sequences, Weblog click streams and text analysis, to name but a few examples.
+
+Most data analysis methods consider only one (or few) types of constraints, limiting their applicability. Constraint Programming (CP) ~\parencite{DBLP:conf/cpaior/NegrevergneG15,DBLP:journals/ai/GunsDNTR17} has been proposed as a general approach for (sequential) mining of frequent patterns~\parencite{DBLP:books/mit/fayyadPSU96/AgrawalMSTV96}, and Answer Set Programming (ASP) \revision{\parencite{GL1988,eiter} has been proven to be well-suited for defining the constraints conveniently (see e.g., \parencite{DBLP:conf/lpnmr/Jarvisalo11,DBLP:conf/ijcai/GebserGQ0S16,DBLP:journals/corr/GuyetMQ14} for existing approaches on ASP-based frequent pattern mining) thanks to its expressive and intuitive modelling language and the availability of optimized ASP solvers such as Clasp \parencite{clasp} and WASP \parencite{wasp}.}
+
+
+In general, all constraints can be classified into \emph{local constraints}, that can be validated by the pattern candidate alone, and \emph{global constraints}, that can only be validated via an exhaustive comparison of the pattern candidate against all other candidates. Combining local and global constraints in a generic way is an important and challenging problem, which has been widely acknowledged in the constraint-based mining community.  Although progress has been made, on the one hand, on solving individual mining problems and, on the other hand, on developing generic mining systems, the existing methods either focus on scalability or on generality, but rarely address both of these aspects. This naturally limits the practical applicability of the existing approaches.
+
+\leanparagraph{State of the art and its limitations} Purely declarative ASP encodings for frequent and maximal itemset mining were proposed by \textcite{DBLP:conf/lpnmr/Jarvisalo11}. In this approach, every item's inclusion into the candidate itemset is guessed at first, and the guessed candidate pattern is checked against frequency and maximality constraints. While natural, this encoding is not  truly generic, as adding extra local constraints requires significant changes in it. Indeed, for a database, where all available items form a frequent (and hence maximal) itemset, the maximal ASP encoding has a single model. The latter is, however, eliminated once restriction on the length of allowed itemsets is added to the program. This is undesired, as being maximal
+is not a  property of an itemset on its own, but rather %its property %of an itemset 
+in the context of a collection of other itemsets \parencite{DBLP:journals/kais/BonchiL06}. Thus, ideally one would be willing to first apply all local constraints and only afterwards construct a condensed representation of them, which is not possible in the approach of  \textcite{DBLP:conf/lpnmr/Jarvisalo11}. % Moreover, the implementation \parencite{ }, the subset inclusion relation thus needs to be checked exponential number of times.
+
+This shortcoming has been addressed in the recent work \parencite{DBLP:conf/ijcai/GebserGQ0S16} on ASP-based sequential pattern mining, which exploits ASP preference-handling capacities to extract patterns of interest and supports the combination of local and global constraints. However, both \textcite{DBLP:conf/ijcai/GebserGQ0S16} and \textcite{DBLP:conf/lpnmr/Jarvisalo11} present %exploits a 
+purely declarative encodings, which suffer from scalability issues caused by the exhaustive exploration of the huge search space of candidate patterns \revision{(existing solvers cannot yet take the full advantage of the stucture of the problem \parencite{KR_Graphs})}. The subsequence check amounts to testing whether an embedding exists (matching of the individual symbols) between sequences. In sequence mining, a pattern of size $m$ can be embedded into a sequence of size $n$ in $O(n^m)$ different ways, therefore, clearly a direct pattern enumeration is unfeasible in practice. 
+
+While a number of individual methods tackling selective constraint-based mining tasks exist (see Table~\ref{tab:comparison} for comparison) there is no uniform ASP-based framework that is capable of effectively combining constraints both on the global and local level and is suitable for itemsets, sequences and graphs alike.
+
+\leanparagraph{Contributions} The goal of our work is to make steps towards building a generic framework that supports  mining of condensed (sequential) patterns, which (1) effectively combines dedicated algorithms and declarative means for pattern mining and (2) is easily extendable to incorporation of various constraints. More specifically, the salient contributions of our work can be summarized as follows:
+
+\begin{itemize}
+  \item  We present a general extensible pattern mining framework for mining patterns of different types using ASP.
+  \item In addition to the classical pattern mining problems, we demonstrate the generic nature of our framework by applying it to a problem of approximately tiling a database. 
+  \item  \revision{We introduce a feature comparison between different ASP mining models and dominance programming (a generic itemset mining language and solver)} 
+  \item  We demonstrate the feasibility of our approach with an experimental evaluation across multiple itemset and sequence datasets using state-of-the-art ASP solvers.
+\end{itemize}
+
+\revision{This clearly indicates the key advantage of the approach: it preserves the generality of purely declarative methods with respect to the frequent pattern mining problems of the specified types, while provides an efficient system to develop prototypes, which can run on the real-world datasets where often specialized algorithms are deployed. Our approach has indeed an advantage in the setting where a user considers a new variation of a pattern mining problem and needs to prototype a system to run on the standard real-world pattern mining datasets. Typically, even standard pattern mining datasets are too large for purely declarative systems and researchers have to experiment with the smallest datasets available (for example, see experimental sections in \parencite{DBLP:conf/ijcai/GebserGQ0S16,dp2013,DBLP:conf/cpaior/NegrevergneG15,k_pattern_mining_under_constraints,query_mining_ilp}); contrary to this, developers of specialized algorithms, practically, have to rewrite the algorithms almost completely to model and solve a new variations of a problem (for example, see separate algorithms and papers for gSpan \parencite{gspan} and cloSpan \parencite{clospan}). Our approach provides a middle ground between them, on the one hand, a researcher can model a new problem variation without changing the whole model and, on the other hand, she can experiment with the real-world datasets, which indeed makes the declarative approach more practical and appealing for applications.}
+
+ \leanparagraph{Structure} 
+ After providing necessary background in Sec.~\ref{sec:prelim} we introduce our approach in Sec.~\ref{sec:problem}, and discuss approximate pattern mining in Sec.~\ref{sec:tiling}. Experimental results are described in Sec.~\ref{sec:eval}, while related work and final remarks are provided in Sec.~\ref{sec:relwork} and Sec.~\ref{sec:conc} respectively.
+
+\begin{table}[t]
+  \centering
+  \setlength\tabcolsep{3.0pt}
+  % \begin{tabular}{|l | c | c | c | c | c|}
+  \begin{tabular}{@{}lccccc@{}}
+    % \hline
+    \toprule
+    \textbf{Datatype}                & \textbf{Task}                  & \rot{\textcite{DBLP:conf/lpnmr/Jarvisalo11}} & \rot{\textcite{DBLP:conf/ijcai/GebserGQ0S16}} & \rot{\textcite{dp2013}} &  \rot{\textbf{Our work}} \\  \midrule %\hline  \hline
+                                                                                                                                                                      
+  \multirow{3}{*}{\textbf{Itemset}}  & frequent pattern mining        &  \checkmark      &  \na        & \checkmark       & \checkmark   \\ 
+                                     & condensed (closed, max, etc)   & $\checkmark^{*}$ &  \na        & \checkmark       & \checkmark   \\ 
+                                     & condensed under constraints    &  \na             &  \na        & \checkmark       & \checkmark   \\\midrule %\hline    
+  \multirow{3}{*}{\textbf{Sequence}} & frequent pattern mining        &  \na             & \checkmark  & \na              & \checkmark   \\ 
+                                     & condensed (closed, max, etc)   &  \na             & \checkmark  & \na              & \checkmark   \\ 
+                                     & condensed under constraints    &  \na             & \checkmark  & \na              & \checkmark       \\\midrule %\hline   
+ \multirow{3}{*}{\textbf{Graphs}}  & frequent pattern mining        &  \na     &  \na        &  \na      & \checkmark  \\ 
+                                     & condensed (closed, max, etc)   & \na &  \na        & \na       & \checkmark   \\ 
+                                     & condensed under constraints    &  \na             &  \na        & \na       & \checkmark   \\ \bottomrule %\hline  
+                                                                                                                                           
+  \end{tabular} 
+ \caption{Feature comparison between various ASP mining models and dominance programming (``\na'' : ``not designed for this datatype'', $\checkmark^*$ : only maximal is supported)}
+  \label{tab:comparison}
+\end{table}
+
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../aspmining_tplp"
+%%% End:

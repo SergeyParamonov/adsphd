@@ -1,0 +1,277 @@
+\section{Hybrid ASP-based Mining Approach}\label{sec:problem}
+
+% The goal of this work is to allow for hybradisation between highly optimized generic solvers and specialized pattern mining implementations within a generic framework for pattern mining under both local and global constraints.
+In this section we present our hybrid method for frequent pattern mining. Unlike previous ASP-based mining methods, our approach combines \revision{in the two step procedure, where in the first step, we apply highly optimized algorithms for frequent pattern discovery and, in the second step, we use a declarative ASP solver for their convenient post-processing. Intuitively, our algorithm can be seen as a pipeline where, at the first step, frequent patterns are being generated using highly efficient specialized algorithms and, at the second step, a condensed representation is extracted using a declarative approach based on ASP.} Here, we mainly focus on itemsets, sequence and graph mining. 
+
+Given a frequency threshold $\sigma$, a dataset $D$ and a set of constraints $\cC=\cC_l\cup\cC_g$, where $\cC_l$ and $\cC_g$ are respectively local and global constraints, we proceed in two steps as follows. 
+\bigskip
+
+\leanparagraph{Step 1} First, we launch a dedicated optimized algorithm to extract all frequent patterns from a given dataset, satisfying the minimal frequency threshold $\sigma$. Here, any frequent pattern mining algorithm can be invoked. %, the ones 
+We use Eclat \parencite{eclat} for itemsets, PPIC \parencite{PPIC} for sequences and gSpan \parencite{gspan} for graphs.
+\bigskip
+
+\leanparagraph{Step 2} Second, the computed patterns are post-processed using the declarative means to select a set of \emph{valid} patterns (i.e., those satisfying constraints in $\cC_l$). For that the frequent patterns obtained in Step 1 are encoded as facts \texttt{item(i,j)} for itemsets and \texttt{seq(i,j,p)} for sequences, where \texttt{i} is the pattern's ID, \texttt{j} is an item contained in it and \texttt{p} is its position. Analogously, for graphs we have \texttt{graph(i,j,k,l)}, where \texttt{i} is the pattern's ID, \texttt{j} and \texttt{k} are node labels and the intentional meaning of this fact is that in the graph \texttt{i} the node \texttt{j} is connected to \texttt{k}\revision{, and \texttt{l} is its label}. The local constraints in $\cC_l$ are represented as ASP rules, which collect IDs of patterns satisfying constraints from $\cC_l$ into the dedicated predicate \texttt{valid}, while the rest of the IDs are put into the \texttt{not\_valid} predicate. 
+
+Finally, from all valid patterns a desired condensed representation is constructed by storing patterns \texttt{i} in the \texttt{selected} predicate if they are not \texttt{dominated} by other valid patterns based on constraints from $\cC_g$. Following the principle of \parencite{DBLP:conf/lpnmr/Jarvisalo11}, for itemsets and sequences in our work every answer set represents a single desired pattern, which satisfies both local and global constraints (for graphs slight variations apply, as we discuss later in this section). The set of all such patterns forms a condensed representation. In what follows we present our encodings of local and global constraints in details. 
+
+\subsection{Encoding Local Constraints} 
+
+In our declarative program we specify local constraints by the predicate \texttt{valid}, which reflects the conditions given in Def.~\ref{def:val}. For every constraint in $\cC_l$ we have a set of dedicated rules, stating when a pattern is not valid. 
+For instance, a constraint checking whether the cost of items in a pattern exceeds a given threshold $N$ is encoded as % using the following rule:
+%\sergey{we, actually have size precomputed for each pattern from the wrapper and/or the specialized algo, so cost here}
+
+\small{\begin{center}
+\texttt{not\_valid(I) :- \#sum\{C:item(I,J),cost(J,C)\} > N, pattern(I).}
+\end{center}}
+
+\normalsize{A similar rule for sequences can be defined as follows: }% obtained by substituting \texttt{item(I,J)} with \texttt{seq(I,J,P)}. Taking into account repeated items would result in a rule
+
+\small{\begin{center}
+\texttt{not\_valid(I) :- \#sum\{C:seq(I,J,P),cost(J,C)\} > N, pattern(I).}
+\end{center}}
+
+ 
+% Provided that every item in a set has some weight assigned to it we could generalize the above rules to obtain constraints restricting the allowed weight in a pattern.
+\normalsize{Analogously, one can specify arbitrary domain constraints on patterns. }
+
+\begin{example}
+Consider a dataset storing moving habits of young people during their studies. Let the dedicated frequent sequence mining algorithm return the following patterns: $S_1=\mi{\tuple{bG\;mF\;ba\;mG\;ma}}$; $S_2=\mi{\tuple{bF\;mG\;ba\;mF\;ma}}$; $S_3=\mi{\tuple{bA\;ba\;ma}}$, where $\mi{bG,}\mi{bF,bA}$ stand for born in Germany, France and America, $\mi{ba,ma}$ stand for bachelors and masters and the predicates $\mi{mG,mF}$ reflect that a person moved to Germany and France, respectively. Suppose, we are only interested in moving habits of Europeans, who got their masters degree from a German university. The local domain constraint expressing this would state that (1) $\mi{bA}$ should not be in the pattern, while (2) either both $\mi{bG}$ and $\mi{ma}$ should be in it without any $\mi{mF}$ in between or $\mi{mG}$ should precede $\mi{ma}$. These constraints are encoded in the program in Listing~\ref{ex:move}. From the answer set of this program we get that both  $S_2$ and $S_3$ are not valid, while $S_1$ is. \qed
+
+ \begin{figure}[t]
+ \small{
+ \begin{lstlisting}[language=ASPlang,label=ex:move,caption=Moving habits of people during studies, escapeinside={@}{@}]
+time(1..5).
+@\commenttextasp{\% people born in Germany or France are Europeans}@
+eu(I) :- seq(I,bG,P).
+eu(I) :- seq(I,bF,P).
+@\commenttextasp{\% collect those who moved to France before P}@
+moved_before(X,P) :- seq(X,mF,P1), P > P1, time(P), time(P1).
+@\commenttextasp{\% collect those who moved to France after P and before masters}@
+moved_after(X,P) :- seq(X,mF,P1), seq(X,ma,P2), P < P1, 
+                    P1 < P2, time(P), time(P1), time(P2).
+@\commenttextasp{\% keep Europeans who moved to Germany straight before masters}@
+keep(X) :- seq(X,ma,P+1), seq(X,mG,P), eu(X).
+@\commenttextasp{\% keep Germans who did not move before masters}@
+keep(X) :- seq(X,bG,P1), seq(X,ma,P), not moved_before(X,P).
+@\commenttextasp{\% keep Europeans whose last move before masters was to Germany}@
+keep(X) :- seq(X,mG,P1), seq(X,ma,P2), P1 < P2,  
+           eu(X), not moved_after(X,P1).
+@\commenttextasp{\% a pattern is not valid, if it should not be kept}@
+not_valid(X) :- pattern(X), not keep(X)
+ \end{lstlisting}
+}
+ \end{figure}
+\end{example}
+
+
+
+\normalsize{
+To combine all local constraints from $\cC_l$ we add to a program a generic rule specifying that a pattern \texttt{I} is valid whenever \texttt{not\_valid(I)} cannot be inferred. }
+
+\small{
+\begin{center}
+\texttt{valid(I) :- pattern(I), not not\_valid(I)}
+\end{center}}
+
+\normalsize{Patterns \texttt{i}, for which \texttt{valid(i)} is deduced are then further analyzed to construct a condensed representation based on global constraints from $\cC_g$.}
+% Intuitively, for that we come up with a respective ASP encoding. For every condensed representation we present its dedicated encoding both for itemsets are sequences. 
+
+
+\subsection{Encoding Global Constraints}
+
+The key for encoding global constraints is the declarative formalization of the dominance relation (Def.~\ref{def:dom}). For example, for itemsets the maximality constraint boils down to pairwise checking of subset inclusion between patterns. For sequences this requires a check of embedding existence between sequences.
+
+
+
+ Regardless of a pattern type from $\cL$ %and a global constraint from 
+and a constraint from $\cC_g$ every encoding presented 
+in this section is supplied with a rule, which guesses (\texttt{selected/1} predicate) a single \texttt{valid} pattern to be a candidate for inclusion in the condensed representation, and a constraint that rules out \texttt{dominated} patterns thus enforcing a different guess. 
+% guesses a candidate pattern () among all valid patterns.
+
+
+\small{\begin{center}
+\texttt{1 \{selected(I) : valid(I)\} 1.}
+\end{center}
+
+\begin{center}
+\texttt{ :- dominated.}
+\end{center}}
+
+% The encoding of conditions %rules 
+% specific for a %every 
+% pattern type and a constraint stating when %then encode conditions stating when %the 
+%  \texttt{dominated/0} is derived .
+
+ \begin{figure}[t]
+\small{
+ \begin{lstlisting}[language=ASPlang,label=lst:max,caption=Maximal itemsets encoding, escapeinside={@}{@}]
+@\commenttextasp{\% I is not a subset of J if I has items that are not in J}@
+not_superset(J) :- selected(I), item(I,V), not item(J,V), 
+                 valid(J), I != J.
+@\commenttextasp{\% derive dominated whenever I is a subset of J}@
+dominated :- selected(I), valid(J), 
+             I != J, not not_superset(J).
+\end{lstlisting}}
+ \end{figure}
+ \normalsize{In what follows, we discuss concrete realizations of the dominance relation both for itemsets and sequences for various global constraints, i.e., we present specific rules related to the derivation of the \texttt{dominated/0} predicate.
+}
+
+\leanparagraph{Itemset Mining} We first provide an encoding for maximal itemset mining in List~\ref{lst:max}. To recall, a pattern is \emph{maximal} if none of its supersets is frequent. An itemset $I$ is included in $J$ iff for every item $i\in I$ we have  $i\in J$. We encode the violation of this condition in lines (1)--(3). The second rule presents the dominance criteria.
+
+For closed itemset mining a simple modification of Listing~\ref{lst:max} is required. An itemset is \emph{closed} if none of its supersets has the same support. Thus to both of the rules from Listing~\ref{lst:max} we need to add atoms \texttt{support(I,X), support(J,X)}, which store the support sets of \texttt{I} and \texttt{J} respectively (extracted from the output of Step 1).  
+
+% \begin{lstlisting}[language=ASPlang,firstnumber=7,label=lst:cl,escapeinside={@}{@}]
+% dominated :- selected(I), valid(J), support(I,X),
+%              I != J, not not_superset(J), support(J,X).
+% \end{lstlisting}
+% \medskip
+
+For free itemset mining the rules of the maximal encoding are changed as follows:
+\medskip
+
+\small{\begin{lstlisting}[language=ASPlang,firstnumber=4,label=lst:free,escapeinside={@}{@}]
+not_superset(J) :- selected(I), item(J,V), not item(I,V), 
+                   valid(J), I != J.
+dominated :- selected(I), valid(J), support(I,X),
+             I != J, not not_superset(J), support(J,X).
+\end{lstlisting}}
+
+
+
+\begin{figure}[t]
+\small{\begin{lstlisting}[language=ASPlang,label=lst:sky,caption=Skyline itemsets encoding, escapeinside={@}{@}]
+@\commenttextasp{\% support and size comparison among patterns}@
+g_size_geq_fr(J) :- selected(I), valid(J), support(I,X), 
+                    support(J,Y), size(I,Si), size(J,Sj), 
+                    Si <  Sj, X <= Y. 
+geq_size_g_fr(J) :- selected(I), valid(J), support(I,X), 
+                    support(J,Y), size(I,Si), size(J,Sj), 
+                    Si <= Sj, X < Y. 
+@\commenttextasp{\% derivation of the domination condition}@
+dominated :- valid(J), g_size_geq_fr(J). 
+dominated :- valid(J), geq_size_g_fr(J). 
+\end{lstlisting}}
+\end{figure}
+\normalsize{Finally, the skyline itemset/sequence encoding is given in Listing~\ref{lst:sky}, where the first two rules specify the conditions (a) and (b) for skyline itemsets as specified in Sec.~\ref{sec:prelim}. }
+
+\begin{figure}[t]
+\small{ \begin{lstlisting}[language=ASPlang,label=lst:maxs,caption=Maximal sequence encoding, escapeinside={@}{@}]
+@\commenttextasp{\% if V appears in a valid pattern I, derive in(V,I)}@
+in(V,I) :- seq(I,V,P), valid(I).
+@\commenttextasp{\% I is not a subset of J if I has V that J does not have}@
+not_superset(J) :- selected(I), valid(J), I != J, 
+                 seq(I,V,P), not in(V,J).
+@\commenttextasp{\% if for a subseq <V,W> in I there is V followed}@
+@\commenttextasp{\% by W in J then deduce domcand(V,J)}@
+domcand(V,J,P) :- selected(I), seq(I,V,P), seq(I,W,P+1), I != J
+                  valid(J), seq(J,V,Q), seq(J,W,Q'), Q'>Q.
+@\commenttextasp{\% if domcand(V,J) does not hold for some V in I}@ 
+@\commenttextasp{\% and a pattern J then derive not\_dominated\_by(J)}@
+not_dominated_by(J) :- selected(I), seq(I,V,P), seq(I,W,P+1), 
+                       I != J, valid(J), not domcand(V,P,J).
+@\commenttextasp{\% if neither not\_dominated\_by(J) nor not\_superset(J)}@
+@\commenttextasp{\% are derived for some J, then I is dominated}@
+dominated :- selected(I), valid(J), I != J, 
+             not not_superset(J), not not_dominated_by(J). \end{lstlisting}}
+ \end{figure}
+
+
+\normalsize{\leanparagraph{Sequence Mining} 
+The subpattern relation for sequences is slightly more involved, than for itemsets, as it preserves the order of elements in a pattern. To recall, a sequence $S$ is included in $S'$ iff an embedding $e$ exists, such that $S \sqsubseteq_e S'$.}
+
+In Listing~\ref{lst:maxs} we present the encoding for maximal sequence mining. A selected pattern is not maximal if it has at least one valid superpattern. We rule out patterns that are for sure not superpatterns of a selected sequence. First, \texttt{J} is not a superpattern of \texttt{I} if \texttt{I} is not a subset of \texttt{J} (lines (4)--(5)), i.e., if \texttt{not\_subset(J)} is derived, then \texttt{J} does not dominate \texttt{I}. If \texttt{J} is a superset of \texttt{I} then to ensure that \texttt{I} is not dominated by \texttt{J}, the embedding existence has to be checked (lines (6)--(9)). \texttt{I} is not dominated by \texttt{J} if an item exists in \texttt{I}, which together with its sequential neighbor cannot be embedded in \texttt{J}.  This condition is checked in lines (10)--(13), where \texttt{domcand(V,J,P)} is derived if for an item \texttt{V} at position \texttt{P} and its follower, embedding in \texttt{J} can be found. 
+
+The encoding for closed sequence mining is obtained from the maximal sequence encoding analogously as it is done for itemsets. The rules for free sequence mining are constructed by substituting lines (4)--(13) of Listing~\ref{lst:maxs} with the following ones:
+
+\begin{minipage}{\linewidth}
+\small{\begin{lstlisting}[language=ASPlang,firstnumber=4,label=lst:free,escapeinside={@}{@}]
+not_superset(J) :- selected(I), in(V,J), 
+                   not in(V,I), I != J.
+domcand(V,J) :- selected(I), seq(J,V,P), item(J,P+1,W), 
+                item(I,V,Q), seq(I,W,Q'),Q'>Q, I != J.
+not_dominated_by(J) :- selected(I), valid(J), I != J, 
+                       seq(J,V,P), seq(J,W,P+1), 
+                       not domcand(V,J). \end{lstlisting}}
+\end{minipage}
+
+\normalsize{Finally, %in Listing~\ref{lst:skys} 
+the encoding for mining skyline sequences coincides with the skyline itemsets encoding, which is provided in Listing~\ref{lst:sky}. 
+
+
+\normalsize{\leanparagraph{Graph Mining}} Graphs represent the most complex pattern type. The subpattern relation between graphs amounts to testing subgraph isomorphism between them. In general, this problem is NP-complete; however, for some restricted graph types, it is solvable in polynomial time.
+
+\paragraph{\revision{Uniquely Labelled Graphs.}} One of such graph types are undirected graphs, where every node has a unique label (and consequently, every edge $(u, v)$ is labelled uniquely as $(l(u),l(v))$). For instance, the first two graphs in Figure\ref{fig:graphs} fall into this category, while the third one does not. For this restricted graph type, we have that $G$ is subgraph isomorphic to $G'$ iff every edge in $G$ is also present in $G'$. Therefore, the subgraph isomorphism test for these restricted graphs essentially boils down to subpattern test for itemsets \parencite{DBLP:journals/corr/abs-1709-00900}.
+
+We treat every edge in a graph as an item. Since the graph is allowed to have only unique labels, there cannot be any repetitions of the edge labels. The encoding of maximal frequent graph patterns is presented in Listing~\ref{lst:maxgr}. A selected graph pattern is not maximal if at least one of its frequent supergraphs is valid. Similar to the case of itemsets and sequences we rule out the patterns that are guaranteed to be not maximal. A pattern \texttt{J} is not a superpattern of \texttt{I} if \texttt{I} contains an edge that \texttt{J} does not have.  
+
+\begin{figure}[t]
+    \small{\begin{lstlisting}[language=ASPlang,firstnumber=4,label=lst:maxgr,caption=Maximal graph encoding (unique labeled; \revision{ids represent labels as well; edge(I,X,Y) represents here a graph I with an edge between X and Y, whose values are their labels respectively)}, escapeinside={@}{@}]
+@\commenttextasp{\% I is not a subgraph of J if I has an edge (X,Y) that J does not have}@
+not_supergraph(J) :- selected(I), edge(I,X,Y), valid(J),
+                   not edge(J,X,Y), not edge(J,Y,X), I != J.
+@\commenttextasp{\% derive dominated, whenever I is a subgraph of J}@
+dominated :- selected(I), valid(J), not not_supergraph(J), I != J.
+\end{lstlisting}}
+\end{figure}
+
+The encoding for closed frequent graph patterns differs from the one for maximal graph patterns only in that in the second rule in Figure~\ref{lst:maxgr} the atoms \texttt{support(I,X), support(J,X)} are added. Encodings for other condensed representations are analogous.
+
+\begin{example}
+The edges of the graph $G_1$ in Figure~\ref{fig:graphs} are represented with the following facts \texttt{edge(g1,e,c), edge(g1,c,a)}, etc. Given the unique-labeled graphs $G_1$ and $G_2$ and the frequency threshold $\sigma=2$, we have that both \texttt{\{(a,b)\}} and \texttt{\{(e,c),(c,a),(a,b)\}} are frequent subgraphs. However, only the latter graph pattern is maximal. \qed
+\end{example}
+
+\paragraph{\revision{General Case of Graph Mining}} The encoding for maximal (closed, etc) graph mining problem in the general case is slightly more complicated. For the maximal constraint we depict the encoding in Listing~\ref{lst:graph_mining_maximal_general} (the rest of the constraints are treated analogously). Since the subgraph isomorphism check is an NP-complete problem, after obtaining a set $F$  of frequent candidate graph patterns using a dedicated algorithm, we perform a dominance check using the ASP program in Listing~\ref{lst:graph_mining_maximal_general} for each pattern separately (unlike in earlier presented encodings, where such a check was done for all frequent patterns jointly within a single ASP program). %, i.e. %The solver must be called once per a candidate,  This means that 
+%the algorithm operates in an iterative manner: processing graphs one by one. 
+
+More specifically, the solver receives as input a selected graph candidate $G$ and the rest of the frequent patterns in $F$ excluding $G$. % in the dataset. % (without this graph), 
+%where the 
+The graph $G$ is represented using two predicates: \texttt{selected\_node(v,lv)} reflecting labelled vertices of $G$ and \texttt{selected\_edge(v,w,le)}, where \texttt{v,w} are nodes and the edge \texttt{(v,w)} is labeled with \texttt{le} in $G$. First, in (2) of Listing~\ref{lst:graph_mining_maximal_general} the guess is performed on a graph in the set $F$ of frequent patterns, to which $G$ can be mapped, i.e., %by essentially searching for a
+a dominating candidate pattern is guessed. Second, in (4) %After it has picked a pattern in the dataset to dominate the selected graph, it searches for 
+the guess on a mapping from %the selected graph 
+$G$ to the dominating candidate graph %in the datasets (the second choice constraint)
+is done. Finally, in (6)-(9) the mapping is validated by %the last 
+two integrity constraints. % then. 
+If %the call to the ASP program is successful
+the solver returns an answer set, then the selected graph $G$ is removed from the dataset as a dominated pattern, i.e., it is guaranteed to be not maximal.
+
+\begin{figure}[t]
+\small{\begin{lstlisting}[language=ASPlang,,label=lst:graph_mining_maximal_general,caption=Maximal graph encoding (core); general case , escapeinside={@}{@}]
+@\commenttextasp{\% pick one graph to map to}@
+1 { mapped_to(X) : graph(X)} 1.
+@\commenttextasp{\% guess the mapping to the selected graph}@
+1 { map(X,N) : node(_,N,_) } 1 :- selected_node(X,_).
+@\commenttextasp{\% check mapping validity on the edges with labels}@
+:- mapped_to(I), map(X1,V1), map(X2,V2), 
+   selected_edge(X1,X2,L),  not edge(I,V1,V2,L).
+@\commenttextasp{\% check validity on the nodes}@
+:- mapped_to(I), map(X,V), selected_node(X,L), not node(I,V,L).
+\end{lstlisting}}
+\end{figure}
+
+
+
+%The conditions (a) and (b) from Sec.~\ref{sec:prelim} are tested in lines (9)-(12), ensuring that neither (a) nor (b) hold for any valid pattern \texttt{J}.}
+
+% \begin{figure}[t]
+% \small{ \begin{lstlisting}[language=ASPlang,label=lst:skys,caption=Skyline sequence encoding, escapeinside={@}{@}]
+% @\commenttextasp{\% (1) support(I) <= support(J) and size(I) < size(J)}@
+% geq_sup_g_size(J) :- selected(I), valid(J), I != J, 
+%                      support(I,X), support(J,Y), X<=Y,
+%                      size(I,X'), size(J,Y'), X'<Y'.
+% @\commenttextasp{\% (2) support(I) < support(J) and size(I) <= size(J)}@ 
+% g_sup_geq_size(J) :- selected(I), valid(J), I != J, 
+%                      support(I,X), support(J,Y), X<Y,
+%                      size(I,X'), size(J,Y'), X'<=Y'.
+% @\commenttextasp{\% if neither (1) nor (2) holds for J, I is not dom. by J}@
+% not_dominated_by(J) :- selected(I), I != J, valid(J), 
+%                        not geq_sup_g_size(J), 
+%                        not g_sup_geq_size(J)
+% @\commenttextasp{\% otherwise it is}@
+% dominated :- selected(I), valid(J), I != J, 
+%              not not_dominated_by(J). \end{lstlisting}}
+%  \end{figure}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../aspmining_tplp"
+%%% End:

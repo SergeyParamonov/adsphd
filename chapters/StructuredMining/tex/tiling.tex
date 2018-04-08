@@ -1,0 +1,271 @@
+
+\newcommand{\B}{\ensuremath{\{0,1\}}}
+\newcommand{\matr}[1]{\ensuremath{\mathbf{#1}}}
+\newcommand{\newvec}[1]{\ensuremath{\mathbf{#1}}}
+    \newcommand{\nva}{\newvec{a}}
+    \newcommand{\nvb}{\newvec{b}}
+    \newcommand{\vc}{\newvec{c}}
+    \newcommand{\vd}{\newvec{d}}
+    \newcommand{\ve}{\newvec{e}}
+    \newcommand{\vf}{\newvec{f}}
+    \newcommand{\vg}{\newvec{g}}
+    \newcommand{\vh}{\newvec{h}}
+    \newcommand{\vi}{\newvec{i}}
+    \newcommand{\vj}{\newvec{j}}
+    \newcommand{\vk}{\newvec{k}}
+    \newcommand{\vl}{\newvec{l}}
+    \newcommand{\vm}{\newvec{m}}
+    \newcommand{\vn}{\newvec{n}}
+    \newcommand{\vo}{\newvec{o}}
+    \newcommand{\vp}{\newvec{p}}
+    \newcommand{\vq}{\newvec{q}}
+    \newcommand{\vr}{\newvec{r}}
+    \newcommand{\vt}{\newvec{t}}
+    \newcommand{\nvu}{\newvec{u}}
+    \newcommand{\vv}{\newvec{v}}
+    \newcommand{\vw}{\newvec{w}}
+    \newcommand{\vx}{\newvec{x}}
+    \newcommand{\vy}{\newvec{y}}
+    \newcommand{\vz}{\newvec{z}}
+    \newcommand{\mA}{\matr{A}}
+    \newcommand{\mB}{\matr{B}}
+    \newcommand{\mC}{\matr{C}}
+    \newcommand{\mD}{\matr{D}}
+    \newcommand{\mE}{\matr{E}}
+    \newcommand{\mF}{\matr{F}}
+    \newcommand{\mG}{\matr{G}}
+    \newcommand{\mH}{\matr{H}}
+    \newcommand{\mI}{\matr{I}}
+    \newcommand{\mJ}{\matr{J}}
+    \newcommand{\mK}{\matr{K}}
+    \newcommand{\mL}{\matr{L}}
+    \newcommand{\mM}{\matr{M}}
+    \newcommand{\mN}{\matr{N}}
+    \newcommand{\mO}{\matr{O}}
+    \newcommand{\mP}{\matr{P}}
+    \newcommand{\mQ}{\matr{Q}}
+    \newcommand{\mR}{\matr{R}}
+    \newcommand{\mS}{\matr{S}}
+    \newcommand{\mT}{\matr{T}}
+    \newcommand{\mU}{\matr{U}}
+    \newcommand{\mV}{\matr{V}}
+    \newcommand{\mW}{\matr{W}}
+    \newcommand{\mX}{\matr{X}}
+    \newcommand{\mY}{\matr{Y}}
+    \newcommand{\mZ}{\matr{Z}}
+
+
+\section{Covering with Approximate Patterns}\label{sec:tiling}
+
+So far, we have concentrated on exact patterns, that is, patterns that are present exactly in the data; for example, an itemset is present only in transactions that contain every item in the itemset. This is a standard assumption in pattern mining, and it is heavily utilized by the pattern mining algorithms. But it also means that the patterns are not robust against noise: a single item missing from a single transaction can turn a frequent itemset into an infrequent one. To make the patterns more robust to noise, we can consider approximate patterns, that is, patterns that are \revision{considered as} contained in transactions even if the transaction does not contain all of the items in the pattern. In this section, we demonstrate how our hybrid approach can be used also with approximate patterns.
+
+The approximate patterns we are interested in are based on the concept of \emph{tiles} \parencite{tiling}.
+Let $\alpha$ be an itemset and $D$ be a database. The \emph{tile} corresponding to
+$\alpha$ is defined as $\tau(\alpha,D)=\{(t_{id},i)\mid t_{id} \in D_{\alpha}, i\in \revision{\alpha}\}$. When $D$ is clear from the context, we write $\tau(\alpha)$.  The area of $\tau(\alpha)$ is equal to its cardinality.
+
+
+\begin{example}
+  \label{ex:tile}
+The tile corresponding to the itemset $\{\mi{b,e}\}$ from Table~\ref{tab:it} is $\{\mi{(1,b),(2,b), (1,e), (2,e)}\}$.
+\end{example}
+
+A \emph{tiling} $T = \{\tau(\alpha_1),\dotsc, \tau(\alpha_k)\}$ consists of a finite number of tiles. Its area is $\mi{area}(T,D)=\abs{\tau(\alpha_1) \cup,\dotsc,\cup \tau(\alpha_k)}$. In \emph{Maximum $k$-Tiling} the goal is to find a tiling of $k$ tiles with the maximum area, whereas in the \emph{Minimum Tiling} the goal is to find the least number of tiles such that \revision{for all $t_{id}\in D$ and for all $i\in t_{id}$, there exists at least one tile $\tau(\alpha)$ such that $(t_{id}, i)\in \tau(\alpha)$} \parencite{tiling}. 
+
+
+Another way to define tiles is via binary matrices. A transaction database $D$ can be regarded as a binary matrix $\mathbf{D}$ of size
+$m \times n$, where $m$ is the number of transactions in
+$D$ and $n$ is the number of items in \revision{$\cI$}. The $(i, j)$th element in the binary matrix corresponding to
+$D$ is equal to $1$ if the $i$th transaction contains item
+$j$, and it is equal to $0$ otherwise. Hence, the size
+of $D$ is equal to the number of ones in this matrix. In this framework, a tile is a \emph{rank-1} matrix $\mT$ that is \emph{dominated} by the data matrix $\mD$. Matrix $\mT$ is rank-1 if it is an outer product of two binary vectors, that is, $\mT = \nvu\vv^T$ where $\nvu\in\B^{m}$ and $\vv\in\B^n$. Matrix $\mT=(t_{ij})$ is dominated by matrix $\mD=(d_{ij})$ if $t_{ij} \leq d_{ij}$ for all $i$ and $j$. 
+
+\begin{example} The transaction database in Table~\ref{tab:it} corresponds to the following binary matrix:
+\[
+\begin{pmatrix}
+    1  & 1 & 0 & 1 & 1 \\
+    0  & 1 & 1 & 0 & 1 \\
+    1  & 0 & 0 & 0 & 1  
+\end{pmatrix}\; ,
+\]
+and the tile from Example~\ref{ex:tile} corresponds to the matrix
+\[
+  \begin{pmatrix}
+    0  & 1 & 0 & 0 & 1 \\
+    0  & 1 & 0 & 0 & 1 \\
+    0  & 0 & 0 & 0 & 0  
+  \end{pmatrix}
+  =
+  \begin{pmatrix}
+    1 \\
+    1 \\
+    0
+  \end{pmatrix}
+  \begin{pmatrix}
+    0 & 1 & 0 & 0 & 1
+  \end{pmatrix}\; .
+\]
+\qed
+\end{example}
+
+A tiling is an element-wise logical disjunction of the matrices corresponding to the tiles,
+\[
+  \mS = \mT_1 \lor \mT_2 \lor \cdots \lor \mT_k\; .
+\]
+Assuming that $\mT_i = \nvu_i\vv_i^T$, we can write each element of $\mS=(s_{ij})$ as
+\[
+  s_{ij} = \bigvee_{\ell=1}^k u_{i\ell}v_{j\ell}\; ,
+\]
+that is, $\mS$ is the \emph{Boolean matrix product} of matrices $\mU = [\nvu_1\; \nvu_2\; \cdots \; \nvu_k]$ and $\mV = [\vv_1\; \vv_2\; \cdots \; \vv_k]$ (see \textcite{phd_miettinen} for more discussion on the connections between pattern mining and Boolean matrix factorization).
+
+The formulation of tiles as rank-1 binary matrices immediately suggests the concept of \emph{approximate tiles} as non-dominated rank-1 matrices and \emph{approximate tiling} as approximate Boolean matrix factorization. We will call both exact and approximate tiles simply as tiles from now on.
+
+\begin{example}\label{ex:tiling}
+Consider the following Boolean matrix: 
+% \[
+% \begin{bmatrix}
+%     1  & 1 & 0 \\
+%     1  & 0 & 1  \\
+%     0  & 1 & 1 
+% \end{bmatrix}
+% \]\qed
+\begin{center}
+\begin{tikzpicture}
+        \matrix [matrix of math nodes,left delimiter=(,right delimiter=)] (m)
+        {
+            1 &1 &0  \\               
+            1 &0 &1  \\               
+            0 &1 &1  \\           
+        };  
+        \draw[line width=0.45mm, color=red] (m-1-1.north west) -- (m-1-3.north east) -- (m-2-3.south east) -- (m-2-1.south west) -- (m-1-1.north west);
+        \draw[line width=0.45mm, color=blue] (m-2-1.north west) -- (m-2-2.north east) -- (m-3-2.south east) -- (m-3-1.south west) -- (m-2-1.north west);
+        \draw[line width=0.45mm, color=black] (m-2-2.north west) -- (m-2-3.north east) -- (m-3-3.south east) -- (m-3-2.south west) -- (m-2-2.north west);
+    \end{tikzpicture}
+\end{center}
+The areas with the red, blue and black border highlight the respective three approximate tiles of the matrix. \qed
+\end{example}
+
+A common approach to calculate an approximate Boolean matrix factorization (or tiling) is to first calculate a set of \emph{candidate tiles} (or rank-1 matrices) and then select the final set from these \parencite{dbp,tyukin14bmad}. In what follows, we concentrate on a version of this problem where the user gives the target quality, and we try to find a set of tiles that obtains  this quality. 
+
+
+\begin{definition}[Approximate Tile Selection Problem]
+  \label{def:probtile}
+Given a binary matrix $\mD\in\B^{m\times n}$, a set $T$ of tiles (rank-1 matrices) and an integer threshold $\sigma$, find a subset $T' = \{\mT^{(1)}, \mT^{(2)}, \ldots, \mT^{(k)}\}\subseteq T$, such that when we write $\mS = (s_{ij})$ with $s_{ij} = t^{(1)}_{ij} \lor t^{(2)}_{ij} \lor \cdots \lor t^{(k)}_{ij}$,
+the error
+\begin{equation}\label{eq:probtile_err}
+  \abs{\{(i, j)\mid d_{ij} = 1 \land s_{ij} = 0\}} + \abs{\{(i, j) \mid d_{ij} = 0 \land s_{ij} = 1\}}
+\end{equation}
+(i.e., the number of ones outside of the tiling plus the number of zeros inside the tiling) is smaller then the threshold $\sigma$.
+\end{definition}
+
+It is worth noticing that \eqref{eq:probtile_err} corresponds to the Hamming distance between $\mD$ and $\mS$. The decision version of the Approximate Tile Selection problem is NP-hard \parencite{miettinen15generalized}, and the optimization version (finding the smallest possible error) is NP-hard to approximate to within $\Omega(2^{\log^{1-\epsilon}\abs{\mD}})$ for any $\epsilon > 0$, where $\abs{\mD}$ is the number of 1s in $\mD$ \parencite{miettinen15generalized}. The problem has two alternative characterizations, either as a variant of the famous Set Cover problem called \emph{Positive-Negative Partial Set Cover} \parencite{miettinen08positive-negative} or as a form of \emph{Boolean linear programming}: given a binary design matrix $\mA$, and a binary target vector $\nvb$, find a binary vector $\vx$ that minimizes the Hamming distance between $\nvb$ and $\mA\vx$, where the matrix-vector product is over Boolean algebra. 
+
+
+% \begin{figure}[t]
+% \small{ \begin{lstlisting}[language=ASPlang,label=lst:tiles,caption=Encoding for the approximate tiling problem from Def.~\ref{def:probtile}, escapeinside={@}{@}]
+% @\commenttextasp{\% for every tile store its ID and coordinates of 1s it encodes}@
+% tileid(X):-tile(X,Y,Z).
+% one(Y,Z):-tile(X,Y,Z).
+% %relitem(X,Y):-tile(X,Y,Z).
+% %reltrans(X,Z):-tile(X,Y,Z).
+% %@\commenttextasp{\% collect items/transactions that are within the tile,}@ 
+% %@\commenttextasp{\% but the respective columns/rows contain only 0s}@
+% %tileitemdim(X,Mi,Ma):-tileid(X), Ma=#max{Y:relitem(X,Y)}, 
+% %                      Mi=#min{Y:relitem(X,Y)}.
+% %tiletransdim(X,Mi,Ma):-tileid(X), Ma=#max{Y:reltrans(X,Y)}, 
+% %                       Mi=#min{Y:reltrans(X,Y)}.
+% %relitem(X,Y):-tileitemdim(X,Mi,Ma), item(Y), Mi<Y, Y<Ma.
+% %reltrans(X,Y):-tiletransdim(X,Mi,Ma), trans(Y), Mi<Y, Y<Ma.
+% @\commenttextasp{\% for every tile guess whether to include it into the tiling}@
+% 1{intile(X):tileid(X)}.
+% @\commenttextasp{\% collect and count ones that are outside the tiling}@
+% incell(Y,Z):-intiling(X), tile(X,Y,Z).
+% outsideone(Y,Z):-tile(X,Y,Z), not incell(Y,Z).
+% numberofoutsideones(N):-N=#count{Y,Z:outsideone(Y,Z)}.
+% @\commenttextasp{\% collect and count zeros that are inside the tiling}@
+% insidezero(Y,Z):-intiling(X), relitem(X,Y), 
+%                  reltrans(X,Z), not tile(X,Y,Z).
+% numberofinsidezeros(N):-N=#count{Y,Z:insidezero(Y,Z)}.
+% @\commenttextasp{\% compute the total error}@
+% er(0,K):-numberofzerosinside(K).
+% er(1,K):-numberofonesoutside(K).
+% totalerror(N):-N=#sum{X,Y:er(Y,X)}.
+% @\commenttextasp{\% ensure that the total error does not exceed the threshold}@
+% :-totalerror(N), threshold(K), N>K.
+% \end{lstlisting}}
+% \end{figure}
+
+
+\begin{figure}[t]
+\small{ \begin{lstlisting}[language=ASPlang,label=lst:tiles,caption=Encoding for the approximate tiling problem from Def.~\ref{def:probtile}, escapeinside={@}{@}]
+@\commenttextasp{\% for every tile store its ID and coordinates of 1s that it encodes}@
+tileid(X) :- tile(X,Y,Z).
+one(Y,Z)  :- tile(X,Y,Z).
+@\commenttextasp{\% \revision{among tiles guess at least one to be included in the tiling}}@
+1 { @\revision{intiling(X)}@ : tileid(X)}.
+@\commenttextasp{\% collect and count ones that are outside the constructed tiling}@
+incell(Y,Z) :- intiling(X), tile(X,Y,Z).
+outsideone(Y,Z) :- tile(X,Y,Z), not incell(Y,Z).
+numberofoutsideones(N) :- N = #count{Y, Z : outsideone(Y,Z)}.
+@\commenttextasp{\% collect and count zeros that are inside the constructed tiling}@
+insidezero(Y,Z) :- intiling(X), relitem(X,Y), 
+                   reltrans(X,Z), @\revision{not one(Y,Z).}@ 
+numberofinsidezeros(N) :- N = #count{Y, Z : insidezero(Y,Z)}.
+@\commenttextasp{\% compute the total error}@
+er(0,K) :- @\revision{numberofinsidezeros(K).}@
+er(1,K) :- @\revision{numberofoutsideones(K).}@
+totalerror(N) :- N = #sum{X, Y : er(Y,X)}.
+@\commenttextasp{\% ensure that the total error does not exceed the threshold}@
+:- totalerror(N), threshold(K), N > K.
+\end{lstlisting}}
+\end{figure}
+%\comment{DS: fixed the encoding}
+
+For computing a set of candidate tiles $T$ to choose from, effective implementations exist
+(see, e.g., \textcite{tyukin14bmad}). From these candidates a subset needs to be selected, which will be a solution to the problem from Def.~\ref{def:probtile}. In Figure~\ref{lst:tiles} we provide an ASP program, whose answer sets exactly correspond to solutions to the above problem.
+
+In the input the ASP program gets a set of tile candidates to choose from. They all are of the form \texttt{tile(id,i,t)}, where \texttt{id} is a unique ID of the given tile, while \texttt{i} and \texttt{t} are the IDs of the items and transactions respectively, such that the given tile has $1$ in the intersection of the column \texttt{i} and the row \texttt{t}. \revision{To be capable of fully reconstructing a tile, along with the positions of 1s in it, we also require IDs of relevant items and transactions. Indeed, Figure~\ref{fig:tileenc} represents two possible tiles that can be reconstructed based on the positions of 1s only. Therefore, in the input we } %Along with that, we 
+are also provided \revision{with} the facts \texttt{relitem(id,i)} and \texttt{reltrans(id,t)}, which respectively encode the relevant items and transactions for the tile \texttt{id} \revision{to ensure a unique interpretation of the tiles. Notice that if there exists a $1$ in the original data that is not part of any tile, no method will be able to cover it, and they will contribute a constant error. Hence we can ignore such $1$s in our setting.} 
+
+\begin{figure}
+\begin{center}
+\begin{tikzpicture}
+        \matrix [matrix of math nodes,left delimiter=(,right delimiter=)] (m)
+        {
+            1 &0 & 0 &1  \\               
+            0 &0 & 0 &0  \\               
+            1 &0 & 0 &1  \\           
+        };  
+        \draw[color=red] (m-1-1.north west) -- (m-1-4.north east) -- (m-1-4.south east) -- (m-1-1.south west) -- (m-1-1.north west);
+        \draw[color=red] (m-3-1.north west) -- (m-3-4.north east) -- (m-3-4.south east) -- (m-3-1.south west) -- (m-3-1.north west);
+    \end{tikzpicture}
+\begin{tikzpicture}
+        \matrix [matrix of math nodes,left delimiter=(,right delimiter=)] (m)
+        {
+            1 &0 & 0 &1  \\               
+            0 &0 & 0 &0  \\               
+            1 &0 & 0 &1  \\           
+        };  
+        \draw[color=red] (m-1-1.north west) -- (m-3-1.south west) -- (m-3-1.south east) -- (m-1-1.north east) -- (m-1-1.north west);
+        \draw[color=red] (m-1-4.north west) -- (m-1-4.north east) -- (m-3-4.south east) -- (m-3-4.south west) -- (m-1-4.north west);
+    \end{tikzpicture}
+\end{center}
+\caption{\revision{Examples of tiles in a matrix}}
+\label{fig:tileenc}
+\end{figure}
+
+\begin{example}
+\revision{If}
+%Provided that 
+the red tile from Ex.~\ref{ex:tiling} has ID \texttt{1}, its encoding is given by the following facts: \texttt{tile(1,1,1), tile(1,2,1), tile(1,1,2), tile(1,1,3), relitem(1..2), reltrans(1..3)}.
+\revision{Moreover, provided that the left and right tile in Figure~\ref{fig:tileenc} have IDs 2 and 3 respectively, they are represented using  facts: \texttt{tile(2,), tile(2,), relitem(), relitem(), reltrans()}}
+%Observe that it is essential to specify relevant items and transactions, since without them different ways of interpreting a tile exist. For instance, the facts \texttt{tile(1,1,1)}, \texttt{tile(1,4,1)}, \texttt{tile(1,1,3)}, \texttt{tile(1,4,3)} can correspond to several tiles including:
+\end{example}
+  In (1)--(3) of Listing~\ref{lst:tiles} we collect tiles' IDs and locations of ones using the dedicated predicates \texttt{tileid} and \texttt{one} respectively. Than in (4)--(5) for every tile we perform a guess on whether to include it into the tiling. In lines (6)--(9), we count the number of 1s that are outside of the tiling, while in lines (10)--(13), the number of 0s inside the tiling is computed. Finally, the total error is determined in lines (14)--(17) and its admissibility based on the given threshold is checked in lines (18)--(19).
+
+This ASP program can be exploited to solve Boolean matrix factorization, when used together with existing candidate generation approaches, or to solve Boolean linear programming instances. In fact, in Boolean linear programming, the design matrix $\mA$ is given as a part of the problem instance, hence for that even a purely declarative programming solution will suffice. %\comment{DS: rephrased the last sentence a bit, is it ok?}
+%For the latter, we can assume that the design matrix $\mA$ is given as a part of the problem instance and in fact, we do not need any mining algorithm to find it. 
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../aspmining_tplp"
+%%% End:
