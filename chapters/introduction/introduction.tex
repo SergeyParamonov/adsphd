@@ -75,7 +75,25 @@ the constraint learning problem as follows:
 let $D$ be a dataset, $C$ be a set of interesting properties (constraints), and
 $\phi$ be a satisfaction function, 
 then the problem is to find all properties (constraints) $c$ in $C$ such that $\phi(D,c)$ is satisfied.
-\sergey{add an example HERE}
+\begin{example}[Sudoku constraint learning]
+    A well-known Sudoku problem might be hard to model for a person
+    new to constraint programming. A possibility how to obtain a model
+    is to learn from examples. This can be done by providing:
+    \begin{itemize}
+        \item A set of Sudoku solutions
+        \item A set of invalid Sudoku combinations
+        \item Using an expressive constraint language 
+    \end{itemize}
+Then, a property of interest is a constraint that holds for all
+    positive Sudoku combinations (all solutions) and for none of
+    the invalid combinations. For example, this can be a constraint of
+    the form
+\begin{equation*}
+    \forall i: \sum_j x_{ij} = 45
+\end{equation*}
+    Which shows that the sum of elements in each column is equal to 45
+    (simply the sum of numbers from 1 to 9).
+\end{example}
 
 In case of pattern mining, we enumerate objects on which the property
 of interest holds: we find graphs or sequences that occur often enough
@@ -101,10 +119,12 @@ work with relational data. Therefore, if we can combine logic
 with computation, we obtain a computational engine that can work in
 our relational learning setting.
 
-Consider an example in which there are three people: Ronald, Peter and
+\begin{example}[Modeling Sushi preferences with logic]
+There are three people: Ronald, Peter and
 Alina. We know that people who are not allergic to fish and not vegans like sushi; 
-furthermore, we know that Peter is allergic to fish. 
-Who likes sushi then? We can write this puzzle as a
+furthermore, we know that Peter is allergic to fish and Ronald is
+    vegan. 
+Who likes sushi then? We can model this puzzle as a
 simple logical implication:
 
 \begin{equation*}
@@ -124,6 +144,7 @@ The following notation in Prolog (Programming in logic)
     \textit{allergic}(X) \wedge \text{not } \textit{vegan}(X)
   \implies \textit{likes\_sushi}(X)
 \end{equation}
+\end{example}
 Therefore, we can think of Logic Programming as an executable Logic, that
 we can use to model and solve relational problems.
 
@@ -159,13 +180,22 @@ standard machine learning techniques based on  fixed feature vectors
 or attribute-value representations, while using logical and relational models appears natural and elegant. Further in the chapters we elaborate on other problems and examples.
 
 A very well familiar to a reader, a schedule is an example
-of relational data. To make this example concrete, assume that students need to be assigned to
+of relational data. 
+\begin{example}[Examination room scheduling]
+To make this example concrete, assume that students need to be assigned to
 auditoria for examinations with professors. Typically, making such a
-schedule involves dealing with interconnected constraints: certain exams
-must have enough gap time between them; rooms can be shared by at most
-a few courses; professors might have their own personal preferences;
-university administration might enforce certain administrative and 
-legal constraints, etc. A possible approach is to learn these 
+schedule involves dealing with interconnected constraints:
+    \begin{itemize} 
+    \item certain exams
+must have enough gap time between them 
+    \item rooms can be shared by at most
+    a few courses 
+\item professors might have their own personal preferences
+\item university administration might enforce certain administrative and 
+legal constraints 
+    \end{itemize} 
+    
+    A possible approach is to learn these 
 constraint by recovering them from
 a set of positive and negative examples. The number of constraints is
 not set in advance and the constraint language is typically a rich
@@ -175,6 +205,7 @@ order language as
 \begin{equation*}
     \forall X,T: \textit{room(X)} \wedge \textit{time(T)} \implies \{ C : \textit{examination}(X,C,T) \wedge \textit{course(C)} \} \leq 3.
 \end{equation*}
+\end{example}
 
 %   A very well familiar to a reader spreadsheet with its formulae is an
 %   excellent example of relational data: it contains a number of

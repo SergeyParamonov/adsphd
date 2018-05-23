@@ -1,8 +1,8 @@
 \chapter{Background} \label{ch:background}
 \epigraph{From now on you shall be called Brian that is called Brian.}{The Life of Brian}
-In this chapter, we introduce commonly used formalisms and definitions. We start we classic First Order Logic, then proceed by introducing Answer Set Programming and Constraint Programming. Then, to help the reader we demonstrate a connection between the formalisms. After we describe Inductive Logic Programming and Pattern Mining.
+We introduce commonly used formalisms and definitions. We start with classic First Order Logic, then proceed by introducing Answer Set Programming, Constraint Programming and the FO(.) language.
 
-\section{First order logic}
+\section{First order logic} \label{sec:fol}
 \begin{figure}[t]
   \centering
   \includegraphics[width=0.4\textwidth]{Petersen_graph_coloring.png}
@@ -106,7 +106,7 @@ $\textit{green} \neq \textit{red}$  is true &
 \end{example}
 
 
-\paragraph{Herbrand interpretation} The \textit{Herbrand Universe} is the set of all terms over the vocabulary without variables. A \textit{Herbrand Interpretaion} has the Herbrand Universe as its domain and interprets each symbol and function by itself. Any model that contains \acrlong{una} (\acrshort{una}) \parencite{UNA} and \acrlong{dca} (\acrshort{dca}) \parencite{DCA} are equivalent to a Herbrand model.
+\paragraph{Herbrand interpretation} The \textit{Herbrand Universe} is the set of all terms over the vocabulary without variables. A \textit{Herbrand Interpretaion} has the Herbrand Universe as its domain and interprets each symbol and function syntactically, e.g., a constant $a$ is interpreted by an interpretation $I$ as $a^I = a$. For any model that contains \acrlong{una} (\acrshort{una}) \parencite{UNA} and \acrlong{dca} (\acrshort{dca}) \parencite{DCA}, there exists an equivalent Herbrand model.
 
 
 \section{Answer set programming}
@@ -258,9 +258,9 @@ k \{ queen(Row,Col) : col(Col), row(Row) \} k. \label{background:line:choice}
 
 
 \section{Constraint programming}
-A detailed introduction to \acrlong{cp}(\acrshort{cp}) can be found in the ''Handbook of Constraint Programming`` \parencite{handbookcp}. A basic concept here is of a variable $v$ which always has an associated domain $d$, a domain here is simply a set of constants. An example domain is the Boolean domain \{ True, False \}. A constraint $c$ is an expression of the form \textit{name(vars)}, where \textit{vars} is a list of variable names and \textit{name} is the type of constraints from a predefined set of constraint classes. Examples of classes of constraints are comparisons,   arithmetic operations, list and set constraints (all-different, permutations, etc). We denote a set of all variables as $V$, of all domains as $D$ and of constraints as $C$, then a triple $(V,D,C)$ is a constraint programming model and a \acrlong{csp} (\acrshort{csp}) is the problem of finding an assignment $A$ for $V$ over $D$ satisfying all constraints $C$.
+A detailed introduction to \acrlong{cp}(\acrshort{cp}) can be found in the ''Handbook of Constraint Programming`` \parencite{handbookcp}. A basic concept here is that of a variable $v$ which always has an associated domain $d$, a domain here is simply a set of constants. An example domain is the Boolean domain \{ True, False \}. A constraint $c$ is an expression of the form \textit{name(vars)}, where \textit{vars} is a list of variable names and \textit{name} is the type of constraints from a predefined set of constraint classes. Examples of classes of constraints are comparisons,   arithmetic operations, list and set constraints (all-different, permutations, etc). We denote a set of all variables as $V$, of all domains as $D$ and of constraints as $C$, then a triple $(V,D,C)$ is a constraint programming model and a \acrlong{csp} (\acrshort{csp}) is the problem of finding an assignment $A$ for $V$ over $D$ satisfying all constraints $C$.
 
-Let us demonstrate how it is possible to model the map coloring problem in \acrshort{cp}\footnote{based on the encoding from www.hakank.org/minizinc/map.mzn}
+Let us demonstrate how it is possible to model the map coloring problem in MiniZinc\footnote{MiniZinc is popular constraint programming language \url{http://www.minizinc.org/}. Based on the encoding from \url{www.hakank.org/minizinc/map.mzn}.}  
 \begin{lstlisting}
 % number of countries
 int: n; 
@@ -273,6 +273,7 @@ forall(i,j in 1..n where i < j /\ conn[i,j] = 1) (
               country[i] != country[j]
       )
 \end{lstlisting}
+The first lines define variables together with their types, for example \texttt{country} is an array, each element of which can take value from one to four. And the constraint at the bottom of the listing verifies that for each value of indices $i,j$ in the range of 1 to n such that (part: \texttt{where}) $i$ is smaller than $j$ (part: \texttt{i < j}) and there is a connection between $i$ and $j$ (part: \texttt{conn[i,j] = 1}) it holds that colors of the countries are different, i.e., the part: \texttt{country[i] != country[j]}.
 
 Let us introduce the key definitions from constraints programming formally.
 \begin{definition}[\acrlong{csp}(\acrshort{csp})]
@@ -347,7 +348,7 @@ Algorithm \ref{algo:simple_search} demonstrates how we can solve a \acrshort{csp
 Consider again Example \ref{example:pizza}, at the beginning when no decision on splitting is made, we cannot propagate any constraint. Then according to a heuristic (typically solver and problem dependant), we pick $v_r$ to split into two cases $v_r = g$ and $v_r = m$. In case of $v_r = g$, we propagate the constraints and establish that no domain has changed, since sharing constraint can be still satisfied by multiple assignments (no deterministic decision can be enforced), the same holds for the first constraint enforcing that each pizza gets a person to eat it. Then, we have to pick a new variable, e.g., $v_a$ and we need to consider cases again: $v_a = g$ and $v_a=m$. Then we do a recursive call in which $v_r=g \wedge v_a=g$, in this case we propagate first sharing constraint to establish that $v_s \neq v_p$ and then due to constraint that all pizzas must be taken we establish that $v_s = m$ and $v_p = l$. Is this solution optimal? If we assume that quality of an assignment $A$ is $\sum_{v \in V} f(v)$, then the quality of $A = 10 + 5 + 5 +2 = 22$, while the other assignment  $v_r = g, v_a = l, v_g = g, v_p = l$ sums up to $10+7+2+5 = 24$. For an extended discussion on how to find an optimal or a preferred solution, we refer to Chapter \ref{ch:sketching}.
 
 \section{\fod and the IDP System}
-The knowledge based language \fod is the extension of First Order Logic with a number of features, such as, inductive definitions and aggregates. The IDP system \parencite{idppaper} is the reasoning system that accepts as input the \fod language and is able to perform a number of reasoning tasks: such as finding logical models, model checking and theorem proving.
+The knowledge based language \fod is the extension of First Order Logic with a number of features, such as, inductive definitions and aggregates. The IDP system \parencite{idppaper} is the reasoning system that accepts as input the \fod language and is able to perform a number of reasoning tasks: such as finding logical models, model checking and theorem proving. IDP and its language FO(.) can be seen as executable logic we have discussed before in Section \ref{section:fol}. 
 
 Let us illustrate an inductive definition and an IDP program by example, see Listing \ref{lst:idp_reachability}, where Reach(x,y) is an example of an inductive definition, defined via the base case and the inductive step (see the Theory part).
 \begin{lstlisting}[caption=An example of an inductive definition in FO(.) and of an IDP program,label=lst:idp_reachability]
@@ -372,7 +373,7 @@ structure S:V{
 
 An IDP program has three parts: \textit{Vocabulary} that defines the terminology and concepts of a problem, \textit{Structure} that sets certain values to true or false, and \textit{Theory} introduces constraints.
 
-IDP and its language FO(.) can be seen as executable logic we have discussed before, for example the sushi problem can be encoded in IDP as in Listing \ref{lst:idp_sushi}. First, we define vocabulary, which corresponds to vocabulary in first order logic, except for the extra type information. Facts and domains are specified in the structure section, as we see for example with the declaration of the domain for the type person, for which actual values are assigned in the section structure. The theory section defines the actual clauses or constraints, which indeed corresponds to the first order sentences, the only constraint here one to one maps to Eq. \ref{eq:sushi}, which a classical logical implication. The procedure \texttt{main} is a directive to the system to extend the given structure satisfying the constraints in the theory.
+For example the sushi problem can be encoded in IDP as in Listing \ref{lst:idp_sushi}. First, we define vocabulary, which corresponds to vocabulary in first order logic, except for the extra type information. Facts and domains are specified in the structure section, as we see for example with the declaration of the domain for the type person, for which actual values are assigned in the section structure. The theory section defines the actual clauses or constraints, which indeed corresponds to the first order sentences, the only constraint here one to one maps to Eq. \ref{eq:sushi}, which a classical logical implication. The procedure \texttt{main} is a directive to the system to extend the given structure satisfying the constraints in the theory.
 
 \begin{minipage}{\linewidth}
 \begin{lstlisting}[caption=Encoding sushi preferences problem, label=lst:idp_sushi,basicstyle=\ttfamily, basicstyle=\small]

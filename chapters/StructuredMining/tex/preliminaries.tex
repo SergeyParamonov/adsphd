@@ -187,8 +187,12 @@ Note that $\sqsubseteq$ and $\subseteq$ are incomparable relations. Indeed, cons
 
 In this work we consider undirected graphs. Moreover, we primarily focus on two settings: a general one, where labels of the graph are not necessarily unique and a more restricted one, where unique labels are ensured.
 
-\revision{\paragraph{General Case of Graph Mining.} Here we consider the general case of mining graphs whose nodes have labels but not necessarily unique. This setting is indeed computationally harder than the special case of uniquely labelled graphs. In this general setting, a pattern is an arbitrary graph with labeled nodes and edges.}
+\revision{\paragraph{General Case of Graph Mining.} Here we consider the general case of mining graphs whose nodes have labels that are not necessarily unique. This setting is computationally harder than the special case of uniquely labelled graphs. In this general setting, a pattern is an arbitrary graph with labeled nodes and edges.}
 \revision{\paragraph{Uniquely Labelled Graphs.} In this restricted case, the labeling function assigns unique labels to the nodes, i.e., each node has a unique label within this graph (in the setting, no labels is assumed on the edges). This restriction makes sub-pattern check computationally easier and allows certain reductions to other pattern mining problems as indicated below.}
+
+\begin{example}
+    The graphs in Figure~\ref{fig:g1} and \ref{fig:g2} are unique-labeled ones, while the graph from Figure~\ref{fig:g3} is clearly not. \qed
+\end{example}
 
 \revision{Throughout the text we assume the general case unless stated otherwise, all experimental results have been provided for the general case of graph mining.}
 
@@ -204,9 +208,6 @@ In this work we consider undirected graphs. Moreover, we primarily focus on two 
 \end{definition}
 
 
-\begin{example}
-    The graphs in Figure~\ref{fig:g1} and \ref{fig:g2} are unique-labeled ones, while the graph from Figure~\ref{fig:g3} is clearly not. \qed
-\end{example}
 
 In the general setting, the problem of deciding whether a subgraph isomorphism exists is NP-complete. However, several restricted settings have been identified, for which the problem can be solved in polynomial time, e.g., unique-labelled undirected graphs \parencite{DBLP:journals/corr/abs-1709-00900}.
 
@@ -274,7 +275,7 @@ size), 2) constraints over the cover set (e.g., minimal frequency), 3) constrain
 
 Orthogonally, constraints can be classified into \emph{local} and \emph{global} ones.  
 A constraint is \emph{local} if deciding whether a given pattern satisfies it is possible without looking at other patterns. For example, minimal frequency or maximal pattern %length 
-size are local constraints. On the contrary, deciding whether a pattern satisfies a \emph{global} constraint requires comparing it to other patterns. All constraints from the 4th group are global ones. We are interested in global constraints related to condensed representations. 
+size are local constraints. On the contrary, deciding whether a pattern satisfies a \emph{global} constraint requires comparing it to other patterns. All constraints from the fourth group are global ones. We are interested in global constraints related to condensed representations. 
 
 As argued in Sec.~\ref{sec:intro}, the order in which constraints are applied influences the solution set \parencite{DBLP:journals/kais/BonchiL06}. %In this work w
 %We take the same view a
