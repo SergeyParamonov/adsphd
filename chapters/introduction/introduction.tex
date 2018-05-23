@@ -16,15 +16,15 @@ The ability to write down a model and to simply push a button to get the
 answer is an appealing idea. It is one of the holy grails of
 Artificial Intelligence, called Declarative Programming, where one
 specifies what the problem is and not how to solve it. Today in the age of data, we would like
-to say what we are looking for, feed the data in and, as a result,
+to state what type of knowledge we are looking for, feed the data in and, as a result,
 (almost magically) find new insights into the data. What we do not really want is to write
-a lot of tedious code. Unsurprisingly, this is hard. 
+a lot of tedious code. Unsurprisingly, this is a hard challenge. 
 
 
 The \textit{knowledge} extracted from the data can manifest itself in
 multiple forms. For example, an interesting piece of data,
-\textit{typically a substructure}, is referred as a \textit{pattern} \parencite{han_book}. 
-The most known pattern learning task is the
+\textit{typically a substructure}, is referred to as a \textit{pattern} \parencite{han_book}. 
+The most known pattern learning task is 
 \textit{frequent pattern mining}, or pattern mining for short \parencite{survey_han}. 
 At a high level it can be formalized as follows: 
 let $D$ be a dataset, $P$ be the language of allowed patterns and
@@ -37,7 +37,7 @@ Various measures of relevance or ``interestingness'' of a pattern exist \parenci
 
 
 Many Data Mining problems, and especially pattern mining
-problems, are \textbf{combinatorial search problems}, which in turn have two main components to them, namely problem modelling and search: 
+problems, are \textbf{combinatorial search problems}, which in turn have two main components, namely problem modelling and search: 
 
 \begin{center}
   Combinatorial problem = Model + Search
@@ -50,8 +50,8 @@ as \acrlong{cp} \parencite{handbookcp} or \acrlong{asp}
 
 \section{Constraint programming} 
 \acrlong{cp} is a declarative methodology for solving combinatorial
-problems. The essence of this methodology is in writing a set of
-constraints, such as $X + Y > Z$, and finding a solution to them, such
+problems. The essence of this methodology consists of writing a set of
+constraints, such as $X + Y > Z$, and inferring a solution to them, such
 as $X = 1, Y = 2$ and $Z = 0$. This set of constraints is referred as
 a \textit{specification} or a \textit{model}; for this, multiple \acrlong{cp}
 languages exist, such as MiniZinc \parencite{minizinc} or Essence
@@ -60,14 +60,14 @@ a model is an assignment, as for example, the one we just indicated, that satisf
 \textit{all} constraints. This general methodology is declarative,
 since a user writes a set of constraints corresponding to the
 properties of her problem and a \acrshort{cp} solver is looking for a
-solution: this clearly demonstrates that it is a burden of the solver
+solution: this clearly demonstrates that it is a task of the solver
 to figure out \textit{how} to find a solution, while it is the user's
 responsibility to specify \textit{what} the problem is in terms of
 writing these constraints.
 
 \section{Constraint learning}
 Constraint Learning is the research field concerned with finding
-constraints in the data \parencite{constraint_learning,QUACQ,Conacq}.
+constraints that hold in data \parencite{constraint_learning,QUACQ,Conacq}.
 %Let us outline in simple terms, what constraint learning is about.
 Similar to the pattern matching problem, we can define 
 the constraint learning problem as follows:
@@ -75,10 +75,11 @@ the constraint learning problem as follows:
 let $D$ be a dataset, $C$ be a set of interesting properties (constraints), and
 $\phi$ be a satisfaction function, 
 then the problem is to find all properties (constraints) $c$ in $C$ such that $\phi(D,c)$ is satisfied.
+\sergey{add an example HERE}
 
 In case of pattern mining, we enumerate objects on which the property
 of interest holds: we find graphs or sequences that occur often enough
-in the data and have certain nice topological properties (for example, being a
+in the data and have certain desired topological properties (for example, being a
 cyclic graph or have ascending characters). And in constraint learning we find interesting
 properties that hold in the data (or its parts): given a set of
 characters, for example, we discovered that the "ascending constraint" holds, i.e.,
@@ -123,7 +124,7 @@ The following notation in Prolog (Programming in logic)
     \textit{allergic}(X) \wedge \text{not } \textit{vegan}(X)
   \implies \textit{likes\_sushi}(X)
 \end{equation}
-Therefore, we can think of Logic Programming as executable Logic, that
+Therefore, we can think of Logic Programming as an executable Logic, that
 we can use to model and solve relational problems.
 
 In this thesis we use modern Logic Programming engines, such
@@ -134,10 +135,21 @@ that naturally support constraints and various types of logical
 inference.
 
 \section{Relational and logical learning}
-Typical machine learning and data mining systems work with propositional representations, logical and relational learning has arisen to overcome this limitation and work with expressive knowledge representation languages such as first order logic \parencite{luc_book}.
+Typical machine learning and data mining systems work with
+propositional representations and logical and relational learning has
+arisen to overcome this limitation by focusing on expressive knowledge representation languages such as first order logic \parencite{luc_book}.
 
 Classical machine learning algorithms such as induction of decision trees
-\parencite{decision_trees} or Bayesian networks \parencite{pearl} work with limited representations (which can be typically mapped to a propositional language). This representation does not allow to represent naturally problems involving multiple complex objects together with the relationships between them. This limitation has been pointed out by a number of researchers, e.g., in the seminal work of \textcite{plotkin}, who has introduced a richer representation language based on the first order logic. This approached allowed to represent a non-fixed amount of complex objects together with their relationships, we call this setting \textit{relational}.
+\parencite{decision_trees} or Bayesian networks \parencite{pearl} work
+with limited representations (which correspond to a
+propositional language). This representation does not allow to
+represent naturally problems involving multiple complex objects
+together with the relationships that hold between them. This limitation has been
+pointed out by a number of researchers, e.g., in the seminal work of
+\textcite{plotkin}, who has introduced  the use of first order logic
+for machine learning. This approach allows to
+represent a non-fixed amount of complex objects together with their
+relationships -- we refer to this problem setting as \textit{relational}.
 
 Let us indicate why it is important to look into the relational
 machine learning setting. To do so, we will describe a problem where
@@ -146,38 +158,67 @@ which makes it complicated if not practically impossible to employ the
 standard machine learning techniques based on  fixed feature vectors
 or attribute-value representations, while using logical and relational models appears natural and elegant. Further in the chapters we elaborate on other problems and examples.
 
-A very well familiar to a reader spreadsheet with its formulae is an excellent example of relational data: it contains a number of relations or \textit{tables}, and their number is never fixed in advance, since a spreadsheet might contain an arbitrary number of them. Also, it combines both textual and numeric data. Furthermore, formulae and constraints over the tables play a role of relationships we have described earlier. These properties of the data itself make problem hard to model using traditional propositional approaches, while this can be clearly seen as a first order problem. This gives us confidence that for a number of important problems it is essential to look into rich knowledge representation languages.
+A very well familiar to a reader, a schedule is an example
+of relational data. To make this example concrete, assume that students need to be assigned to
+auditoria for examinations with professors. Typically, making such a
+schedule involves dealing with interconnected constraints: certain exams
+must have enough gap time between them; rooms can be shared by at most
+a few courses; professors might have their own personal preferences;
+university administration might enforce certain administrative and 
+legal constraints, etc. A possible approach is to learn these 
+constraint by recovering them from
+a set of positive and negative examples. The number of constraints is
+not set in advance and the constraint language is typically a rich
+relational language, for example, a constraint saying that no room is
+shared by more than three courses at the same time can be expressed in a form of the first
+order language as
+\begin{equation*}
+    \forall X,T: \textit{room(X)} \wedge \textit{time(T)} \implies \{ C : \textit{examination}(X,C,T) \wedge \textit{course(C)} \} \leq 3.
+\end{equation*}
+
+%   A very well familiar to a reader spreadsheet with its formulae is an
+%   excellent example of relational data: it contains a number of
+%   relations or \textit{tables}, and their number is never fixed in
+%   advance, since a spreadsheet might contain an arbitrary number of
+%   them. Also, it combines both textual and numeric data. Furthermore,
+%   formulae and constraints over the tables play a role of relationships
+%   we have described earlier.
+These properties of interconnectedness and expressivity of the constraints make
+problem hard to model using traditional propositional approaches,
+while this can be clearly seen as a first order problem. This gives us
+confidence that for a number of important problems it is essential to
+look into richer knowledge representation languages for machine
+learning.
 
 \section{Contributions}
-Given the abundance of relational data (such as spreadsheets, graphs
-or logical structures) and of various machine learning and data
-problems, a natural question arises: \textit{``How can we model
-relational data mining problems?''}. This thesis introduces a number
-of relational data mining problems and offers a uniform view on them.
-Since the data and problems are relational, we approach them using
-relational methods, such as logic programming. 
+Given the abundance of relational data (such as spreadsheets, graphs,
+databases and logical structures) for various machine learning and data
+mining problems, and the success in development of declarative solvers (such
+as \acrshort{asp}, \acrshort{idp}, \acrshort{cp} and \acrshort{lp}) a
+natural question arises: \textit{``How can we declaratively model and
+solve relational data mining problems using logic programming approach?''}. 
 
-The \textbf{main contribution} of this thesis is in the novel problems
-it offers and in the application of modern logic programming
-        languages, such as \acrshort{asp} and \acrshort{idp}, to them. Concretely, the thesis investigates the following questions:
+The \textbf{main contribution} of this thesis is in the application of
+modern logic programming languages, such as \acrshort{asp} and
+\acrshort{idp}, to these novel relational data mining problems.
 
-    \sergey{Could you be more specific on what should be corrected? They reflect
-        the papers content and the general theme of relational data
-        mining modelling}
-                       
+
+Concretely, we investigate how the following data mining problems
+can be modelled and solving using a declarative approach based on
+logic programming.
 \begin{itemize}
-  \item \cone: What are the challenges and advantages of generalizing
+    \item \cone: \textbf{Relational Data Factorization.} What are the challenges and advantages of generalizing
     classic data mining problems, such as the Boolean Matrix
     Factorization problem, into the relation setting?
-  \item \ctwo: How can the constraint learning problem be formulated
+  \item \ctwo: \textbf{Tabular Constraint Learning.} How can the constraint learning problem be formulated
    and modelled in the relational setting, where data is
    represented as spreadsheets, i.e., connected relations, and constraints are
    tabular Excel-like formulae?
-  \item \cthree: Given a relational model, represented as a set of logic
-    programming rules, can we mark some parts of it such as atoms,
-    operators or constants to be uncertain and reconstruct the model
-    using a number of positive and negative examples?
-  \item \cfour: 
+  \item \cthree: \textbf{ASP Sketching.} How can the problem of ASP
+      Sketching, where one marks certain parts of the
+        program to be uncertain, be modelled and solved using our
+        declarative approach? 
+   \item \cfour: \textbf{Structured Frequent Pattern Mining.}
 %  Similarly to unstructured constraint-based itemset mining: 
     How can we apply declarative relational mining
     techniques, such as logic programming, to structured frequent pattern mining, such as sequence, graph
@@ -186,7 +227,7 @@ it offers and in the application of modern logic programming
 
 Addressing \cone, we look into the classical problem of matrix
 factorization. We demonstrate how the problem of Boolean Matrix
-Factorization can be generalized into relational setting, called
+Factorization can be generalized into  a relational setting, called
 \textit{Relational Data Factorization}, and
 demonstrate how it allows to model a variety of classic data mining
 problems and novel tasks as well.
@@ -211,7 +252,8 @@ constraint model of a relational
 data mining problem and due to relational dependencies in the data we are
 forced to give up the i.i.d. assumption and, as a consequence,
 standard techniques. When something changes over time or due to changes in the specification, we would like
-to be able to indicate uncertainty in some parts of the model. These
+to be able to indicate uncertainty in some parts of the model and use
+the system itself. These
 uncertain or, \textit{open}, parts are called \textit{sketched} and
 the whole sketched model is referred to as a \textit{sketch} and the related
 problem as \textit{constraint sketching}. We propose the problem of and
@@ -227,8 +269,7 @@ this question we look into \textit{sequence}, \textit{graph} and
 \textit{query mining} and attack them using logic programming and
 hybrid approaches based on logic programming.
 
-
-\section{Structure of the thesis}
+\paragraph{Structure of the thesis}
 \textbf{Chapter} \ref{ch:background} introduces background information
 on Logic, Answer Set and Programming and Pattern Mining.
 

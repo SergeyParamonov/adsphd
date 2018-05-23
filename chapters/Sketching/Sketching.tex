@@ -26,14 +26,14 @@ Answer Set Programming (ASP) is a powerful modeling formalism for combinatorial 
 
 \section{Introduction}\label{sec:intro}
 Many AI problems can be formulated as constraint satisfaction problems that can
-be solved by state-of-the-art constraint programming (CP)  \cite{handbookcp} or answer set programming (ASP) techniques \cite{whatisasp}. 
+be solved by state-of-the-art constraint programming (CP)  \parencite{handbookcp} or answer set programming (ASP) techniques \parencite{whatisasp}. 
 Although these frameworks provide declarative representations that are in principle
 easy to understand, writing models in such languages is not always easy.
 
 %is notoriously hard to debug models written in such languages. 
 
 On the other hand, for traditional programming languages, there has been significant attention for techniques that are able
-to complete \cite{sketching_phd_thesis} or learn a program from examples \cite{gulwani2015inductive}. 
+to complete \parencite{sketching_phd_thesis} or learn a program from examples \parencite{gulwani2015inductive}. 
 The idea of program sketching is to start from a sketched program and some examples
 to complete the program. A sketched program is essentially a program where some of the tests and constructs
 are left open because the programmer might not know what exact instruction to use.  For instance, 
@@ -43,7 +43,7 @@ By providing a few examples of desired program behaviour and a sketch, the targe
 Sketching is thus a form of "lazy" programming as one does not have to fill out all details in the programs; 
 it can also be considered as program synthesis although there are strong syntactic restrictions on 
 the programs that can be derived; and it can be useful for repairing programs once a bug in a program has been detected.
-Sketching has been used successfully in a number of applications \cite{sketching_original,sketch_recent,jsketch} to synthesise imperative programs.
+Sketching has been used successfully in a number of applications \parencite{sketching_original,sketch_recent,jsketch} to synthesise imperative programs.
 It is these capabilities that this chapter brings to the field of ASP.
 
 
@@ -57,7 +57,7 @@ $R_w$ ($C_b$) stand for the variable representing the row (column) of a white (b
 :- queen(w,Rw,Cw), queen(b,Rb,Cb), Cw ?= Cb.
 :- queen(w,Rw,Cw), queen(b,Rb,Cb), Rw ?+ Rb ?= Cw ?+ Cb.
 \end{lstlisting}
-This program might have been inspired by a solution written in the constraint programming language Essence available from the CSP library \cite{csplib:prob110}.  
+This program might have been inspired by a solution written in the constraint programming language Essence available from the CSP library \parencite{csplib:prob110}.  
 Intuitively, the sketched ASP specifies constraints on the relationship between two queens on the rows (first rule), columns (second rule) and diagonals (third rule), %If no solutions can be found by the ASP solver, or when some solutions found turn out to be errors, the program needs to be debugged.  A common debugging technique is commenting out constraints. In the above example, if any of the constraints 
 but it expresses also uncertainty about the particular operators that should be used between the variables 
 through the built-in alternatives for ${?}{=}$  (which can be instantiated to one of $=,\neq,<,>,\leq,\geq$) and for ${?}+$ (for arithmetic operations). 
@@ -125,7 +125,7 @@ of SkASP  asks whether there exists such a substitution $\theta$.
 %\textbf{Combinatorial explosion.} 
 One might consider a baseline approach that would enumerate all instances of the ASP sketch, and in this way produce
 one ASP program for each assignment that could then be tested on the examples. 
-This naive grounding and testing approach is, however, infeasible: the number of possible combinations grows exponentially with the number of sketched variables. E.g., for the sketch of the Radio Frequency Problem \cite{fap} there are around $10^5$ possible assignments to the sketched variables. Multiplied by the number of examples, around a million ASP programs would have to be generated and tested. This is  infeasible in practice.   
+This naive grounding and testing approach is, however, infeasible: the number of possible combinations grows exponentially with the number of sketched variables. E.g., for the sketch of the Radio Frequency Problem \parencite{fap} there are around $10^5$ possible assignments to the sketched variables. Multiplied by the number of examples, around a million ASP programs would have to be generated and tested. This is  infeasible in practice.   
 
 
 
@@ -137,7 +137,7 @@ The original SkASP problem is then turned into an ASP problem
 on these decision variables and solutions to the ASP problem allow to reconstruct the SkASP substitution.
 
 
-The rewriting procedure has four major steps: \textit{example expansion}, \textit{substitution generation}, \textit{predicate reification} and \textit{constraint splitting}. \addedsket{(Here we follow the notation on meta-ASP already used in the literature \cite{inductive_asp,asp_meta}.)} 
+The rewriting procedure has four major steps: \textit{example expansion}, \textit{substitution generation}, \textit{predicate reification} and \textit{constraint splitting}. \addedsket{(Here we follow the notation on meta-ASP already used in the literature \parencite{inductive_asp,asp_meta}.)} 
 
 \vspace{3pt}
 \textbf{Example Identifiers} 
@@ -232,7 +232,7 @@ Follows from the encoding of SkASP into a fragment of ASP which is in NP.
 \end{proof}
 \textbf{Dealing with preferences} 
 Preferences are, as we shall show in our experiments, useful to restrict the number of solutions.
-We have implemented preferences using a post-processing approach (which will also allow to apply the schema to other formalisms such as CP or IDP \cite{idp}).
+We have implemented preferences using a post-processing approach (which will also allow to apply the schema to other formalisms such as CP or IDP \parencite{idp}).
 We first generate the set of all solutions $O$ (without taking into account the preferences), and then post-process $O$. Basically, we filter out
 from $O$ any solution that is not preferred (using tests on pairs $(o,o')$ from $O \times O$). %and filter out using the set $N$ to filter out not preferred substitutions.
 The preferences introduce a partial order on the solutions. 
@@ -274,14 +274,14 @@ to apply our method to Constraint Programming and Constraint Logic Programming.
 %%%%%%%%\end{algorithm}
 
 %In future work, we plan to make the search more effective by using the preferences
-%in the search process (using ASP extensions \cite{asprin}) or by formulating the SkASP task as an optimisation problem (using built-in 
+%in the search process (using ASP extensions \parencite{asprin}) or by formulating the SkASP task as an optimisation problem (using built-in 
 %ASP constructs).
 
 %While preferences do not affect the decision version SkASP, they have a great practical value. We propose a simple method how to post-process the solutions $O$, by an optimized version of comparing pairs of solutions $(o,o')$ in $O\times O$. We create a set of non-dominating solutions $N$ and then iterate over pairs $(o,o')$, using the set $N$ to filter out not preferred substitutions. Note, the preferences introduce a partial order on the solutions.
 
 \section{System extension: aggregates and use-case}\label{section:aggregates}
 An aggregate \textit{\#agg} is a function from a set of tuples to an integer. For example,\\$\#\textit{count}\{ Column,Row: \textit{queen}(Column,Row) \}$ counts the number of instances\\\textit{queen(Column,Row)} at the tuple level. Aggregates are often useful for modeling. 
-However, adding aggregates to non-disjunctive ASP raises the complexity of an AS existence check, unless aggregate dependencies are stratified \cite{aggregates_complexity}. It is possible to add aggregates into our system under the following restrictions: stratified case, aggregates occur in the body in the form ${N = \#\textit{agg}\{ \dots \}}$, sketched with the keyword \verb|?#| , where \textit{\#agg} can be \textit{max}, \textit{min}, \textit{count} and \textit{sum}. This immediately allows us  to model problems such as Equal Subset Sum (for details, see the repository), where one needs to split a list of values, specified as a binary predicate   \verb|val(ID,Value)| into two subsets, such as \verb|subset1(ID)| (and \verb|subset2(ID)| respectively), such that the sum of both subsets is equal. Essentially, we sketch the constraint of the form: 
+However, adding aggregates to non-disjunctive ASP raises the complexity of an AS existence check, unless aggregate dependencies are stratified \parencite{aggregates_complexity}. It is possible to add aggregates into our system under the following restrictions: stratified case, aggregates occur in the body in the form ${N = \#\textit{agg}\{ \dots \}}$, sketched with the keyword \verb|?#| , where \textit{\#agg} can be \textit{max}, \textit{min}, \textit{count} and \textit{sum}. This immediately allows us  to model problems such as Equal Subset Sum (for details, see the repository), where one needs to split a list of values, specified as a binary predicate   \verb|val(ID,Value)| into two subsets, such as \verb|subset1(ID)| (and \verb|subset2(ID)| respectively), such that the sum of both subsets is equal. Essentially, we sketch the constraint of the form: 
 
 \verb|:- S1 != S2, S1 = ?#{V,X:val(X,V),subset1(X)}...|
 
@@ -307,7 +307,7 @@ A sketched aggregate $?\#$, can be reified similarly to the regular sketched ato
 similarly for other aggregate functions; the same rules, e.g., the example extension, apply to aggregate reification. 
 
 
-\addedsket{With aggregates we can sketch a significantly larger class of problems. Consider the problem from the Functional Pearls Collection: ``Finding celebrities problem'' \cite{celebrity_problem} \footnote {\scriptsize ASP code: \url{hakank.org/answer_set_programming/finding_celebrities.lp4}}. Problem statement: ``Given a list of people at a party and for each person the list of people they know at the party, we want to find the celebrities at the party.
+\addedsket{With aggregates we can sketch a significantly larger class of problems. Consider the problem from the Functional Pearls Collection: ``Finding celebrities problem'' \parencite{celebrity_problem} \footnote {\scriptsize ASP code: \url{hakank.org/answer_set_programming/finding_celebrities.lp4}}. Problem statement: ``Given a list of people at a party and for each person the list of people they know at the party, we want to find the celebrities at the party.
 A celebrity is a person that everybody at the party knows but that only knows other celebrities. At least one celebrity is present at the party.'' The sketch core looks as follows (names are shortened):}
 \begin{Verbatim}[fontsize=\normalsize,numbers=left,xleftmargin=2mm]
 n(N) :- N = ?#{ P : p(P) }.
@@ -364,8 +364,8 @@ although there are many example ASP programs available in blogs, books or come w
 these typically employ advanced features (such as incremental grounding, optimization or external sources) which are not supported by SkASP as yet.
 Therefore we had to design our own dataset in a systematic way (and put it in the public domain).
 The dataset is based on a systematic concept (the 21 problems by Karp). When 
-we could find encodings for these problem (such as Sudoku in Figure \ref{lst:sudoku} from \cite{asp_tutorial_sudoku} and Hamiltonian Cycle in Figure \ref{lst:ham} from \cite{ASPbook}) we took these problems, in all other cases we developed a solution according to the standard generate and test development methodology of ASP.
-Specifically of \qfive we looked for different encodings in the public domain of ASP’s favorite -- the N-queens problem (these encoding can tacle even its NP-complete version \cite{complexity_nqueens}).
+we could find encodings for these problem (such as Sudoku in Figure \ref{lst:sudoku} from \parencite{asp_tutorial_sudoku} and Hamiltonian Cycle in Figure \ref{lst:ham} from \parencite{ASPbook}) we took these problems, in all other cases we developed a solution according to the standard generate and test development methodology of ASP.
+Specifically of \qfive we looked for different encodings in the public domain of ASP’s favorite -- the N-queens problem (these encoding can tacle even its NP-complete version \parencite{complexity_nqueens}).
 
 After creating all the ASP programs, we turned them into sketched ASP programs by looking for meaningful opportunities to use 
 sketched variables. We introduced sketched variables to replace operators (such as equalities and inequalities), to replace arithmetic (such as plus and minus)
@@ -542,17 +542,17 @@ of the problem to learn.
 \section{Related work}\label{sec:related_work}
 The problem of sketched ASP is related to a number of topics.
 First, the idea of sketching originates from the area of programming languages, where
-it relates to so called self-completing programs \cite{sketching_phd_thesis}, typically in C \cite{sketching_original} and in Java \cite{jsketch}, where an imperative program has a question mark instead of a constant and a programmer provides a number of examples to find the right substitution for it. While sketching has been used in imperative programming languages, it has -- to the best of the authors' knowledge -- never been applied to ASP and constraint programming.  What is also new is that the sketched ASP is solved using a standard ASP solver, i.e., ASP itself.
+it relates to so called self-completing programs \parencite{sketching_phd_thesis}, typically in C \parencite{sketching_original} and in Java \parencite{jsketch}, where an imperative program has a question mark instead of a constant and a programmer provides a number of examples to find the right substitution for it. While sketching has been used in imperative programming languages, it has -- to the best of the authors' knowledge -- never been applied to ASP and constraint programming.  What is also new is that the sketched ASP is solved using a standard ASP solver, i.e., ASP itself.
 
-Second, there is a connection to the field of inductive (logic) programming (ILP)  \cite{ilp_book,ilp_original,gulwani2015inductive}
+Second, there is a connection to the field of inductive (logic) programming (ILP)  \parencite{ilp_book,ilp_original,gulwani2015inductive}
 as one induces programs from examples of their intended behaviour.  
-An example of such approach is the work on meta-interpretive learning \cite{MuggletonMLJ14,MuggletonMLJ15} where 
+An example of such approach is the work on meta-interpretive learning \parencite{MuggletonMLJ14,MuggletonMLJ15} where 
 a Prolog program is learned from a set of higher-order rules and examples. The higher-order rule acts as a kind of template
 that can be used to complete the program. 
 However, meta-interpretive learning differs from SkASP in that it induces full programs 
 and pursues as other ILP methods a search- and trace-based approach guided by generality, 
 whereas SkASP using a constraint solver (i.e., ASP itself) directly.  Furthermore, the target is different in that ASPs are learned, which include constraints. %rather than Prolog or Datalog programs. % On the other hand, meta-interpretive learning also supports predicate invention. 
-There is also a connection to meta-interpretation in ASP \cite{asp_meta}, such as rule and decision materialization. The purpose is, however, different: they aim at synthesizing a program of higher complexity ($\Sigma_2^P$) given programs of lower complexity (\textit{NP} and \textit{Co-NP}).
+There is also a connection to meta-interpretation in ASP \parencite{asp_meta}, such as rule and decision materialization. The purpose is, however, different: they aim at synthesizing a program of higher complexity ($\Sigma_2^P$) given programs of lower complexity (\textit{NP} and \textit{Co-NP}).
 
 \begin{table}
     \small
@@ -572,27 +572,27 @@ There is also a connection to meta-interpretation in ASP \cite{asp_meta}, such a
   \caption{Key feature comparison between SkASP and ILASP}
   \label{tab:ilasp_table}
 \end{table}
-There are also interesting works in the intersection of ILP, program synthesis and ASP \addedsket{\cite{inductive_asp,inductive_asp2}. The ILASP system \cite{ILASP_system} learns an ASP program from  examples, and a set of modes, while minimizing a metric, typically the number of atoms. While there are similarities in the definitions and used ASP meta-programming techniques,} the program, learned completely from scratch, is not necessarily the best program from the user's point of view and may limit the possibility to localize the uncertainty based on the user's knowledge of the problem.  \addedsket{Indeed, if all sketched predicates are added in the modes with corresponding background knowledge, then the set of hypotheses of sketched ASP is a subset of ILASP. However, if we specify a sketched constraint \texttt{:- p(X),q(Y),X?=Y} with the negative example \texttt{\{p(1),q(2)\}} as modes for ILASP \cite{ILASP_system}, ILASP would learn a program like \texttt{:- p(X)}, since that is a minimal program in the number of atoms but that is clearly not the program intended by the sketch. Furthermore, we aim at computing the set of preferred programs instead of a single solution. For a more detailed feature comparison, we refer to Table \ref{tab:ilasp_table}. %From the Blumer bound \cite{Blumer_bound} we know that the PAC bound on the hypothesis error logarithmically depends on the hypothesis size, which gives better generalization error to sketching.
-SkASP is also related to XHAIL \cite{xhail} an ILP abduction system, which, however, does not support constraints that are at the core of our system. }
+There are also interesting works in the intersection of ILP, program synthesis and ASP \addedsket{\parencite{inductive_asp,inductive_asp2}. The ILASP system \parencite{ILASP_system} learns an ASP program from  examples, and a set of modes, while minimizing a metric, typically the number of atoms. While there are similarities in the definitions and used ASP meta-programming techniques,} the program, learned completely from scratch, is not necessarily the best program from the user's point of view and may limit the possibility to localize the uncertainty based on the user's knowledge of the problem.  \addedsket{Indeed, if all sketched predicates are added in the modes with corresponding background knowledge, then the set of hypotheses of sketched ASP is a subset of ILASP. However, if we specify a sketched constraint \texttt{:- p(X),q(Y),X?=Y} with the negative example \texttt{\{p(1),q(2)\}} as modes for ILASP \parencite{ILASP_system}, ILASP would learn a program like \texttt{:- p(X)}, since that is a minimal program in the number of atoms but that is clearly not the program intended by the sketch. Furthermore, we aim at computing the set of preferred programs instead of a single solution. For a more detailed feature comparison, we refer to Table \ref{tab:ilasp_table}. %From the Blumer bound \parencite{Blumer_bound} we know that the PAC bound on the hypothesis error logarithmically depends on the hypothesis size, which gives better generalization error to sketching.
+SkASP is also related to XHAIL \parencite{xhail} an ILP abduction system, which, however, does not support constraints that are at the core of our system. }
 
-Third, there is also work on constraint learning, where the systems such as CONACQ \cite{original_constraint_learning,besetalAIJ17} and QUACQ \cite{QUACQ} learn a set of propositional constraints,  and ModelSeeker \cite{BeldiceanuS12} learns global constraints governing a particular set of examples.  The subject has also been investigated in ILP setting \cite{lallouet}. 
+Third, there is also work on constraint learning, where the systems such as CONACQ \parencite{original_constraint_learning,besetalAIJ17} and QUACQ \parencite{QUACQ} learn a set of propositional constraints,  and ModelSeeker \parencite{BeldiceanuS12} learns global constraints governing a particular set of examples.  The subject has also been investigated in ILP setting \parencite{lallouet}. 
 However, the idea in all these approaches is to learn the complete specification of CSPs from scratch. Our setting is probably more realistic 
 from a user perspective as it allows to use the knowledge that the user no doubt possesses about the underlying problem,
 and also requires much less examples.  On the other hand, SkASP also makes, as other sketching approaches,
 the strong assumption that the intended target program is an instance of the sketched one. This may not always
 be true, for instance, when rules are missing in the program.  This is an interesting issue for further research.
 
-Fourth, our approach is related to debugging of ASP \cite{debugging_using_meta_asp,debugging_asp}. 
+Fourth, our approach is related to debugging of ASP \parencite{debugging_using_meta_asp,debugging_asp}. 
 Unlike SkASP such debuggers can be used to locate bugs, but typically 
 do not provide help in fixing them. On the other hand,
 once a bug is identified, SkASP could be used to repair it by introducing a sketch and a number of examples. \footnote{ {\scriptsize During the experiments, we stumbled upon a peculiar bug. One ASP encoding that we discovered in a public repository worked mostly by pure luck. The following constraint \texttt{:-queen(X1,Y1),queen(X2,Y2),X1<X2,abs(Y1-X1)==abs(Y2-X2).} works because \texttt{abs} is not actually absolute value but an 
 uninterpreted function, essentially it checks $X == Y$, and that is indeed the found solution. \addedsket{(This kind of bugs would be extremely hard to find using traditional debuggers, since technically the encoding produced correct solutions.)} 
-Also, while working on the aggregate extension use-case, we discovered a subtle bug: the case of a single celebrity was not handled correctly. In both cases, the author has been contacted and models have been updated.}} The approach of \cite{ilp_debugging_asp} is based on classical ILP techniques of generalization and specification and does not provide the freedom to indicate uncertain parts of the program.
+Also, while working on the aggregate extension use-case, we discovered a subtle bug: the case of a single celebrity was not handled correctly. In both cases, the author has been contacted and models have been updated.}} The approach of \parencite{ilp_debugging_asp} is based on classical ILP techniques of generalization and specification and does not provide the freedom to indicate uncertain parts of the program.
 
 
 
 % \section{Practical Applications: Query Sketching} \label{sec:applications}
-% \addedsket{There is an important area of research in databases, called query-by-example (QBE) \cite{query_by_example}, where one recovers a query, given a database and positive and negative output tuples. Typically, QBE algorithms have two parts: query-optimization and search. The former is to reduce the search space and the latter is to look for a query. The technique described in this paper, enhanced with the query-optimization methods from QBE would allow to model the search component and port the sketching idea into the database setting, \textit{Query Sketching}.}
+% \addedsket{There is an important area of research in databases, called query-by-example (QBE) \parencite{query_by_example}, where one recovers a query, given a database and positive and negative output tuples. Typically, QBE algorithms have two parts: query-optimization and search. The former is to reduce the search space and the latter is to look for a query. The technique described in this paper, enhanced with the query-optimization methods from QBE would allow to model the search component and port the sketching idea into the database setting, \textit{Query Sketching}.}
 
 % \addedsket{E.g., consider a standard database setting with an employee database, where a user needs to select all highly-paid employees not from sales departments. The user knows the general structure of the query, i.e. a join between two tables with a filtering condition on columns, but she is unsure of the exact combination of values. Thus, she leaves all the comparisons with constants open.}
 
@@ -625,4 +625,4 @@ Also, while working on the aggregate extension use-case, we discovered a subtle 
 \section{Discussion and conclusions}\label{sec:discussion}
 Our contribution is four-fold: we have introduced the problem of sketched ASP; we have provided a rewriting schema for SkASP; we have created a dataset of sketches and we have evaluated our approach empirically demonstrating its efficiency and effectiveness.
 
-User interaction is an interesting direction for future work, namely to suggest constraints and examples. For the former, if we are not able to reject a negative example, we can construct a constraint that would reject the negative examples and none of the positive examples. As for the examples, if we have two solutions to a problem, we can generate an example discriminating between them and ask user to clarify it, while this might not always be possible, since symmetric assignments might lead to semantically identical programs. In practice, however, this might be an important addition to simplify sketching for end users. Another interesting direction is to incorporate \addedsket{non-constant} preference handling into the ASP model using the extensions of ASP for preference handling, such as \textit{asprin} \cite{asprin}.
+User interaction is an interesting direction for future work, namely to suggest constraints and examples. For the former, if we are not able to reject a negative example, we can construct a constraint that would reject the negative examples and none of the positive examples. As for the examples, if we have two solutions to a problem, we can generate an example discriminating between them and ask user to clarify it, while this might not always be possible, since symmetric assignments might lead to semantically identical programs. In practice, however, this might be an important addition to simplify sketching for end users. Another interesting direction is to incorporate \addedsket{non-constant} preference handling into the ASP model using the extensions of ASP for preference handling, such as \textit{asprin} \parencite{asprin}.

@@ -17,7 +17,7 @@ This is especially the case when spreadsheets have been exported from other soft
 In this case, often a Comma Separated Values (CSV) format is used meaning that all formulas are lost, including inter-sheet formulas and relations.
 %This limited understanding is especially the case with spreadsheets exported from other software such as ERP packages. In this case,
 Even in manually created spreadsheets, it can be challenging to be consistent and correct with formulas across all tables.
-For example, the influential Reinhart-Rogoff economical paper ``Growth in a Time of Debt'' \cite{growth_in_time_of_debt} had some of its claims contested~\cite{flaw_excel} after an investigation showed that the used Excel sheets contained mistakes in formulas.
+For example, the influential Reinhart-Rogoff economical paper ``Growth in a Time of Debt'' \parencite{growth_in_time_of_debt} had some of its claims contested~\parencite{flaw_excel} after an investigation showed that the used Excel sheets contained mistakes in formulas.
 
 % why learn them
 \added{
@@ -38,9 +38,9 @@ A similar approach could be used to compress the data: instead of storing all da
 % why difficult
 To this aim,  we investigate whether machine learning and knowledge discovery techniques can be used to learn constraints (formulas and other relations) in spreadsheet data in an unsupervised way.
 From a machine learning point of view this is an unconventional problem because the data is in tabular form, but the constraints we wish to learn can involve both rows and columns of the table. Being unsupervised, there is no labeled information either, although for every possible function one can verify whether a certain input satisfies the definition.
-%Unlike in other knowledge discovery tasks, such as pattern mining~\cite{}, there are many different types of formula and constraints we wish to discover, each with their own signature (number and properties of arguments) and definition.
-From a data mining point of view, the data is relational on the one hand, since one can have multiple tables with relationships between them, but also consists of mixed textual and numeric types. More closely related is clausal discovery~\cite{claudien,lallouet}, learning CSP constraints \cite{QUACQ,Conacq,modelseeker} and dependency discovery in databases \cite{savnik}. But an important difference remains that we want to learn constraints on both columns and rows over integer, floating point as well as textual data.
-Our inspiration comes from work on program synthesis, in particular Flashfill \cite{flashfill}, where the definition of a string-manipulation function is learned in spreadsheet data from very few examples.
+%Unlike in other knowledge discovery tasks, such as pattern mining~\parencite{}, there are many different types of formula and constraints we wish to discover, each with their own signature (number and properties of arguments) and definition.
+From a data mining point of view, the data is relational on the one hand, since one can have multiple tables with relationships between them, but also consists of mixed textual and numeric types. More closely related is clausal discovery~\parencite{claudien,lallouet}, learning CSP constraints \parencite{QUACQ,Conacq,modelseeker} and dependency discovery in databases \parencite{savnik}. But an important difference remains that we want to learn constraints on both columns and rows over integer, floating point as well as textual data.
+Our inspiration comes from work on program synthesis, in particular Flashfill \parencite{flashfill}, where the definition of a string-manipulation function is learned in spreadsheet data from very few examples.
 
 
 % Moved up
@@ -64,7 +64,7 @@ Our contributions are as follows:
 This chapter is organized as follows.
 Section \ref{sec:tacle_related_work} discusses related work. Section \ref{sec:formalization} introduces the relevant concepts and defines the problem formally while Section \ref{sec:approach} presents our approach. This is evaluated in Section \ref{sec:evaluation} after which \added{we show how to realize two of the motivating applications using our system} in Section \ref{sec:applications}, and we conclude in Section \ref{sec:tacle_conclusions}.
 
-%Due to the complexity of numeric computations in spreadsheets, people often fail to grasp the properties of the data, which leads to the so called Spreadsheet risk\footnote{\url{https://en.wikipedia.org/wiki/Spreadsheet\#Spreadsheet_risk}} and even caused major flaw in the famous economics papers \cite{flaw_excel} and billion-losses in the financial industry \cite{spreadsheet_risk_loss}. Tabular constraint learning provides a potential cure by indicating learned constraint violations and suggest possible fixes.
+%Due to the complexity of numeric computations in spreadsheets, people often fail to grasp the properties of the data, which leads to the so called Spreadsheet risk\footnote{\url{https://en.wikipedia.org/wiki/Spreadsheet\#Spreadsheet_risk}} and even caused major flaw in the famous economics papers \parencite{flaw_excel} and billion-losses in the financial industry \parencite{spreadsheet_risk_loss}. Tabular constraint learning provides a potential cure by indicating learned constraint violations and suggest possible fixes.
 
 % {\it
 % \textbf{Motivation}:
@@ -87,25 +87,25 @@ Section \ref{sec:tacle_related_work} discusses related work. Section \ref{sec:fo
 \section{Related work}\label{sec:tacle_related_work}
 \sname combines ideas from several existing approaches and different fields of research.
 
-First, it borrows techniques from logical and relational learning \cite{luc_book}, as it discovers
+First, it borrows techniques from logical and relational learning \parencite{luc_book}, as it discovers
 constraints in multiple relations or tables. Unlike typical logical and relational learning
 approaches, it focuses on data in spreadsheets and constraints involving both columns and rows in the sheets.
-Furthermore, it derives a set of simple ``atomic'' constraints rather than a set of rules that each consist of a conjunction of literals as in clausal discovery \cite{claudien,lallouet}. Nevertheless, several ideas from logical and relational learning
-proved to be useful, such as the use of a canonical form, a refinement graph, and pruning for redundancy. Tabular constraint learning also connects with the logical generalization of given formulas in a spreadsheet \cite{Isakowitz}, where the existing formulas are abstracted by introducing parameters in the place of particular cell references. The key difference here is that we discover constraints/formulas in the data, we do not have or use any prior information on the formulas in a spreadsheet.
+Furthermore, it derives a set of simple ``atomic'' constraints rather than a set of rules that each consist of a conjunction of literals as in clausal discovery \parencite{claudien,lallouet}. Nevertheless, several ideas from logical and relational learning
+proved to be useful, such as the use of a canonical form, a refinement graph, and pruning for redundancy. Tabular constraint learning also connects with the logical generalization of given formulas in a spreadsheet \parencite{Isakowitz}, where the existing formulas are abstracted by introducing parameters in the place of particular cell references. The key difference here is that we discover constraints/formulas in the data, we do not have or use any prior information on the formulas in a spreadsheet.
 
 
-Second, there exist a number of algorithms in the constraint programming community that induce constraints from one or more examples and questions. Two well-known approaches include ModelSeeker \cite{modelseeker} and Quacq \cite{QUACQ}.
-The former starts from a single example in the form of a vector of values and then exhaustively looks for the most specific constraints that hold given a large constraint library. To this aim, it cleverly enumerates different de-vectorized tables; for instance, if the initial vector was of dimension $1 \times 20$, it would consider rearrangements of size $2 \times 10$, $4 \times 5$, $5 \times 4$, $\dots$ and Modelseeker would then look for both column, row  and even diagonal constraints. Key differences with our work are that we use spreadsheets with \textit{multiple} tables and that ModelSeeker's constraints are restricted to integer values and constraints that are typical for the constraint programming community, e.g., aimed at combinatorial optimization and scheduling. Conacq \cite{Conacq} acquires a conjunction of constraints using techniques inspired by Mitchell's version space algorithm to process examples; its successor Quacq uses active learning to query the user. Each of the examples/queries is processed for each constraint, hence an important issue is how fast the algorithm converges to the entire solution set (e.g. for Sudoku).
-The focus is again on integer variables and typical combinatorial optimisation constraints. In a similar spirit the field of equation discovery \cite{equation_discovery} focuses, guided by  heuristics based on the structure of physical equations and unit measures, on the discovery of physical formulas over numbers and times series.
+Second, there exist a number of algorithms in the constraint programming community that induce constraints from one or more examples and questions. Two well-known approaches include ModelSeeker \parencite{modelseeker} and Quacq \parencite{QUACQ}.
+The former starts from a single example in the form of a vector of values and then exhaustively looks for the most specific constraints that hold given a large constraint library. To this aim, it cleverly enumerates different de-vectorized tables; for instance, if the initial vector was of dimension $1 \times 20$, it would consider rearrangements of size $2 \times 10$, $4 \times 5$, $5 \times 4$, $\dots$ and Modelseeker would then look for both column, row  and even diagonal constraints. Key differences with our work are that we use spreadsheets with \textit{multiple} tables and that ModelSeeker's constraints are restricted to integer values and constraints that are typical for the constraint programming community, e.g., aimed at combinatorial optimization and scheduling. Conacq \parencite{Conacq} acquires a conjunction of constraints using techniques inspired by Mitchell's version space algorithm to process examples; its successor Quacq uses active learning to query the user. Each of the examples/queries is processed for each constraint, hence an important issue is how fast the algorithm converges to the entire solution set (e.g. for Sudoku).
+The focus is again on integer variables and typical combinatorial optimisation constraints. In a similar spirit the field of equation discovery \parencite{equation_discovery} focuses, guided by  heuristics based on the structure of physical equations and unit measures, on the discovery of physical formulas over numbers and times series.
 However, they focus specifically on noisy physical data and formulas, e.g., a single variable can take values from a series of measurements to get a regression parameter estimate or they apply specific data transformation such as numerical calculation of time and partial derivatives. In other words, the method works with approximations and the equation structures are heavily biased towards parameter estimation, while our goal is to discover hard constraints that hold over a subset of the rows and columns.
 %As the conjunction for typical constraint programming problems (such as Sudoku) can be quite large, a key problem is to cope with redundant constraints. As Modelseeker, these systems focus on the types of constraints in combinatorial optimization but unlike ModelSeeker and our approach, they do not assume the variables are organized in tabular form.
 
 
-Third, our work borrows from the seminal work of Gulwani et al. \cite{flashfill} on program synthesis for string manipulation in tabular data, which is incorporated in Microsoft's Excel. In FlashFill, the end-user might work on a table containing the surnames (column A) and names (column B) of scientists. The first row might contain the values A1 = ``Curie'' and B1 = ``Marie'', and the user might then enter in cell C1 the value ``M.C.''. At that point FlashFill generates a program that produces the output ``M.C.'' for the inputs ``Curie'' and ``Marie'', and also applies it to the other scientists (rows) in the table. While it might need an extra example to deal with names such as ``Bell'', ``Alexander Graham'' and determine whether it should output ``A.B.'' or ``A.G.B.'', FlashFill learns correct programs from very few examples. Flashfill has been extended to, e.g., FlashExtract \cite{flashextract} to produce a set of tables starting from an unstructured document (e.g., a txt or HTML file) with a set of examples marked for extraction. However, unlike our approach, Flashfill requires the user to identify explicitly the desired inputs/outputs from the function as well as to provide explicitly some positive and sometimes also negative examples.  In contrast, our approach is unsupervised, although it would be interesting to study whether it could be improved through user interaction and through user examples. \added{Furthermore, FlashFill handles only single tables with textual data to obtain a string transformation program, while the examples we consider contain multiple tables with mixed numeric and textual data and multiple constraints in them.} An interesting open issue for all of these techniques, with the exception of logical and relational learning, is how to deal with possibly incomplete or noisy data.
+Third, our work borrows from the seminal work of \textcite{flashfill} on program synthesis for string manipulation in tabular data, which is incorporated in Microsoft's Excel. In FlashFill, the end-user might work on a table containing the surnames (column A) and names (column B) of scientists. The first row might contain the values A1 = ``Curie'' and B1 = ``Marie'', and the user might then enter in cell C1 the value ``M.C.''. At that point FlashFill generates a program that produces the output ``M.C.'' for the inputs ``Curie'' and ``Marie'', and also applies it to the other scientists (rows) in the table. While it might need an extra example to deal with names such as ``Bell'', ``Alexander Graham'' and determine whether it should output ``A.B.'' or ``A.G.B.'', FlashFill learns correct programs from very few examples. Flashfill has been extended to, e.g., FlashExtract \parencite{flashextract} to produce a set of tables starting from an unstructured document (e.g., a txt or HTML file) with a set of examples marked for extraction. However, unlike our approach, Flashfill requires the user to identify explicitly the desired inputs/outputs from the function as well as to provide explicitly some positive and sometimes also negative examples.  In contrast, our approach is unsupervised, although it would be interesting to study whether it could be improved through user interaction and through user examples. \added{Furthermore, FlashFill handles only single tables with textual data to obtain a string transformation program, while the examples we consider contain multiple tables with mixed numeric and textual data and multiple constraints in them.} An interesting open issue for all of these techniques, with the exception of logical and relational learning, is how to deal with possibly incomplete or noisy data.
 
-Fourth, also related to this line of research is the work on deriving constraints in databases such as functional and multi-valued dependencies \cite{savnik, Mannila-Raiha} although that line of research has focused on more specialized techniques for specific types of constraints. Many of the discovery techniques rely on the database schema~\cite{flach_dependency_discovery}, which is not available in our case. Techniques that work directly on the data have been investigated for the discovery of functional dependencies between attributes~\cite{tane_dependency_discovery}. The constraints and formulas we wish to learn go beyond that, including arithmetic, conditional arithmetic and \textit{fuzzy} lookups, for example.
+Fourth, also related to this line of research is the work on deriving constraints in databases such as functional and multi-valued dependencies \parencite{savnik, Mannila-Raiha} although that line of research has focused on more specialized techniques for specific types of constraints. Many of the discovery techniques rely on the database schema~\parencite{flach_dependency_discovery}, which is not available in our case. Techniques that work directly on the data have been investigated for the discovery of functional dependencies between attributes~\parencite{tane_dependency_discovery}. The constraints and formulas we wish to learn go beyond that, including arithmetic, conditional arithmetic and \textit{fuzzy} lookups, for example.
 
-Finally, worth mentioning is BayesDB \cite{BayesDB} and Tabular \cite{tabular}, two recent probabilistic modeling languages that have been specifically designed for dealing with relational data in tabular form and that can, as FlashFill, also automatically fill out missing values in a table.  However, unlike the other mentioned approaches, it is based on an underlying probabilistic graphical model that performs probabilistic inference rather than identify the ``hard'' constraints that hold in spreadsheets.
+Finally, worth mentioning is BayesDB \parencite{BayesDB} and Tabular \parencite{tabular}, two recent probabilistic modeling languages that have been specifically designed for dealing with relational data in tabular form and that can, as FlashFill, also automatically fill out missing values in a table.  However, unlike the other mentioned approaches, it is based on an underlying probabilistic graphical model that performs probabilistic inference rather than identify the ``hard'' constraints that hold in spreadsheets.
 
 
 \begin{figure}[thb]
@@ -120,7 +120,7 @@ Finally, worth mentioning is BayesDB \cite{BayesDB} and Tabular \cite{tabular}, 
     Green background indicates headerless tables, dark borders indicate maximal type-consistent blocks.
     Most tables only contain type-consistent columns while table~$T_2$ also contains type-consistent rows. % (though its header indicates that it consists of row data).
 %    However, due to the location of the header of~$T_2$ we can infer that it consists of row data.
-    This example combines several Excel sheets based on exercises in the book ``MS Excel 2010''~\cite{excel_book}.
+    This example combines several Excel sheets based on exercises in the book ``MS Excel 2010''~\parencite{excel_book}.
     % I guess you want to save space by having everything in one figure, but it might be useful to have a smaller figure on the first page just to explain this example in a bit more detail (or use a smaller example here); it's quite overwhelming now}
   }
   \label{fig:main_example}
@@ -384,7 +384,7 @@ Functions can be represented in a similar way. Any function $\sbl{n+1}=s(\sbl{1}
 
 \item \textit{\CSignature} defines the requirements that the arguments of the predicate must satisfy.
 This can concern properties of individual blocks as well as relations between properties of arguments, for example, that the corresponding blocks must belong to the same table or have equal length.
-In terms of logical and relational learning \cite{luc_book}, the \CSignature is known as the {\em bias} of the learner, it specifies a conjunction of the properties that the arguments must have for the constraint to be well-formed.
+In terms of logical and relational learning \parencite{luc_book}, the \CSignature is known as the {\em bias} of the learner, it specifies a conjunction of the properties that the arguments must have for the constraint to be well-formed.
 We denote this bias for a template~$s$ using the predicate $\sigc$.
 \item \textit{\CFunction} is the actual definition of the constraint that specifies when the constraint holds.
 Given an assignment of blocks to its arguments, it can be used to verify whether the constraint is satisfied or not by the actual data present in the blocks. %holds, in practice this will be a function that can be called when
@@ -540,7 +540,7 @@ In Section~\ref{sec:opts} we describe a number of optimizations designed to impr
 
 \subsection{Step~1: Table extraction}
 \label{sec:table_extraction}
-Many spreadsheets contain headers that provide hints at where the table(s) in the sheet are and what the meaning of the rows and columns is. However, detecting tables and headers is a complex problem on its own~\cite{header}. Furthermore, headers may be missing and their use often requires incorporating language-specific vocabulary, e.g. English.
+Many spreadsheets contain headers that provide hints at where the table(s) in the sheet are and what the meaning of the rows and columns is. However, detecting tables and headers is a complex problem on its own~\parencite{header}. Furthermore, headers may be missing and their use often requires incorporating language-specific vocabulary, e.g. English.
 
 % \begin{figure}[t]
 %   \centering
@@ -739,7 +739,7 @@ This section discusses various design decisions and optimizations aimed at impro
 \subsubsection{Template dependencies}
 As discussed in Section~\ref{sec:form:dependencies}, some constraint templates depend on others by including templates they depend on in their signature (see Table~\ref{table:constraints}).
 
-In Inductive Logic Programming, one often exploits implications between constraints to structure the search space~\cite{luc_book}.
+In Inductive Logic Programming, one often exploits implications between constraints to structure the search space~\parencite{luc_book}.
 Our approach uses the dependencies between templates to define a dependency graph.
 \added{Dependencies are provided to the system as part of the specification of the constraint templates.}
 We assume that signatures do not contain equivalences or loops, and hence the resulting graph is a directed acyclic graph (DAG).
@@ -803,7 +803,7 @@ Should the target constraint be $\eccalc{\sbl{2}}{\textit{MAX}(\range{T}{\rangea
 \label{sec:which_cons}
 The 33 constraints that are currently supported in our system are shown in Table~\ref{table:constraints}.
 We included most formulas that we encountered in tutorial spreadsheets including the popular \textit{SUM} and \textit{LOOKUP} constraints.\!\footnote{\href{https://support.office.com/en-us/article/Excel-functions-by-category-5F91F4E9-7B42-46D2-9BD1-63F26A86C0EB}{https://support.office.com/en-us/article/Excel-functions-by-category-5F91F4E9-7B42-46D2-9BD1-63F26A86C0EB}}
-We also added four structural constraints (\textit{ALLDIFFERENT}, \textit{PERMUTATION}, \textit{\ecascname} and \textit{FOREIGNKEY}) so that they can be used in the signature of other constraint templates; they are also popular in constraint satisfaction~\cite{modelseeker}.
+We also added four structural constraints (\textit{ALLDIFFERENT}, \textit{PERMUTATION}, \textit{\ecascname} and \textit{FOREIGNKEY}) so that they can be used in the signature of other constraint templates; they are also popular in constraint satisfaction~\parencite{modelseeker}.
 \added{In our current system, the signature for these structural constraints was chosen to be \emph{strict}, i.e. only support those types that are required by depending constraints.
 Therefore, \textit{ALLDIFFERENT} does not support floating point numbers and \textit{\ecascname} does not support strings.}
 
@@ -877,7 +877,7 @@ While the modified approach still benefits from the reuse of earlier solutions, 
 }
 
 All experiments were run using Python 3.5.1 on a Macbook Pro, Intel Core i7 2.3~GHz with 16GB RAM.
-The constraint solver that is used by the input block assignment phase (Step 3a) is python-constraint \cite{python_constraint}.
+The constraint solver that is used by the input block assignment phase (Step 3a) is python-constraint \parencite{python_constraint}.
 
 
 
@@ -996,7 +996,7 @@ These experiments with synthetic data have given us a better understanding of wh
 \subsection{Effectiveness on real spreadsheets}\label{subsec:real_spreadsheet_experiments}
 \added{
 In order to test our approach on real data we assembled a benchmark of spreadsheets from three sources:
-1)~spreadsheets from an exercise session for teaching Excel at the Brussels Business School based on the book~\cite{excel_book}, covering the most popular Excel formulas; 2)~spreadsheets from online tutorials on Excel formulas; and 3)~publicly available \textit{data} spreadsheets such as real-world crime statistics (FBI:UCR) or financial reports (US BEA). The data and its extended description are available in Appendix \ref{appendix:dataset_overview} in Table \ref{tab:constraint_by_category} and at the same repository as before with the links to all original publicly available spreadsheets used in the experiments.
+1)~spreadsheets from an exercise session for teaching Excel at the Brussels Business School based on the book~\parencite{excel_book}, covering the most popular Excel formulas; 2)~spreadsheets from online tutorials on Excel formulas; and 3)~publicly available \textit{data} spreadsheets such as real-world crime statistics (FBI:UCR) or financial reports (US BEA). The data and its extended description are available in Appendix \ref{appendix:dataset_overview} in Table \ref{tab:constraint_by_category} and at the same repository as before with the links to all original publicly available spreadsheets used in the experiments.
 } 
 
 
@@ -1176,6 +1176,8 @@ For example, filling in $\range{T_2}{4}{2}=1572$ in Figure~\ref{fig:autocompleti
 %However, such conflicts can be wrongly caused by spurious constraints.
 %Hence, conflicts should perhaps only be detected if the snapshot data is large enough.
 %An exact specification of what large enough means (i.e., how to measure the confidence in the constraint violation) is a separate application-dependent research question and will be investigated in the future work.
+
+
 \added{The second setting is \textit{offline} error detection, that is, on a given file.
 % Consider a use case concerning crime statistics provided by the FBI in Figure~\ref{fig:fbi}.
 % Our system is able to detect the second sum constraint, however, a missing value prevents the first sum constraint from being learned.
@@ -1197,6 +1199,114 @@ This approach would be more robust, however, it requires definition tests to be 
 %Of course, generating large enough samples and rows (columns) to be added can be done in multiple ways.
 %In the limited case of detecting single errors one can leave out every row (column), consider the remaining data to be the sample and
 %and the left out row (column) to be new input.
+
+\section{Future Work: Pindakaas}
+Here we outline possibility to expand TaCLe to work in
+the supervised setting. We also propose a language extension to
+handle nested functions and make the system robust to the noise.
+
+If we recap the key features of FlashFill \parencite{flashfill} and of TaCLe
+\parencite{tacle}, then we would highlight the following:
+
+\textbf{FlashFill} is designed to work with string transformation: one of its main capabilities is to
+  auto-complete strings in a column. Each column must be marked clearly as input/output columns. One or more columns are used as
+  input and only one columns is treated as the output of the string
+  transformation function. The system performs a structured search over programs: internally it searches for a
+  program that performs the matching transformation while minimizing its complexity.
+
+Contrary to FlashFill, \textbf{TaCLe:} works with textual and numeric flat Excel formulae. It is not purely
+    textual as FlashFill, but it handles both numbers and string data. Furthermore, it is unsupervised: the constraints we find do not have marked 
+    inputs and outputs columns. Even more, it is not necessary columns it might be rows as well or even a mix of them.
+  While Flashfill finds a solution, TaCLe enumerates all constraints matching the data: TaCle does not
+    search for a single solution but find the whole set of formula
+    (typically, it outputs its condensed representation) which relates in this sense to condensed representations in pattern mining.
+
+We see that there indeed possibilities for creating a system that
+would take best from two worlds: supervised optimal constraint
+learning robust under the noise.
+
+
+Let us outline where we see a possibility to combine them. We foresee the following setting in which the system can operate, the system would act in the supervised setting where a block (a list of columns or rows) denoted $\bar x$ stands for the input and the block $y$, stands for the output. To account for noise, we introduce the loss function $L$ between formula $f(\bar x)$ and output $y$, which gives us an optimization problem of searching for the best fitting formula, i.e., $L(f(\bar x),y) \mapsto \min$. However, as we know from the machine learning research, this approach is prone to overfitting, therefore we penalize complexity of a formula with, where a functional $\mathcal{C}(f)$ is the measure of complexity. A possible visual interface is depicted in Figure \ref{fig:visual_interface}.
+
+
+\begin{figure}[htb]
+ \centering
+ \includegraphics[width=0.7\textwidth]{noise_flashfill.png}
+ \caption{We clearly see that FlashFill is highly sensitive to the
+   noise (the figure is due to \textcite{robustfill})}
+  \label{fig:flashfill_noise}
+\end{figure}
+
+\begin{figure}[htb]
+ \centering
+ \includegraphics[width=0.7\textwidth]{setting.png}
+ \caption{An example of a nested spreadsheet formula}
+  \label{fig:nested_formula}
+\end{figure}
+
+\begin{figure}[htb]
+ \centering
+ \includegraphics[width=0.7\textwidth]{visualInterface.png}
+ \caption{Possible visual interface for Pindakaas}
+  \label{fig:visual_interface}
+\end{figure}
+
+\paragraph{Noise handling} FlashFill is highly sensitive to the noise,
+see Figure \ref{fig:flashfill_noise},
+and TaCle as well. If we want to make TaCLe robust to the noise, we also need to adapt a
+statistical methodology. One way to do it is to introduce a loss
+function that would measure how close is the formula to the target
+output.
+
+\paragraph{Nested formulae} TaCLe is only able to handle flat
+formulae, if we want to extend it to the nested formulae, as for
+example in Figure \ref{fig:nested_formula}, we need to
+put preference of one formula over another. This can be done by means
+of regularizing the formula complexity.
+
+This can be achieved by introducing the following optimization
+objective:
+
+  \begin{equation*}
+    f^* = \min_{f \in F}{L(f(\bar x),y) + \alpha \mathcal{C}(f)}
+  \end{equation*}
+  where $\alpha$ is the penalty scaling constant, like, e.g., in Support Vector Machines.
+
+\paragraph{How can we define complexity}
+There are multiple ways in how we can define complexity. We take the following approach, for any flat formula $f$, it is a constant $\mathcal{C}(f) = c_f $
+     and for any nested formula it is defined as follows
+       \begin{equation*}
+       \mathcal{C}(f(g(x_1),h(x_2))) = \mathcal{C}(f) + \mathcal{C}(g) + \mathcal{C}(h)
+       \end{equation*}
+where the penalization constant $\alpha$ can be learned by cross-validation or set as a parameter
+
+To better position Pindakass, let us contrast it with the features of
+TaCLe and FlashFill in Table \ref{tab:pindakaas_features}, as we see it borrows features and ideas from both systems.
+\makesavenoteenv{tabular}
+\begin{table}
+  \begin{tabularx}{\textwidth}{l | X | X | X }
+    \textbf{Property} & \textbf{FlashFill} & \textbf{TaCLe} &
+    \textbf{Pindakaas} \\ \hline
+    Data type & Text & Numeric and Textual &  Numeric and
+    Textual\\\hline
+    Learns & String transformation & Set of Flat Excel Formulae
+    & Single best nested formula\\\hline
+    Supervised & Marked columns + examples & Unsupervised &
+    Marked columns \\\hline
+    Solving & Structured search & Constraint enumeration &
+    Regularized optimization \\\hline
+    Satisfaction & Exact & Exact &  Best
+    matching\\\hline
+    Output & set of values & set of formulae & single
+    formula\\ \hline
+    Anytime & No & No & Yes
+  \end{tabularx}
+  \caption{Feature comparison between Pindakaas, TaCLe and FlashFill}
+  \label{tab:pindakaas_features}
+\end{table}
+
+As a result, we can obtain a system that can on the one hand learn from a rich constraint language and, on the on the other hand, can handle noise and scale to large spreadsheets.
+
 
 \section{Conclusions}\label{sec:tacle_conclusions}
 
@@ -1221,7 +1331,7 @@ This could extend the approach to new application domains, beyond traditional sp
 We collected spreadsheets from three main sources.
 \begin{itemize}
   \item After identifying popular Excel functions, the MS Office web page has an overview of popular functions (see the link in Subsection \ref{sec:which_cons}), we searched for online tutorials about these functions and collected them under the category \textbf{Tutorials}. A link to each webpage found and used is provided in the accompanying GitHub repository.
-  \item We have collected the exercises under the category \textbf{Exercises} from the introductory Excel book \cite{excel_book} that focused 1) on popular Excel functions and 2) on datatypes supported by our system.
+  \item We have collected the exercises under the category \textbf{Exercises} from the introductory Excel book \parencite{excel_book} that focused 1) on popular Excel functions and 2) on datatypes supported by our system.
   \item We have collected under the category \textbf{Data} spreadsheets reporting data.
   More specifically, economic data, crime reporting data and data from runtime experiments.
   The spreadsheets on economic data and crime reporting are publicly available and originate from the U.S. Bureau of Economic Analysis (BEA), the RWE annual report 2014 and the U.S. FBI Uniform Crime Reporting (UCR) Program.

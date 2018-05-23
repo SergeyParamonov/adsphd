@@ -352,20 +352,20 @@ The knowledge based language \fod is the extension of First Order Logic with a n
 Let us illustrate an inductive definition and an IDP program by example, see Listing \ref{lst:idp_reachability}, where Reach(x,y) is an example of an inductive definition, defined via the base case and the inductive step (see the Theory part).
 \begin{lstlisting}[caption=An example of an inductive definition in FO(.) and of an IDP program,label=lst:idp_reachability]
 vocabulary V{
-    type Node
+  type Node
   Edge(Node, Node)
   Reach(Node, Node)
 }
 
 theory T:V{
-    { 
-    Reach(x,y)<- Edge(x,y).
-    Reach(x,y) <-?z : Edge(x,z) & Reach(z,y).
+  { 
+    Reach(x,y) <-      Edge(x,y).
+    Reach(x,y) <- ?z : Edge(x,z) & Reach(z,y).
   }
 }
 
 structure S:V{
-    Node = {1;2;3}
+  Node = {1;2;3}
   Edge = {1,2; 2,3; 3,1} 
 }
 \end{lstlisting}
@@ -374,6 +374,7 @@ An IDP program has three parts: \textit{Vocabulary} that defines the terminology
 
 IDP and its language FO(.) can be seen as executable logic we have discussed before, for example the sushi problem can be encoded in IDP as in Listing \ref{lst:idp_sushi}. First, we define vocabulary, which corresponds to vocabulary in first order logic, except for the extra type information. Facts and domains are specified in the structure section, as we see for example with the declaration of the domain for the type person, for which actual values are assigned in the section structure. The theory section defines the actual clauses or constraints, which indeed corresponds to the first order sentences, the only constraint here one to one maps to Eq. \ref{eq:sushi}, which a classical logical implication. The procedure \texttt{main} is a directive to the system to extend the given structure satisfying the constraints in the theory.
 
+\begin{minipage}{\linewidth}
 \begin{lstlisting}[caption=Encoding sushi preferences problem, label=lst:idp_sushi,basicstyle=\ttfamily, basicstyle=\small]
 vocabulary V{
   type person
@@ -382,12 +383,12 @@ vocabulary V{
   likes_sushi(person)
 }
 theory T:V{
-!x[person]: ~allergic(x) & ~vegan(x) => likes_sushi(x).
+  !x[person]: ~allergic(x) & ~vegan(x) => likes_sushi(x).
 }
 
 structure S:V{
-  person = {peter; alina; ronald}
-  vegan = {ronald}
+  person   = {peter; alina; ronald}
+  vegan    = {ronald}
   allergic = {peter}
 }
 
@@ -396,6 +397,7 @@ procedure main(){
   print(M)
 }
 \end{lstlisting}
+\end{minipage}
 
 Therefore, when we write a first order model for a problem, we can always map it to the language of FO(.), furthermore provided language extensions make modeling of relational problems more natural and convenient
 
