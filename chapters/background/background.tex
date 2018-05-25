@@ -30,7 +30,7 @@ A \textit{structure} associates values with the predicates and functions from th
 \end{itemize}
 We call the set of values $p^I$ for a predicate $p$  and the mapping $f^I$ for a function $f$ an \textit{interpretation}.
 
-We assume the set of inequalities $\{ =, \neq, <, >, \leq, \geq \}$,  arithmetic $\{+, -, *, \div \}$ and true $\top$, false $\bot$ to be interpreted by any interpretation in a standard way.
+We assume the set of inequalities $\{ =, \neq, <, >, \leq, \geq \}$,  arithmetic $\{+, -, *, / \}$ and true $\top$, false $\bot$ to be interpreted by any interpretation in a standard way.
 
 \begin{example}[Interpretaion of map coloring]
   Consider the predicate and the function from Example \ref{example:predicates_and_functions}. Then, $I$ can be the following:
@@ -258,7 +258,7 @@ k \{ queen(Row,Col) : col(Col), row(Row) \} k. \label{background:line:choice}
 
 
 \section{Constraint programming}
-A detailed introduction to \acrlong{cp}(\acrshort{cp}) can be found in the ''Handbook of Constraint Programming`` \parencite{handbookcp}. A basic concept here is that of a variable $v$ which always has an associated domain $d$, a domain here is simply a set of constants. An example domain is the Boolean domain \{ True, False \}. A constraint $c$ is an expression of the form \textit{name(vars)}, where \textit{vars} is a list of variable names and \textit{name} is the type of constraints from a predefined set of constraint classes. Examples of classes of constraints are comparisons,   arithmetic operations, list and set constraints (all-different, permutations, etc). We denote a set of all variables as $V$, of all domains as $D$ and of constraints as $C$, then a triple $(V,D,C)$ is a constraint programming model and a \acrlong{csp} (\acrshort{csp}) is the problem of finding an assignment $A$ for $V$ over $D$ satisfying all constraints $C$.
+A detailed introduction to \acrlong{cp}(\acrshort{cp}) can be found in the ''Handbook of Constraint Programming`` \parencite{handbookcp}. A basic concept here is that of a variable $v$ which always has an associated domain $d$, a domain here is simply a set of constants. An example domain is the Boolean domain \{ True, False \}. A constraint $c$ is an expression of the form \textit{name(vars)}, where \textit{vars} is a list of variable names and \textit{name} is the type of constraints from a predefined set of constraint classes. Examples of classes of constraints are comparisons,   arithmetic operations, list and set constraints (all-different, permutations, etc). We denote the set of all variables as $V$, of all domains as $D$ and of constraints as $C$, then a triple $(V,D,C)$ is a constraint programming model and a \acrlong{csp} (\acrshort{csp}) is the problem of finding an assignment $A$ for $V$ over $D$ satisfying all constraints $C$.
 
 Let us demonstrate how it is possible to model the map coloring problem in MiniZinc\footnote{MiniZinc is popular constraint programming language \url{http://www.minizinc.org/}. Based on the encoding from \url{www.hakank.org/minizinc/map.mzn}.}  
 \begin{lstlisting}
@@ -287,7 +287,7 @@ Let us introduce the key definitions from constraints programming formally.
 
 A solution $A$ is a mapping function from $V$ to $D$ such that for every constraint it holds that for every constraint $c$ in $C$, the constraint $c^A$, which is the constraint $c$ where each variable $v$ is replaced with $A(v)$, holds.
 
-In case of the problem above, each \texttt{conn[i,j]} and \texttt{country[i]} represents a separate variable, together they compose $V$. The domain $D$ here is defined at the beginning of the program, where we specify that \texttt{conn[i,j]} can be either one or zero and \texttt{country[i]} can be mapped to a color value, which is represented as a number from 1 to 4 here. Assuming that for example there is only one connection \texttt{conn[1,2]} and two countries one and two, then solution assignment $A$ maps \texttt{country[1]} to one and \texttt{country[2]} to two (connection \texttt{conn[1,2]} is indeed also mapped to one, which would be specified as a separate constraint).
+In case of the problem above, each \texttt{conn[i,j]} and \texttt{country[i]} represents a separate variable, together with the variable \texttt{n} (which represents the number of countries) they compose $V$. The domain $D$ here is defined at the beginning of the program, where we specify that \texttt{conn[i,j]} can be either one or zero and \texttt{country[i]} can be mapped to a color value, which is represented as a number from 1 to 4 here. Assuming that for example there is only one connection \texttt{conn[1,2]} and two countries one and two, then solution assignment $A$ maps \texttt{country[1]} to one and \texttt{country[2]} to two (connection \texttt{conn[1,2]} is indeed also mapped to one, which would be specified as a separate constraint).
 
 A constraint optimization problem is a \acrshort{csp} $(V,D,C)$ extended with an objective function $f_o$ from $V$ to $R^1$, then the problem is to find a solution to the original \acrshort{csp} such that the score defined by $f_o$ is maximal (or minimal).
 
@@ -301,7 +301,7 @@ Let us demonstrate this on an example.
         D_{v_a} = \{g,l\}, D_{v_s} = \{ m, l \}, D_{v_r} = \{g,m\}, D_{v_p} = \{ l\}.
     \end{equation}
 
-    Then, we need to model the fact that all pizza being eaten by someone, since we do not like wasting food:
+    Then, we need to model the fact that all pizzas being eaten by someone, since we do not like wasting food:
     \begin{equation}
         \exists i,j,h: v_i = g \wedge v_j = m \wedge v_h = l. 
     \end{equation}
@@ -348,7 +348,7 @@ Algorithm \ref{algo:simple_search} demonstrates how we can solve a \acrshort{csp
 Consider again Example \ref{example:pizza}, at the beginning when no decision on splitting is made, we cannot propagate any constraint. Then according to a heuristic (typically solver and problem dependant), we pick $v_r$ to split into two cases $v_r = g$ and $v_r = m$. In case of $v_r = g$, we propagate the constraints and establish that no domain has changed, since sharing constraint can be still satisfied by multiple assignments (no deterministic decision can be enforced), the same holds for the first constraint enforcing that each pizza gets a person to eat it. Then, we have to pick a new variable, e.g., $v_a$ and we need to consider cases again: $v_a = g$ and $v_a=m$. Then we do a recursive call in which $v_r=g \wedge v_a=g$, in this case we propagate first sharing constraint to establish that $v_s \neq v_p$ and then due to constraint that all pizzas must be taken we establish that $v_s = m$ and $v_p = l$. Is this solution optimal? If we assume that quality of an assignment $A$ is $\sum_{v \in V} f(v)$, then the quality of $A = 10 + 5 + 5 +2 = 22$, while the other assignment  $v_r = g, v_a = l, v_g = g, v_p = l$ sums up to $10+7+2+5 = 24$. For an extended discussion on how to find an optimal or a preferred solution, we refer to Chapter \ref{ch:sketching}.
 
 \section{\fod and the IDP System}
-The knowledge based language \fod is the extension of First Order Logic with a number of features, such as, inductive definitions and aggregates. The IDP system \parencite{idppaper} is the reasoning system that accepts as input the \fod language and is able to perform a number of reasoning tasks: such as finding logical models, model checking and theorem proving. IDP and its language FO(.) can be seen as executable logic we have discussed before in Section \ref{section:fol}. 
+The knowledge based language \fod is the extension of First Order Logic with a number of features, such as, inductive definitions and aggregates. The IDP system \parencite{idppaper} is the reasoning system that accepts as input the \fod language and is able to perform a number of reasoning tasks: such as finding logical models, model checking and theorem proving. IDP and its language FO(.) can be seen as executable logic we have discussed before in Section \ref{sec:fol}. 
 
 Let us illustrate an inductive definition and an IDP program by example, see Listing \ref{lst:idp_reachability}, where Reach(x,y) is an example of an inductive definition, defined via the base case and the inductive step (see the Theory part).
 \begin{lstlisting}[caption=An example of an inductive definition in FO(.) and of an IDP program,label=lst:idp_reachability]

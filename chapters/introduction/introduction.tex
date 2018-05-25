@@ -82,7 +82,7 @@ then the problem is to find all properties (constraints) $c$ in $C$ such that $\
     \begin{itemize}
         \item A set of Sudoku solutions
         \item A set of invalid Sudoku combinations
-        \item Using an expressive constraint language 
+        \item An expressive constraint language 
     \end{itemize}
 Then, a property of interest is a constraint that holds for all
     positive Sudoku combinations (all solutions) and for none of
@@ -227,7 +227,8 @@ databases and logical structures) for various machine learning and data
 mining problems, and the success in development of declarative solvers (such
 as \acrshort{asp}, \acrshort{idp}, \acrshort{cp} and \acrshort{lp}) a
 natural question arises: \textit{``How can we declaratively model and
-solve relational data mining problems using logic programming approach?''}. 
+solve relational data mining problems using logic programming
+techniques?''}. 
 
 The \textbf{main contribution} of this thesis is in the application of
 modern logic programming languages, such as \acrshort{asp} and
@@ -235,7 +236,7 @@ modern logic programming languages, such as \acrshort{asp} and
 
 
 Concretely, we investigate how the following data mining problems
-can be modelled and solving using a declarative approach based on
+can be modelled and solved using a declarative approach based on
 logic programming.
 \begin{itemize}
     \item \cone: \textbf{Relational Data Factorization.} What are the challenges and advantages of generalizing
@@ -264,7 +265,7 @@ demonstrate how it allows to model a variety of classic data mining
 problems and novel tasks as well.
 
 With regards to \ctwo, we look into a more practical setting.
-Typically, machine learning and data mining algorithms make the i.i.d.
+Typically, machine learning and data mining algorithms' assumptions make the i.i.d.
 (independent identically distributed) assumption, which of course
 breaks in the relational setting. If we look at a spreadsheet, it 
 typically consists one or more tables with relationships between them or
@@ -280,8 +281,8 @@ makes the problem essentially relational.
 
 Addressing \cthree: assume we already have a logic programming or a
 constraint model of a relational
-data mining problem and due to relational dependencies in the data we are
-forced to give up the i.i.d. assumption and, as a consequence,
+data mining problem due to relational dependencies in the data which 
+force to give up the i.i.d. assumption and, as a consequence,
 standard techniques. When something changes over time or due to changes in the specification, we would like
 to be able to indicate uncertainty in some parts of the model and use
 the system itself. These
@@ -342,7 +343,7 @@ The chapter consists of the research previously published in the following paper
 \begin{addmargin}[2em]{2em}
 Samuel Kolb (*), Sergey Paramonov (*), Tias Guns, Luc De Raedt:
   Learning constraints in spreadsheets and tabular data. Machine
-  Learning 106 (9-10), 2017.
+  Learning 106 (9-10), pages 1441-1468, 2017.
 
 
 Sergey Paramonov (*), Samuel Kolb (*), Tias Guns, Luc De Raedt:
@@ -381,7 +382,7 @@ solvers to pattern mining takes root in the work of
 Itemset Mining. Contrary to itemset mining, where objects do not have
 any particular structures, structured mining studies mining patterns
 in sequences, trees, graphs, etc. First, we introduce a general
-mathematical model of graph mining based on the logical formulation of
+mathematical model of general frequent pattern mining based on the logical formulation of
 the constraints. Second, we show that the model can be hybridized by
 using our generic framework together with specialized solvers
 developed for particular pattern mining problems.
