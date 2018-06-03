@@ -257,55 +257,7 @@ logic programming.
     and query mining?
 \end{itemize}
 
-Addressing \cone, we look into the classical problem of matrix
-factorization. We demonstrate how the problem of Boolean Matrix
-Factorization can be generalized into  a relational setting, called
-\textit{Relational Data Factorization}, and
-demonstrate how it allows to model a variety of classic data mining
-problems and novel tasks as well.
-
-With regards to \ctwo, we look into a more practical setting.
-Typically, machine learning and data mining algorithms' assumptions make the i.i.d.
-(independent identically distributed) assumption, which of course
-breaks in the relational setting. If we look at a spreadsheet, it 
-typically consists one or more tables with relationships between them or
-within the table itself, usually
-in a form of a formula, a macro or of some other constraint (e.g., a
-C\# or VB script). If we
-want to detect these connections between tables or their parts, we
-have to make the model able to work with spreadsheet data, 
-formulae and tabular constraints. This setting, referred to as the
-\textit{Tabular constraint learning}, breaks the standard
-machine learning and data mining algorithms and 
-makes the problem essentially relational.
-
-Addressing \cthree: assume we already have a logic programming or a
-constraint model of a relational
-data mining problem due to relational dependencies in the data which 
-force to give up the i.i.d. assumption and, as a consequence,
-standard techniques. When something changes over time or due to changes in the specification, we would like
-to be able to indicate uncertainty in some parts of the model and use
-the system itself. These
-uncertain or, \textit{open}, parts are called \textit{sketched} and
-the whole sketched model is referred to as a \textit{sketch} and the related
-problem as \textit{constraint sketching}. We propose the problem of and
-a learning technique for \acrlong{skasp}.
-
-
-Finally, with respect to \cfour, if we look at the area of itemset mining, where \acrlong{cp}
-has been successfully applied, then the natural question to ask is:
-if \acrshort{cp} has been successful for unstructured, or
-non-relational, pattern mining, can we model its \textit{structured},
-or \textit{relational} version, using logic programming? To answer
-this question we look into \textit{sequence}, \textit{graph} and
-\textit{query mining} and attack them using logic programming and
-hybrid approaches based on logic programming.
-
-\paragraph{Structure of the thesis}
-\textbf{Chapter} \ref{ch:background} introduces background information
-on Logic, Answer Set and Programming and Pattern Mining.
-
-\textbf{Chapter} \ref{ch:ReDF} presents the novel problem of Relational Data
+Addressing \cone, \textbf{Chapter} \ref{ch:ReDF} presents the novel problem of Relational Data
 Factorization. It demonstrates how this problem generalizes various
 data mining problems such as Database Tiling and Boolean Matrix
 Factorization. We start with the most basic setting and demonstrate
@@ -327,7 +279,7 @@ factorization, Machine Learning, Springer, December 2017, Volume 106,
 
 
 
-\textbf{Chapter} \ref{ch:TaCLe} introduces  the novel problem of
+With regards to \ctwo,  \textbf{Chapter} \ref{ch:TaCLe} introduces  the novel problem of
 Tabular Constraint Learning and the system, called TaCLe (pronounced
 as the word ``tackle''). The problem setting is straightforward to
 explain: we have an Excel file with formulae. The file is imported as
@@ -355,7 +307,24 @@ TaCLe: Learning constraints in tabular data.
 \end{addmargin}
 
 
-\textbf{Chapter} \ref{ch:sketching} introduces the novel problem of
+
+
+%   we look into a more practical setting.
+%   Typically, machine learning and data mining algorithms' assumptions make the i.i.d.
+%   (independent identically distributed) assumption, which of course
+%   breaks in the relational setting. If we look at a spreadsheet, it 
+%   typically consists one or more tables with relationships between them or
+%   within the table itself, usually
+%   in a form of a formula, a macro or of some other constraint (e.g., a
+%   C\# or VB script). If we
+%   want to detect these connections between tables or their parts, we
+%   have to make the model able to work with spreadsheet data, 
+%   formulae and tabular constraints. This setting, referred to as the
+%   \textit{Tabular constraint learning}, breaks the standard
+%   machine learning and data mining algorithms and 
+%   makes the problem essentially relational.
+
+Addressing \cthree:  \textbf{Chapter} \ref{ch:sketching} introduces the novel problem of
 Sketched Answer Set Programming. The idea of sketching takes root in
 imperative programming, when a function in C or Java has a part of it,
 typically a constant, left unspecified. A user then provides a number
@@ -375,7 +344,22 @@ The chapter consists of the research previously published in the following paper
 \end{addmargin}
 
 
-\textbf{Chapter} \ref{ch:StructuredMining} introduces a logic
+
+
+%   assume we already have a logic programming or a
+%   constraint model of a relational
+%   data mining problem due to relational dependencies in the data which 
+%   force to give up the i.i.d. assumption and, as a consequence,
+%   standard techniques. When something changes over time or due to changes in the specification, we would like
+%   to be able to indicate uncertainty in some parts of the model and use
+%   the system itself. These
+%   uncertain or, \textit{open}, parts are called \textit{sketched} and
+%   the whole sketched model is referred to as a \textit{sketch} and the related
+%   problem as \textit{constraint sketching}. We propose the problem of and
+%   a learning technique for \acrlong{skasp}.
+
+
+Finally, with respect to \cfour, \textbf{Chapter} \ref{ch:StructuredMining} introduces a logic
 based approach to structured pattern mining. The idea to apply general
 solvers to pattern mining takes root in the work of
 \textcite{declrativeapproach}, where Constraint Programming is applied to
@@ -419,6 +403,22 @@ Rules and Reasoning - International Joint Conference, RuleML+RR 2017,
     Springer, 2017, RuleML+RR 2017: International Joint Conference on
     Rules and Reasoning, July 12-15, London, UK.
 \end{addmargin}
+
+
+
+
+%   if we look at the area of itemset mining, where \acrlong{cp}
+%   has been successfully applied, then the natural question to ask is:
+%   if \acrshort{cp} has been successful for unstructured, or
+%   non-relational, pattern mining, can we model its \textit{structured},
+%   or \textit{relational} version, using logic programming? To answer
+%   this question we look into \textit{sequence}, \textit{graph} and
+%   \textit{query mining} and attack them using logic programming and
+%   hybrid approaches based on logic programming.
+
+%   \paragraph{Structure of the thesis}
+%   \textbf{Chapter} \ref{ch:background} introduces background information
+%   on Logic, Answer Set and Programming and Pattern Mining.
 
 \textbf{Chapter} \ref{ch:conclusions} summarizes the thesis and
 discusses future work possibilities.

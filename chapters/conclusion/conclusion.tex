@@ -4,65 +4,6 @@ This chapter summarizes the thesis and discusses open problems and
 future work opportunities.
 \end{addmargin}
 
-\section{Discussion and future work}
-Let us introduce possibilities of future work here. Each chapter
-describes the future work specific for a particular area or a problem,
-while in this chapter we describe possible future directions from the
-perspective of the thesis as a whole.
-
-
-
-\section{Relational data mining in future years}
-It is important to outline not only particular applications developed
-or inspiring with this thesis but also to give a perspective on the
-development of the overall research direction and the field as a
-whole.
-
-As indicated in Chapter \ref{ch:StructuredMining}, hybridization of
-declarative models is promising and fruitful research direction. It
-allows one to combine highly efficient specialized algorithms with
-general solvers to create, on the one hand, efficient and scalable
-systems; and on the other hand, general system that can handle not
-only particular restricted problem but the whole class of pattern
-mining problems. Similar to the dominance programming for itemset
-mining \parencite{dominanceprogramming} and our hybridization approach
-to structured pattern mining \parencite{ruleml_hybrid}, we can foresee creation of 
-general mining languages that handle various types of data and
-multiple types condensed representations, while demonstrating close to
-state-of-art performance. These languages would allow a user to
-specify all needed building blocks to generate an executable model
-that can find all condensed patterns within reasonable time.
-
-On the relational learning side, inspired by the results of TaCLe
-\parencite{tacle} in Chapter \ref{ch:TaCLe} and Flashfill \parencite{flashfill}, we envision an intelligent
-assistant that can help user by analyzing tabular data in a
-spreadsheet and suggest possible cleaning transformations, usage of
-Excel-like formulae and data compression. The later idea of data
-compression, which can be seen as a form of cleaning, connects to the
-ideas of Relational Factorization in Chapter \ref{ch:ReDF}.
-Similarly, as we can think of \textit{Spreadsheet Formula Sketching}, where the assistant can allow the user to specify some of the
-formulae or constraints, while leaving certain parts open. Then, the
-system can infer possible substitutions from the given tabular data.
-
-Furthermore, the development of applications would drive  the
-development of the solvers as well. We can imagine support of
-sketching techniques from Chapter \ref{ch:sketching} being implemented
-on the solver level directly. Richer constraint languages might come
-into the learning process, when a model satisfies a negative example
-and the system might suggest a new constraint that the model is
-missing or find the largest set of constraints consistent with the
-examples.
-
-Finally, we can imagine a fully automated tool able to analyze and
-clean data in a standard format, such as a spreadsheet. Such a system
-can work in the unsupervised setting and would not require a user interaction
-or only to check if a suggestion looks ok, or which transformation looks better.
-We regards a creation of such a tool as a holy grail (or simply a
-target, as a long term research direction) for
-the future developments of the ideas, tools and models, presented in
-this thesis.
-
-
 \section{Summary and conclusions}
 In the introduction chapter we have identified the key research
 question and key problems we were going to apply our approach to. Now
@@ -141,7 +82,63 @@ efficiency jump and, from the practical point of view, it seems to be
 the most fruitful direction of future research in declarative pattern
 mining.
 
+\section{Discussion and future work}
+Let us introduce possibilities of future work here. Each chapter
+describes the future work specific for a particular area or a problem,
+while in this chapter we describe possible future directions from the
+perspective of the thesis as a whole.
 
+
+
+\section{Relational data mining in future years}
+It is important to outline not only particular applications developed
+or inspiring with this thesis but also to give a perspective on the
+development of the overall research direction and the field as a
+whole.
+
+As indicated in Chapter \ref{ch:StructuredMining}, hybridization of
+declarative models is promising and fruitful research direction. It
+allows one to combine highly efficient specialized algorithms with
+general solvers to create, on the one hand, efficient and scalable
+systems; and on the other hand, general system that can handle not
+only particular restricted problem but the whole class of pattern
+mining problems. Similar to the dominance programming for itemset
+mining \parencite{dominanceprogramming} and our hybridization approach
+to structured pattern mining \parencite{ruleml_hybrid}, we can foresee creation of 
+general mining languages that handle various types of data and
+multiple types condensed representations, while demonstrating close to
+state-of-art performance. These languages would allow a user to
+specify all needed building blocks to generate an executable model
+that can find all condensed patterns within reasonable time.
+
+On the relational learning side, inspired by the results of TaCLe
+\parencite{tacle} in Chapter \ref{ch:TaCLe} and Flashfill \parencite{flashfill}, we envision an intelligent
+assistant that can help user by analyzing tabular data in a
+spreadsheet and suggest possible cleaning transformations, usage of
+Excel-like formulae and data compression. The later idea of data
+compression, which can be seen as a form of cleaning, connects to the
+ideas of Relational Factorization in Chapter \ref{ch:ReDF}.
+Similarly, as we can think of \textit{Spreadsheet Formula Sketching}, where the assistant can allow the user to specify some of the
+formulae or constraints, while leaving certain parts open. Then, the
+system can infer possible substitutions from the given tabular data.
+
+Furthermore, the development of applications would drive  the
+development of the solvers as well. We can imagine support of
+sketching techniques from Chapter \ref{ch:sketching} being implemented
+on the solver level directly. Richer constraint languages might come
+into the learning process, when a model satisfies a negative example
+and the system might suggest a new constraint that the model is
+missing or find the largest set of constraints consistent with the
+examples.
+
+Finally, we can imagine a fully automated tool able to analyze and
+clean data in a standard format, such as a spreadsheet. Such a system
+can work in the unsupervised setting and would not require a user interaction
+or only to check if a suggestion looks ok, or which transformation looks better.
+We regards a creation of such a tool as a holy grail (or simply a
+target, as a long term research direction) for
+the future developments of the ideas, tools and models, presented in
+this thesis.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Keep the following \cleardoublepage at the end of this file, 
