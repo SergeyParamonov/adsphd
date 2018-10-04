@@ -1,4 +1,4 @@
-This section describes how ReDF models can be implemented in ASP. We do this for the basic problem of tiling, as well as for the purely relational data factorization presented before. Implementations of the other variations are included in Appendix \ref{ASP_appendix}. Our primary implementation is written in clasp, can be used with the clasp system \parencite{ASPbook,BrewkaCACM} and will be made available online upon acceptance of this manuscript.
+This section describes how ReDF models can be implemented in ASP. We do this for the basic problem of tiling, as well as for the purely relational data factorization presented before. Implementations of the other variations are included in Appendix \ref{ASP_appendix}. Our primary implementation is written in Clasp, can be used with the Clasp system \parencite{ASPbook,BrewkaCACM} and will be made available online upon acceptance of this manuscript.
 
 \subsection{General computation methods: greedy and sampling approaches.} 
 In all described problems, the goal is to find $k$ patterns or tiles, where a pattern is interpreted as a set of facts corresponding to a particular value of the latent variable. 
@@ -71,7 +71,7 @@ the dataset is represented extensionally through the predicates \db, \valid, and
 and the $k-1$ already found tiles are represented extensionally through the predicates $\code(I,\cdot,\cdot)$ and $\inrel(I,\cdot)$ for $I \in [1,k-1]$.
 \end{theorem}
 For the proof, see Appendix \ref{proof:tiling}.
-The clasp encodings for the other models are sketched in Appendix \ref{ASP_appendix}.
+The Clasp encodings for the other models are sketched in Appendix \ref{ASP_appendix}.
 
 \subsection{Purely relational data factorization}
 In Section \ref{sec:pure_decomposition} we presented a factorization of the \emph{publishedIn} relation into three binary relations. It constitutes a proof-of-concept prototype model in ASP and could be improved by, e.g., incorporating heuristics. %The proof of correctness is presented in Appendix \ref{sec:proof_pure_encoding}.

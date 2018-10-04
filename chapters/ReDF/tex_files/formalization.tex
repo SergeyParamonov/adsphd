@@ -104,7 +104,7 @@ error(Com,Pa,Proj) :- overcoverage(Com,Pa,Proj). @\label{lst:selss:e2}@
 We introduce ASP in more detail below, but this model is easy to understand if one is familiar with the basics of logic programming. The ASP model basically defines the necessary predicates in ASP using a set of clauses. In addition, the rule in Line \ref{lst:sells:gen1} encodes the constraint that whenever a tuple holds for \textit{sells(Com, Pa, Proj)}
 there should be 0 or 1 corresponding tuples for the predicate \textit{offers(Com, Pa).}
 Furthermore, the minimize statement specifies that we are looking for a model (a set of ground facts or tuples) that minimizes the error.  The encoding in Listing  \ref{lst:sells} together with a set of facts for \textit{sells}
-can be given to an ASP solver such as clasp \parencite{gebser2011potassco}. % which can then be used to generate an answer set (a model)
+can be given to an ASP solver such as Clasp \parencite{gebser2011potassco}. % which can then be used to generate an answer set (a model)
 %that includes the definitions of the factors.  
 
 

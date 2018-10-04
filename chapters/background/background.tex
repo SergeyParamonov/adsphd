@@ -70,7 +70,7 @@ We call a \textit{literal} an atom or the negation of an atom. An expression of 
   \begin{equation*}
     \forall X,Y{:}~\textit{border}(X,Y) \rightarrow \textit{coloring}(X) \neq \textit{coloring}(Y)
   \end{equation*}
-has an indented meaning of enforcing the colours of adjacent countries to be different.
+has an indended meaning of enforcing the colours of adjacent countries to be different.
 \end{example}
 
 
@@ -114,7 +114,7 @@ $\textit{green} \neq \textit{red}$  is true &
 
 Contrary to the programming language Prolog, which is based on a proof-theoretic approach to answer queries, ASP follows a model generation approach. It has been shown to be effective for a wide range of constraint satisfaction problems \parencite{ASPbook}.
 
-The remainder of this section introduces the essentials of ASP in a rather informal way. ASP is a rich (and technical) research area, so we do not focus on technical issues as these would complicate the presentation, but rather refer the interested reader to \textcite{ASPbook,eiter,leone,whatisasp} for more details on this. For the actual implementation, we will use the clasp system \parencite{ASPbook,BrewkaCACM}.
+The remainder of this section introduces the essentials of ASP in a rather informal way. ASP is a rich (and technical) research area, so we do not focus on technical issues as these would complicate the presentation, but rather refer the interested reader to \textcite{ASPbook,eiter,leone,whatisasp} for more details on this. For the actual implementation, we will use the Clasp system \parencite{ASPbook,BrewkaCACM}.
 
 \begin{definition}[Disjunctive datalog program]
   A disjunctive datalog program is a finite set of rules of the form: 
@@ -201,7 +201,9 @@ Another construct is \textit{maximization} \parencite{ASPbook, leone} (\textit{m
 where $a_1, \dots, a_n$ are classic literals and $k_1, \dots, k_n$ are integer constants (possibly negative). The semantics of this constraint are as follows: a model $I$ is selected if the weighted sum of $[a_i]*k_i$ is maximal in $I$, where $[\cdot]$ are Iverson brackets, i.e. $[a]$ is equal to $1$ iff $a$ is true in $I$ and $0$ otherwise.
 
 \begin{example}
-    Let us demonstrate how \textit{minimization} statement can be used in an ASP program. We use a standard problem of finding a Hamiltonian cycle, where the predicate \texttt{cost(X,Y,C)} is added and \texttt{C} represent the cost of picking a particular edge to be present in the cycle. Then the program not only finds a Hamiltonian cycle, but also minimizes its costs.
+    \pubrev
+    Let us demonstrate how the \textit{minimization} statement can be used in an ASP program. We use a standard problem of finding a Hamiltonian cycle, where the predicate \texttt{cost(X,Y,C)} is added and \texttt{C} represent the cost of picking a particular edge to be present in the cycle. Then the program not only finds a Hamiltonian cycle, but also minimizes its costs. In actual ASP encodings, we use \texttt{:-} for logical implication $\leftarrow$, as for the optimization statement a weight $C$ of an atom \texttt{cycle(X,Y)} is indicated as \texttt{cycle(X,Y) = C}.
+\begin{minipage}{\linewidth}
     \begin{lstlisting}[caption=ASP encoding of the Hamiltonian cycle problem (due to \textcite{ASPbook}), label=lst:example_asp_coloring,basicstyle=\ttfamily]
 1 { cycle(X,Y) : edge(X,Y) } 1 :- node(X). 
 1 { cycle(X,Y) : edge(X,Y) } 1 :- node(Y).
@@ -210,6 +212,8 @@ reached(Y) :- cycle(X,Y), reached(X).
 :- node(Y), not reached(Y).
 #minimize [ cycle(X,Y) = C : cost(X,Y,C) ].
 \end{lstlisting}
+\end{minipage}
+\pubrevend
 \end{example}
 
 We assume that arithmetic operators $\{ +, -, \times, / \}$ are present in the language and have the standard interpretation.
@@ -221,23 +225,26 @@ We assume that arithmetic operators $\{ +, -, \times, / \}$ are present in the l
 \begin{lstlisting}[caption=ASP encoding of map coloring constraints, label=lst:example_asp_coloring,basicstyle=\ttfamily]
 1 { coloring(X,C) : colors(C) } 1 :- node(X).
 
-:- edge(X,Y), coloring(X,C1), coloring(Y,C2), C1 = C2.
+:- edge(X,Y), coloring(X,C), coloring(Y,C).
 \end{lstlisting}
 \end{example}
 
-\paragraph{ASP systems: Clasp and WASP}
-In this thesis we make use of two existing ASP systems Clasp \parencite{clasp} and WASP \parencite{wasp}. We mostly focus on the former and use the second to provide an experimental comparison on how two different system can execute the models with respect to runtime and memory usage.
+\paragraph{asp systems: clasp and wasp}
+in this thesis we make use of two existing asp systems clasp \parencite{clasp} and wasp \parencite{wasp}. we mostly focus on the former and use the second to provide an experimental comparison on how two different system can execute the models with respect to runtime and memory usage.
 
-Clasp extends the standard ASP theory described here with a number of features such as incremental grounding, preferences, Satisfiability Modulo Theories, various solving parameters such as brave and cautious reasoning, parallel executions, heuristics and meta-programming \parencite{ASPbook}.
+clasp extends the standard asp theory described here with a number of features such as incremental grounding, preferences, satisfiability modulo theories, various solving parameters such as brave and cautious reasoning, parallel executions, heuristics and meta-programming \parencite{ASPbook}.
 
-A typical modelling approach in ASP and in actual development with Clasp and WASP follows guess and check paradigm. Where at first we define potential stable model candidates 
-(typically through non-deterministic constructs) and then eliminate invalid candidates (typically through integrity constraints) \parencite{clasp, ASPbook, whatisasp}, which in a nutshell allows us to write the following formula for ASP modelling:
+a typical modelling approach in asp and in actual development with clasp and wasp follows guess and check paradigm. where at first we define potential stable model candidates 
+(typically through non-deterministic constructs) and then eliminate invalid candidates (typically through integrity constraints) \parencite{clasp, ASPbook, whatisasp}, which in a nutshell allows us to write the following formula for asp modelling:
 
 \begin{center}
-    {\bfseries ASP program = Data + Generator + Tester ( + Optimizer)} \footnote{\url{https://www.cs.uni-potsdam.de/~torsten/Potassco/Slides/asp.pdf}}
+    {\bfseries asp program = data + generator + tester ( + optimizer)} \footnote{\url{https://www.cs.uni-potsdam.de/~torsten/potassco/slides/asp.pdf}}
 \end{center}
 
-We follow this modelling paradigm throughout the thesis. To demonstrate it, consider as an example, $n$-queen modelling problem, where one needs to put a number of queens on the board such that no queen attacks another. This can be modelled as in Listing \ref{lst:n_queens_example_modelling}. First we specify data as facts, in Lines \ref{background:line:data1} and \ref{background:line:data2}, then we define the set of possible answer sets using a choice rule in Line \ref{background:line:choice} and finally we validate them in Lines \ref{background:line:int1},\ref{background:line:int2} and \ref{background:line:int3}.
+we follow this modelling paradigm throughout the thesis. to demonstrate it, consider as an example, $n$-queen modelling problem, where one needs to put a number of queens on the board such that no queen attacks another. this can be modelled as in listing \ref{lst:n_queens_example_modelling}. first we specify data as facts, in lines \ref{background:line:data1} and \ref{background:line:data2}, then we define the set of possible answer sets using a choice rule in line \ref{background:line:choice} and finally we validate them in lines \ref{background:line:int1},\ref{background:line:int2} and \ref{background:line:int3}. 
+\pubrev
+In greater detail, we require the number of queens to equal to $k$ by using a cardinality constraint in Line \ref{background:line:choice} then right after this ''guess`` is verified with integrity constraints: no queen is no the same row (Line \ref{background:line:int1}), no queen in the same column (Line \ref{background:line:int2}) or the same diagonal (Line \ref{background:line:int3}). An answer set that has a set of $k$ queens which satisfy the integrity constraints is therefore a solution to $k$-queen problem.
+\pubrevend
 
 \begin{figure}[H] 
 \renewcommand\figurename{Listing}
@@ -400,7 +407,7 @@ procedure main(){
 \end{lstlisting}
 \end{minipage}
 
-Therefore, when we write a first order model for a problem, we can always map it to the language of FO(.), furthermore provided language extensions make modeling of relational problems more natural and convenient
+Therefore, when we write a first order model for a problem, we can always map it to the language of FO(.), furthermore provided language extensions make modeling of relational problems more natural and convenient.
 
 
 %%%%\section{Comparison between terminologies}

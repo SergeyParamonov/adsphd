@@ -113,7 +113,7 @@ Finally, worth mentioning is BayesDB \parencite{BayesDB} and Tabular \parencite{
 
 \begin{figure}[thb]
 
-  \begin{subfigure}{1\textwidth}
+  \begin{subfigure}{0.95\textwidth}
   \begin{center}
     \includegraphics[width=1\textwidth]{Demo_full_block.png}
   \end{center}
@@ -239,25 +239,25 @@ We will sometimes write that $B'$ is a \textit{subblock} of $B$ or that $B$ is a
 An example of block containment is $T_1[:,\rangeto{3}{6}] \sqsubseteq T_1[:,\rangeto{3}{8}] $, which contains the sales numbers of all employees for the four quarters.
 
 
-\begin{table}[htb]
+\begin{table}[H]
 \caption{{\small
   Constraint templates implemented in \sname.
   Only blocks in \textbf{bold} may contain more than one vector;
   $\discrete(x)$ is a shortcut for: $\textual(x) \lor \numeric(x)$.
-  Templates marked with $*$ are \textit{structural}, i.e. they are not functional and not available in most spreadsheet software.
-  For templates marked with $\dagger$ (called \textit{aggregate} and \textit{conditional aggregate} constraints), the table shows variants for \textit{SUM} but \sname also supports \textit{MAX}, \textit{MIN}, \textit{AVERAGE}, \textit{PRODUCT} and \textit{COUNT}, e.g., \ecaggr{MAX}{\sbl{2}}{\bsbl{1}} or \ecaggif{COUNT}{\sbl{2}}{\sbl{fk}}{\sbl{pk}}{\sbl{1}}
+  Templates with $*$ are \textit{structural}, i.e. they are not functional and not available in most spreadsheet software.
+  For templates with $\dagger$ (called \textit{aggregate} and \textit{conditional aggregate}), the table shows variants for \textit{SUM} but \sname also supports \textit{MAX}, \textit{MIN}, \textit{AVERAGE}, \textit{PRODUCT} and \textit{COUNT}, e.g., \ecaggr{MAX}{\sbl{2}}{\bsbl{1}} or \ecaggif{COUNT}{\sbl{2}}{\sbl{fk}}{\sbl{pk}}{\sbl{1}}
 .
 }}
 \label{table:constraints}
 \vspace{-8pt}
-\resizebox{1.0\columnwidth}{!}{%
-  {\normalsize \centering
-  \begin{tabularx}{1.54\textwidth}{l X X}
+\centering
+\resizebox{0.95\columnwidth}{!}{%
+  {  \begin{tabularx}{1.54\textwidth}{l X X}
     \textbf{\CName} & \textbf{\CSignature} & \textbf{\CFunction}\\ \hline \hline
     $\ecalldiff{\sbl{}}^*$
       & $\discrete(\sbl{})$
       
-      & Only different values in $\sbl{}$. $i\neq j$: $\sbl{}[i] \neq \sbl{}[j]$.
+      & For values in $\sbl{}$: $i\neq j$: $\sbl{}[i] \neq \sbl{}[j]$.
       \\[\PADSEP] \hline
 
     $\ecperm{\sbl{}}^*$
@@ -284,7 +284,7 @@ An example of block containment is $T_1[:,\rangeto{3}{6}] \sqsubseteq T_1[:,\ran
       & Every value in~$\sbl{fk}$ also exist in~$\sbl{pk}$. \\[\PADSEP] \hline
 
     \eclookup{\sbl{2}}{\sbl{fk}}{\sbl{pk}}{\sbl{1}}
-      & $\sbl{fk}$ and $\sbl{pk}$ are $\discrete$; arguments $\{\sbl{fk}, \sbl{2}\}$ and $\{\sbl{pk}, \sbl{1}\}$ within the same set have the same \plength, \ptable and \por; $\sbl{1}$ and~$\sbl{2}$ have the same type; and \ecfkey{\sbl{fk}}{\sbl{pk}}.
+      & $\sbl{fk}$ and $\sbl{pk}$ are $\discrete$; arguments $\{\sbl{fk}, \sbl{2}\}$ and $\{\sbl{pk}, \sbl{1}\}$ in the same set have the same \plength, \ptable and \por; $\sbl{1}$ and~$\sbl{2}$ the same type; \ecfkey{\sbl{fk}}{\sbl{pk}}.
       
       & $\sbl{2}[i] = \sbl{1}[j]$ where $\sbl{pk}[j] = \sbl{fk}[i]$.
       \\[\PADSEP] \hline
@@ -296,7 +296,7 @@ An example of block containment is $T_1[:,\rangeto{3}{6}] \sqsubseteq T_1[:,\ran
       \\[\PADSEP] \hline
 
     \eclookupprod{\sbl{3}}{\sbl{1}}{\sbl{fk}}{\sbl{pk}}{\sbl{2}}
-      & Arguments $\{\sbl{3}, \sbl{1}, \sbl{fk}\}$ are $\numeric$, arguments $\{\sbl{pk}, \sbl{2}\}$ are $\discrete$ and within both sets all arguments have the same \plength, \ptable and \por; also \ecfkey{\sbl{fk}}{\sbl{pk}}.
+      & $\{\sbl{3}, \sbl{1}, \sbl{fk}\}$ are $\numeric$, $\{\sbl{pk}, \sbl{2}\}$ are $\discrete$ and within both sets all have the same \plength, \ptable and \por; also \ecfkey{\sbl{fk}}{\sbl{pk}}.
       
       & $\sbl{3}[i] = \sbl{1}[i] \times \eclookupf{\sbl{fk}}{\sbl{pk}}{\sbl{2}}{}[i]$.
       \\[\PADSEP] \hline
@@ -320,7 +320,7 @@ An example of block containment is $T_1[:,\rangeto{3}{6}] \sqsubseteq T_1[:,\ran
       \\[\PADSEP] \hline
 
     \ecproj{\sbl{2}}{\bsbl{1}}
-      & Arguments $\{\sbl{2}, \bsbl{1}\}$ all have the same $\plength$, $\por$, $\ptable$ and $\ptype$; $\bsbl{1}$ contains at least~2 vectors; and $\sbl{2} = \textit{SUM}_{\por(\bsbl{1})}(\bsbl{1})$
+      & $\{\sbl{2}, \bsbl{1}\}$ have the same $\plength$, $\por$, $\ptable$ and $\ptype$; $\bsbl{1}$ contains at least~2 vectors; $\sbl{2} = \textit{SUM}_{\por(\bsbl{1})}(\bsbl{1})$
       
       & At every position~$i$ in $1$ through $\plength(\sbl{2})$ there is exactly one vector~$v$ in $\bsbl{1}$ such that $v[i]$ is a non-blank value, then $v[i] = \sbl{2}[i]$.
       \\[\PADSEP] \hline
@@ -328,11 +328,11 @@ An example of block containment is $T_1[:,\rangeto{3}{6}] \sqsubseteq T_1[:,\ran
     \ecrank{\sbl{2}}{\sbl{1}}
       & $\integer(\sbl{2})$; $\numeric(\sbl{1})$; and $\plength(\sbl{2}) = \plength(\sbl{1})$
       
-      & The values in $\sbl{2}$ represent the rank (from large to small) of the values in $\sbl{1}$, including ties.
+      & The values in $\sbl{2}$ represent the rank of the values in $\sbl{1}$, including ties.
       \\[\PADSEP] \hline
 
     \ectotal{\sbl{3}}{\sbl{1}}{\sbl{2}}
-      & Arguments $\{\sbl{3}, \sbl{1}, \sbl{2}\}$ are all $\numeric$ and have the same $\plength \geq 2$, $PREV()$ denotes previous value % in the vector
+      & $\{\sbl{3}, \sbl{1}, \sbl{2}\}$ are $\numeric$ and have the same $\plength \geq 2$, $PREV()$ denotes previous value % in the vector
       
       & $\sbl{3}[i] = \sbl{1}[i] - \sbl{2}[i] + \sbl{3}[i - 1]$.
       \\[\PADSEP] \hline
@@ -1013,11 +1013,12 @@ The data is also visualized in Figure~\ref{fig:comparison}.
   \caption{Summary of properties and results per spreadsheet category}
   \label{tbl:category_overview}
   \begin{tabular}{lccccccc}
+      \small
  & \multicolumn{2}{c}{\textbf{Exercises} (9)} & \multicolumn{2}{c}{\textbf{Tutorials} (21)} & \multicolumn{2}{c}{\textbf{Data} (4)} \\
  & Overall & Sheet avg & Overall & Sheet avg & Overall & Sheet avg \\ \hline
     \textbf{Tables} & 19 & 2.11 & 48 & 2.29 & 4 & 1 \\ \hline
     \textbf{Cells} & 1231 & 137 & 1889 & 90 & 2320 & 580 \\ \hline
-    \textbf{Intended constraints} & 34 & 3.78 & 52 & 2.48 & 6 & 1.50 \\ \hline \hline
+\makecell{\textbf{Intended}\\\textbf{constraints}} & 34 & 3.78 & 52 & 2.48 & 6 & 1.50 \\ \hline \hline
 \textbf{Recall (all)} & 0.88 & 0.85 & 0.88 & 0.87 & 1.00 & 1.00 \\ \hline
 \textbf{Recall (supported)} & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 \\ \hline
 \textbf{Precision} & 0.94 & 0.96 & 0.69 & 0.90 & 1.00 & 1.00 \\ \hline
@@ -1226,7 +1227,7 @@ Contrary to FlashFill, \textbf{TaCLe:} works with textual and numeric flat Excel
 
 We see that there indeed possibilities for creating a system that
 would take best from two worlds: supervised optimal constraint
-learning robust under the noise.
+learning robust under noise.
 
 
 Let us outline where we see a possibility to combine them. We foresee the following setting in which the system can operate, the system would act in the supervised setting where a block (a list of columns or rows) denoted $\bar x$ stands for the input and the block $y$, stands for the output. To account for noise, we introduce the loss function $L$ between formula $f(\bar x)$ and output $y$, which gives us an optimization problem of searching for the best fitting formula, i.e., $L(f(\bar x),y) \mapsto \min$. However, as we know from the machine learning research, this approach is prone to overfitting, therefore we penalize complexity of a formula with, where a functional $\mathcal{C}(f)$ is the measure of complexity. A possible visual interface is depicted in Figure \ref{fig:visual_interface}.
