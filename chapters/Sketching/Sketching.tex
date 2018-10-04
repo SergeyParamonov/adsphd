@@ -3,28 +3,8 @@ This chapter is based on the paper: ''Sketched Answer Set Programming`` by Serge
 
 
 Answer Set Programming (ASP) is a powerful modeling formalism for combinatorial problems. However, writing ASP models can be hard. We propose a novel method, called Sketched Answer Set Programming (SkASP), aimed at facilitating this proposal. In SkASP, the user writes partial ASP programs, in uncertain parts are left open and marked with question marks. In addition, the user provides a number of positive and negative examples of the desired program behaviour. SkASP then synthesises a complete ASP program by rewriting the SkASP program into another ASP program, which can then solved by traditional methods. We evaluate our approach on 21 well known puzzles and combinatorial problems inspired by Karp’s 21 NP-complete problems and on publicly available ASP encodings.
+
 \newcommand{\addedsket}[1]{#1\xspace}
-%   \newcommand{\sketchedeq}{\ensuremath{X~?{=}~Y}\xspace}
-%   \newcommand{\sketchedplus}{\ensuremath{X~?{+}~Y}\xspace}
-%   \newcommand{\reified}{\textit{reified}\xspace}
-%   \newcommand{\fail}{\textit{fail}\xspace}
-%   \newcommand{\domaineq}{\textit{domain\_eq}\xspace}
-%   \newcommand{\queen}{\textit{queen}\xspace}
-%   \newcommand{\qone}{\ensuremath{\textbf{Q}_1}\xspace}
-%   \newcommand{\qtwo}{\ensuremath{\textbf{Q}_2}\xspace}
-%   \newcommand{\qthree}{\ensuremath{\textbf{Q}_3}\xspace}
-%   \newcommand{\qfour}{\ensuremath{\textbf{Q}_4}\xspace}
-%   \newcommand{\qfive}{\ensuremath{\textbf{Q}_5}\xspace}
-%   \newcommand{\eplus}{\ensuremath{\mathbf{E}^+}\xspace}
-%   \newcommand{\eminus}{\ensuremath{\mathbf{E}^-}\xspace}
-%   \newcommand{\dist}{\ensuremath{\textit{dist}}\xspace}
-%   \newcommand{\samepref}{\ensuremath{\mathds{1}}\xspace}
-%   \newcommand{\metae}{\textit{metaE(\ensuremath{P,S,\eplus,\eminus})}\xspace}
-%   \newcommand{\metad}{\textit{metaD(\ensuremath{S,D})}\xspace}
-%   \newcommand{\metar}{\textit{metaR(\ensuremath{S,D})}\xspace}
-%   \newcommand{\metac}{\textit{metaC(\ensuremath{P})}\xspace}
-%\newtheorem{definition}{Definition}
-%\newtheorem{theorem}{Theorem}
 
 \section{Introduction}\label{sec:intro}
 Many AI problems can be formulated as constraint satisfaction problems that can
@@ -59,7 +39,9 @@ $R_w$ ($C_b$) stand for the variable representing the row (column) of a white (b
 :- queen(w,Rw,Cw), queen(b,Rb,Cb), Cw ?= Cb.
 :- queen(w,Rw,Cw), queen(b,Rb,Cb), Rw ?+ Rb ?= Cw ?+ Cb.
 \end{lstlisting}
-This program might have been inspired by a solution written in the constraint programming language Essence available from the CSP library \parencite{csplib:prob110}.  
+\pubrev
+This program might have been inspired by a solution written in the constraint programming language Essence available from the CSP library \parencite{csplib:prob110}. \footnote{A full sketched and ASP program can be found in https://github.com/SergeyParamonov/sketching} These sketched rules indicate the general shape of constraints such as no two queens of different colors, i.e., black and white can not be on in the same row, column or diagonal. And at the same time it expresses uncertainty in the operators used in these constraints: should it be plus, minus, multiplication, etc?
+\pubrevend
 Intuitively, the sketched ASP specifies constraints on the relationship between two queens on the rows (first rule), columns (second rule) and diagonals (third rule), %If no solutions can be found by the ASP solver, or when some solutions found turn out to be errors, the program needs to be debugged.  A common debugging technique is commenting out constraints. In the above example, if any of the constraints 
 but it expresses also uncertainty about the particular operators that should be used between the variables 
 through the built-in alternatives for ${?}{=}$  (which can be instantiated to one of $=,\neq,<,>,\leq,\geq$) and for ${?}+$ (for arithmetic operations). 
