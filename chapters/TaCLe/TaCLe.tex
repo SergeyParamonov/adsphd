@@ -440,10 +440,7 @@ A \textbf{valid argument assignment} of a constraint template~$s$ is a tuple of 
 \end{definition}
 
 
-
-
-
-\subsection{Problem Definition}\label{sec:problem_statement}
+\subsection{Problem definition}\label{sec:problem_statement}
 The problem of learning constraints from tabular data can be seen as an inverse {\em constraint satisfaction problem} (CSP).
 In a CSP one is given a set of constraints over variables that must all be satisfied, and the goal is to find an instantiation of all the variables that satisfies these constraints.
 In the context of spreadsheets, the variables would represent blocks of cells, and one would be given the actual constraints and functions with the goal of finding the values in the cells.
@@ -1010,7 +1007,7 @@ The data is also visualized in Figure~\ref{fig:comparison}.
 {\setlength{\tabcolsep}{0.33em}
 \begin{table}[htb]
   \centering
-  \caption{Summary of properties and results per spreadsheet category}
+\caption{Summary of properties and results per spreadsheet category (time in s)}
   \label{tbl:category_overview}
   \begin{tabular}{lccccccc}
       \small
@@ -1203,11 +1200,31 @@ This approach would be more robust, however, it requires definition tests to be 
 %Of course, generating large enough samples and rows (columns) to be added can be done in multiple ways.
 %In the limited case of detecting single errors one can leave out every row (column), consider the remaining data to be the sample and
 %and the left out row (column) to be new input.
+\pubrev
+\subsection{Spreadsheet domains and usecases}
+We can approximately divide the usage of spreadsheet into three use cases
+\begin{itemize}
+\item spreadsheets that are used for data exchange, flat files with little redundancy
+\item generated reports, with lots of aggregated information and formatting
+\item spreadsheets that are used by humans, containing lots of formulas
+\end{itemize}
+These offer different challenges and opportunities.
+
+\paragraph{Data exchange spreedsheets}
+
+\paragraph{Generated reports spreadsheets}
+
+\paragraph{Human created and used spreadsheets}
+
+
+\pubrevend
 
 \section{Future Work: Pindakaas}
-Here we outline possibility to expand TaCLe to work in
+\pubrev
+Here we outline an idea on how to expand TaCLe to work in
 the supervised setting. We also propose a language extension to
-handle nested functions and make the system robust to the noise.
+handle nested functions and to make the system robust to noise. All features described in this section are not implemented in the current system and should be regarded as a future research direction.
+\pubrevend
 
 If we recap the key features of FlashFill \parencite{flashfill} and of TaCLe
 \parencite{tacle}, then we would highlight the following:
@@ -1222,15 +1239,16 @@ Contrary to FlashFill, \textbf{TaCLe:} works with textual and numeric flat Excel
     textual as FlashFill, but it handles both numbers and string data. Furthermore, it is unsupervised: the constraints we find do not have marked 
     inputs and outputs columns. Even more, it is not necessary columns it might be rows as well or even a mix of them.
   While Flashfill finds a solution, TaCLe enumerates all constraints matching the data: TaCle does not
-    search for a single solution but find the whole set of formula
-    (typically, it outputs its condensed representation) which relates in this sense to condensed representations in pattern mining.
+    search for a single solution but find the whole set of formulae
+    (typically, it outputs its condensed representation).
 
 We see that there indeed possibilities for creating a system that
 would take best from two worlds: supervised optimal constraint
 learning robust under noise.
 
-
-Let us outline where we see a possibility to combine them. We foresee the following setting in which the system can operate, the system would act in the supervised setting where a block (a list of columns or rows) denoted $\bar x$ stands for the input and the block $y$, stands for the output. To account for noise, we introduce the loss function $L$ between formula $f(\bar x)$ and output $y$, which gives us an optimization problem of searching for the best fitting formula, i.e., $L(f(\bar x),y) \mapsto \min$. However, as we know from the machine learning research, this approach is prone to overfitting, therefore we penalize complexity of a formula with, where a functional $\mathcal{C}(f)$ is the measure of complexity. A possible visual interface is depicted in Figure \ref{fig:visual_interface}.
+\pubrev
+Let us outline where we see a possibility to combine them. We expect the following setting in which the system can operate: the system would act in the supervised setting where a block (a list of columns or rows) denoted $\bar x$ stands for the input and the block $y$, stands for the output. To account for noise, we introduce the loss function $L$ between formula $f(\bar x)$ and the output data $y$. This gives us an optimization problem of searching for the best fitting formula, i.e., $L(f(\bar x),y) \mapsto \min$. However, as we know from machine learning research, this approach is prone to overfitting, therefore we penalize complexity of a formula. Here a functional $\mathcal{C}(f)$ is the measure of complexity. To clarify the idea, we have have depicted a possible visual interface in Figure \ref{fig:visual_interface}.
+\pubrevend
 
 
 \begin{figure}[htb]
@@ -1255,18 +1273,19 @@ Let us outline where we see a possibility to combine them. We foresee the follow
   \label{fig:visual_interface}
 \end{figure}
 
-\paragraph{Noise handling} FlashFill is highly sensitive to the noise,
+\pubrev
+\paragraph{Noise handling} FlashFill is highly sensitive to noise,
 see Figure \ref{fig:flashfill_noise},
-and TaCle as well. If we want to make TaCLe robust to the noise, we also need to adapt a
-statistical methodology. One way to do it is to introduce a loss
-function that would measure how close is the formula to the target
-output.
+and TaCle as well. If we want to make TaCLe robust to noise, we also need to adapt a form
+statistical methodology (i.e., going from a strict logical satisfaction of a formula to a form of decision making based on available statistics about input data): one way to do it is to introduce a loss
+function that would measure how close is the formula to the target output.
 
 \paragraph{Nested formulae} TaCLe is only able to handle flat
-formulae, if we want to extend it to the nested formulae, as for
+formulae, if we want to extend it to nested formulae, as for
 example in Figure \ref{fig:nested_formula}, we need to
-put preference of one formula over another. This can be done by means
-of regularizing the formula complexity.
+put preference of one formula over another. This can be done by means 
+of regularizing the formula complexity. This is in fact necessary due potentially infinite amount of formulae satisfing given input-output pairs and once we have established a number of solutions, we would like to output the best one (and probably the most useful one) to a user.
+\pubrevend
 
 This can be achieved by introducing the following optimization
 objective:
@@ -1282,7 +1301,7 @@ There are multiple ways in how we can define complexity. We take the following a
        \begin{equation*}
        \mathcal{C}(f(g(x_1),h(x_2))) = \mathcal{C}(f) + \mathcal{C}(g) + \mathcal{C}(h)
        \end{equation*}
-where the penalization constant $\alpha$ can be learned by cross-validation or set as a parameter
+where the penalization constant $\alpha$ can be learned by cross-validation or set as a parameter. \pubrev The constants for flat formulae might come from multiple sources: expert knowledge on what formulae are considered more useful/simple/etc, from statistical observations on what flat formulae are the most occuring and therefore more likely to happen and also these values can be interpreted as scalar parameteres and therefore learned in the same way as any other ML parameter via cross-validation, etc.\pubrevend
 
 To better position Pindakass, let us contrast it with the features of
 TaCLe and FlashFill in Table \ref{tab:pindakaas_features}, as we see it borrows features and ideas from both systems.
@@ -1291,14 +1310,14 @@ TaCLe and FlashFill in Table \ref{tab:pindakaas_features}, as we see it borrows 
   \begin{tabularx}{\textwidth}{l | X | X | X }
     \textbf{Property} & \textbf{FlashFill} & \textbf{TaCLe} &
     \textbf{Pindakaas} \\ \hline
-    Data type & Text & Numeric and Textual &  Numeric and
-    Textual\\\hline
-    Learns & String transformation & Set of Flat Excel Formulae
+    Data type & Text & Numeric and textual &  Numeric and
+    textual\\\hline
+    Learns & String transformation & Set of flat excel formulae
     & Single best nested formula\\\hline
-    Supervised & Marked columns + examples & Unsupervised &
+    Supervised & Marked columns + multiple examples & Unsupervised &
     Marked columns \\\hline
     Solving & Structured search & Constraint enumeration &
-    Regularized optimization \\\hline
+    \makecell{\\Regularized\\optimization}\\\hline
     Satisfaction & Exact & Exact &  Best
     matching\\\hline
     Output & set of values & set of formulae & single
@@ -1380,7 +1399,7 @@ The overview of constraint distributions per category is presented in Table \ref
 The file \textit{links.txt}, available in the accompanying GitHub repository, contains the links to all original publicly available spreadsheets used in the experiments.
 }
 
-
+\paragraph
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Keep the following \cleardoublepage at the end of this file, 
