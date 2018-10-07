@@ -99,7 +99,7 @@ proved to be useful, such as the use of a canonical form, a refinement graph, an
 
 Second, there exist a number of algorithms in the constraint programming community that induce constraints from one or more examples and questions. Two well-known approaches include ModelSeeker \parencite{modelseeker} and Quacq \parencite{QUACQ}.
 The former starts from a single example in the form of a vector of values and then exhaustively looks for the most specific constraints that hold given a large constraint library. To this aim, it cleverly enumerates different de-vectorized tables; for instance, if the initial vector was of dimension $1 \times 20$, it would consider rearrangements of size $2 \times 10$, $4 \times 5$, $5 \times 4$, $\dots$ and Modelseeker would then look for both column, row  and even diagonal constraints. Key differences with our work are that we use spreadsheets with \textit{multiple} tables and that ModelSeeker's constraints are restricted to integer values and constraints that are typical for the constraint programming community, e.g., aimed at combinatorial optimization and scheduling. Conacq \parencite{Conacq} acquires a conjunction of constraints using techniques inspired by Mitchell's version space algorithm to process examples; its successor Quacq uses active learning to query the user. Each of the examples/queries is processed for each constraint, hence an important issue is how fast the algorithm converges to the entire solution set (e.g. for Sudoku).
-The focus is again on integer variables and typical combinatorial optimisation constraints. In a similar spirit the field of equation discovery \parencite{equation_discovery} focuses, guided by  heuristics based on the structure of physical equations and unit measures, on the discovery of physical formulas over numbers and times series.
+The focus is again on integer variables and typical combinatorial optimisation constraints. In a similar spirit the field of equation discovery \parencite{equation_discovery,eq_discovery_old} focuses, guided by  heuristics based on the structure of physical equations and unit measures, on the discovery of physical formulas over numbers and times series.
 However, they focus specifically on noisy physical data and formulas, e.g., a single variable can take values from a series of measurements to get a regression parameter estimate or they apply specific data transformation such as numerical calculation of time and partial derivatives. In other words, the method works with approximations and the equation structures are heavily biased towards parameter estimation, while our goal is to discover hard constraints that hold over a subset of the rows and columns.
 %As the conjunction for typical constraint programming problems (such as Sudoku) can be quite large, a key problem is to cope with redundant constraints. As Modelseeker, these systems focus on the types of constraints in combinatorial optimization but unlike ModelSeeker and our approach, they do not assume the variables are organized in tabular form.
 
@@ -1141,7 +1141,7 @@ In an interactive setting, auto-completion can be performed whenever new values 
 
 %In case multiple constraints predict different values for the same cell, the algorithm will have to either prioritize constraints based on their specificity or a heuristic, not make a prediction, or present the choice to the user.
 
-\subsection{Error detection}
+\subsection{Error detection}\label{sec:tacle:error_detection}
 \begin{figure}[t]
 % %\begin{subfigure}{.70\textwidth}
 %   \begin{center}
@@ -1201,7 +1201,7 @@ This approach would be more robust, however, it requires definition tests to be 
 %In the limited case of detecting single errors one can leave out every row (column), consider the remaining data to be the sample and
 %and the left out row (column) to be new input.
 \pubrev
-\subsection{Spreadsheet domains and usecases}
+\subsection{Spreadsheet domains and use-cases}
 We can approximately divide the usage of spreadsheet into three use cases
 \begin{itemize}
 \item spreadsheets that are used for data exchange, flat files with little redundancy
@@ -1210,16 +1210,27 @@ We can approximately divide the usage of spreadsheet into three use cases
 \end{itemize}
 These offer different challenges and opportunities.
 
-\paragraph{Data exchange spreedsheets}
+\paragraph{Data exchange spreadsheets}
+Often systems communicate using textual CSV files that passed between systems. Sometimes a user might need to look into one of those intermediate results to verify or debug. In this case, some simple formulae might be expected to occur and if not detected by the systems, there is a bug present. Of course, TaCLe offers only limited language to detect most popular flat formulae.
+
+In that case our system can be used to verify that values satisfy expected formulae and its future extensions would offer a richer language of formulae to detect, as well as described error-checking possibilities, see Subsection \ref{sec:tacle:error_detection}.
 
 \paragraph{Generated reports spreadsheets}
+Many interesting aggregated statistics are published online (for details, see Section \ref{sec:evalualtion:method}) as flat comma-separated-files. Often, formulae were used to computed some of the columns or rows. Typically original formulae are not present in the report itself, which makes adding or editing information challenging. That is where TaCLe offers an elegant solution by showing formulae and allowing to recompute the values, for details we refer to \textcite{tacle_demo}.
 
 \paragraph{Human created and used spreadsheets}
+That is the most complicated in terms of formulae used and relationships between tables. TaCle is not intended to handle very complex formulae and can have difficulties with non rectangular shapes of cells in a spreadsheet, which can be used by humans.
 
+Furthermore, in this setting a user would typically be interested only in a part of a spreadsheet and maybe even more often in a particular formula used to compute a value the user is interested in.
+
+Also, spreadsheets created and filled by humans, sometimes manually, might contain typing errors, which makes formula detection extremely hard for logical methods, see Figure \ref{fig:flashfill_noise}.
+
+To overcome these issues, we describe a potential new system, called Pindakaas, which should be able to learn complex nested formulae in presence of noise and would target specific parts or specific tables of a spreadsheet.
 
 \pubrevend
 
-\section{Future Work: Pindakaas}
+\section{Future Work}
+\subsection{Pindakaas} \label{subsection:pindakaas}
 \pubrev
 Here we outline an idea on how to expand TaCLe to work in
 the supervised setting. We also propose a language extension to
@@ -1330,6 +1341,28 @@ TaCLe and FlashFill in Table \ref{tab:pindakaas_features}, as we see it borrows 
 
 As a result, we can obtain a system that can on the one hand learn from a rich constraint language and, on the on the other hand, can handle noise and scale to large spreadsheets.
 
+\pubrev
+\subsection{Richer type system, header labels and advanced formatting}
+\paragraph{Type system}
+In many cases, the type system we propose might be simplistic. For many spreadsheets, symbols like \$ or \% provide an important indication about the input and output of a formula. For example, a numeric value formatted with a \% sign points to a percentage formula. Also, type errors are very common in spreadsheets, especially human entered ones. Understanding that a string really is a date or a number is essential, as they are often mixed in randomly in columns of other types.
+
+This useful information is currently thrown away. Therefore, we imagine that a new system can be extended with additional types such as: percentages, datetime and currencies, fixed precision numbers, integers, natural numbers, etc. This would allow better constraint propagation, fewer false positives, new constraint templates to be defined (that would take into account these types), improve error-detection and allow to generalize and handle rounding errors of fixed precision numbers in a systematic manner.
+
+\paragraph{Header labels}
+This is another useful piece of information that is currently thrown away. Indeed labels such as ''Total`` or ''Sum`` might indicate the usage of a certain type of formulae. These types of hints can be utilized by a future generation of formulae detection systems.
+
+Indeed such a system would be language specific and utilize headers as an extra feature, which would make them closer to classic machine learning algorithms and systems, for details on how these systems might operate in spreadsheet settings see \textcite{robustfill} and Subsection \ref{subsection:pindakaas}.
+
+\paragraph{Advanced formatting} Current systems relies on the blocks of rectangular shape to determine what can be fed into the system to discover constraints. Often a table might have a row, column or a subblock of missing values, as well as other not perfectly shaped cell structures.
+
+There is a number of ways how we can overcome this problem of having a rectangular structure: one way is to ask user to specify input-output pairs, and then interpreting them in a standard way as Excel does, i.e., \texttt{SUM(1,2,3,NONE,4)=10} and \texttt{NONE + 5 = NONE}; the other way is to enhance the searching mechanics behind the first step of the algorithm. 
+
+Neither of them are intrinsically bad or good. The first follows the ideas described in Subsection \ref{subsection:pindakaas} and the second would be a natural extension of the implemented TaCLe system, which would support less rigid input structures. 
+\pubrevend
+
+
+
+
 
 \section{Conclusions}\label{sec:tacle_conclusions}
 
@@ -1348,6 +1381,9 @@ The latter is more similar to an active learning setting.
 Threshold bounded error tolerance can be supported by adapting constraint definitions to allow such noise.}
 This could extend the approach to new application domains, beyond traditional spreadsheets.
 
+\pubrev
+Furthermore, once there is a large established collection of spreadsheets together with the ground truth, we can go from a fixed flat bias of supported constraint templates to learning syntax, levels of nesting, etc. This would follow a general program synthesis and machine learning ideas. To do so realistically, we have to create a certain ``golden standard'' dataset that would exhibit all necessary patterns, varieties of formatting and represent the general population of spreadsheets in the wild (current implementation of TaCLe relies on statistics provided for the most popular formulae used). The dataset we have created (see Section \ref{appendix:dataset_overview} is a first step towards this direction.
+\pubrevend
 
 \section{Spreadsheet dataset overview} \label{appendix:dataset_overview}
 \added{
@@ -1399,7 +1435,6 @@ The overview of constraint distributions per category is presented in Table \ref
 The file \textit{links.txt}, available in the accompanying GitHub repository, contains the links to all original publicly available spreadsheets used in the experiments.
 }
 
-\paragraph
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Keep the following \cleardoublepage at the end of this file, 
