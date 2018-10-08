@@ -56,8 +56,12 @@
 
 
 \section{Covering with approximate patterns}\label{sec:tiling}
+\pubrev 
+Let us demonstrate that the hybridization framework we have introduced can solve even more complex pattern mining problems than classical frequent pattern mining problems. We will consider a variation of the tiling problem that we have seen in Chapter \ref{ch:ReDF}. This variation, called approximate tiling, is indeed connected to the one we have modelled as a decomposition problem as it also asking to find a form of tiling. Approximate tiling introduces a more complex optimization function and appears to be highly computationally demanding (see details below). Here we aim at demonstrating how hybridization framework can be used to reach reasonable performance even for this highly computationally challenging problem.
+\pubrevend
 
 So far, we have concentrated on exact patterns, that is, patterns that are present exactly in the data; for example, an itemset is present only in transactions that contain every item in the itemset. This is a standard assumption in pattern mining, and it is heavily utilized by the pattern mining algorithms. But it also means that the patterns are not robust against noise: a single item missing from a single transaction can turn a frequent itemset into an infrequent one. To make the patterns more robust to noise, we can consider approximate patterns, that is, patterns that are \revision{considered as} contained in transactions even if the transaction does not contain all of the items in the pattern. In this section, we demonstrate how our hybrid approach can be used also with approximate patterns.
+
 
 The approximate patterns we are interested in are based on the concept of \emph{tiles} \parencite{tiling}.
 Let $\alpha$ be an itemset and $D$ be a database. The \emph{tile} corresponding to
@@ -144,7 +148,7 @@ Consider the following Boolean matrix:
 The areas with the red, blue and black border highlight the respective three approximate tiles of the matrix. \qed
 \end{example}
 
-A common approach to calculate an approximate Boolean matrix factorization (or tiling) is to first calculate a set of \emph{candidate tiles} (or rank-1 matrices) and then select the final set from these \parencite{dbp,tyukin14bmad}. In what follows, we concentrate on a version of this problem where the user gives the target quality, and we try to find a set of tiles that obtains  this quality. 
+A common approach to calculate an approximate Boolean matrix factorization (or tiling) is to first calculate a set of \emph{candidate tiles} (or rank-1 matrices) and then select the final set from these \parencite{dbp,tyukin14bmad}. In what follows, we concentrate on a version of this problem where the user gives the target quality \pubrev(the coverage constant, what percentage of the dataset should be covered)\pubrevend, and we try to find a set of tiles that obtains  this quality. 
 
 
 \begin{definition}[Approximate Tile Selection Problem]

@@ -5,8 +5,8 @@ Let $\mi{D}$ be a dataset, $\patternspace$ a language for expressing pattern pro
 data, and $\mi{q}$ a selection predicate. %Then t
 The task of pattern mining is to find $\mi{Th}(\patternspace,D, \mi{q})= \{\phi \in \patternspace \mid \mi{q}(D, \phi) \text{ is true}\}$, that is, to find all patterns $\phi\in\patternspace$ that are selected by $q$  (see, e.g, the seminal work of \textcite{DBLP:journals/datamine/MannilaT97}). 
 
-Pattern mining has been mainly studied for % in three settings: 
-itemsets, sequences, graphs and tilings. These settings are determined by the language of $\patternspace$. In this work we discuss all of these pattern types.
+%   Pattern mining has been mainly studied for % in three settings: 
+%   itemsets, sequences, graphs and tilings. These settings are determined by the language of $\patternspace$. In this work we discuss all of these pattern types.
 
 \subsection{Patterns} 
 \subsubsection{Itemsets}
@@ -321,8 +321,8 @@ Dominated patterns under constraints are now formally defined.
 
 Exploiting the above definitions we obtain condensed patterns under constraints.
 
-\begin{definition}[Condensed pattern under constraints]\label{def:con}
-    Let $p$ be a pattern from \patternspace, and let $C$ be a constraint function, then a pattern $p$ is called \emph{condensed} under constraints iff it is valid and not dominated under $C$. 
+\begin{definition}[Dominant (condensed) pattern under constraints]\label{def:con}
+    Let $p$ be a pattern from \patternspace, and let $C$ be a constraint function, then a pattern $p$ is called \emph{dominant} under constraints iff it is valid and not dominated under $C$. 
 \end{definition}
  \begin{example}
      For the constraint function selecting maximal itemsets of size at most $2$ and %length 
@@ -332,9 +332,9 @@ Exploiting the above definitions we obtain condensed patterns under constraints.
 \revision{Intuitively, a condensed representation is the smallest set of ``good'' patterns describing the data, i.e., there is no redundant or invalid patterns. By redundant here, we mean patterns dominated or preferred to another pattern. Formally speaking, }
 
 \revision{\begin{definition}[Condensed representation]\label{def:condensed_representation}
-    The set of all \textit{condensed} patterns is called a \textit{condensed representation}.
+    The set of all \textit{dominant} patterns is called a \textit{condensed representation}.
 \end{definition}
-Note that various names exist in the literature such the \textit{dominating set} \parencite{dp2013}.}
+Note that various names exist in the literature such the \textit{dominating set} \parencite{dp2013}. We use the terms \textit{a condensed pattern} and \textit{a dominant pattern} interchangeably.}
 
 
 %For brevity we refer to the above constraints as $\mi{max,cl,sky,}$ and $\mi{free}$.

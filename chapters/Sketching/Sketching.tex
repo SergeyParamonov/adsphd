@@ -1,5 +1,5 @@
 \chapter{Constraint sketching} \label{ch:sketching}
-This chapter is based on the paper: ''Sketched Answer Set Programming`` by Sergey Paramonov, Christian Bessiere, Anton Dries, Luc De Raedt\footnote{\url{https://arxiv.org/abs/1705.07429}}. My contribution is in the development of the algorithm, implementation, experiments and writing the results.
+This chapter is based on the paper: ''Sketched Answer Set Programming`` by Sergey Paramonov, Christian Bessiere, Anton Dries, Luc De Raedt, ICTAI 2018\footnote{\url{https://arxiv.org/abs/1705.07429}}. My contributions are in the development of the algorithm, implementation, experiments, and writing the results.
 
 
 Answer Set Programming (ASP) is a powerful modelling formalism for combinatorial problems. However, writing ASP models can be hard. We propose a novel method, called Sketched Answer Set Programming (SkASP), aimed at facilitating this proposal. In SkASP, the user writes partial ASP programs, in uncertain parts are left open and marked with question marks. In addition, the user provides a number of positive and negative examples of the desired program behaviour. SkASP then synthesises a complete ASP program by rewriting the SkASP program into another ASP program, which can then solved by traditional methods. We evaluate our approach on 21 well known puzzles and combinatorial problems inspired by Karp’s 21 NP-complete problems and on publicly available ASP encodings.
@@ -88,7 +88,7 @@ The language of SkASP has the following characteristics:
 \item atoms (such as a predicate $p/n$ or comparison $\leq$) and operators (such as arithmethic $+,-,\times$, etc) in these rules can be sketched; 
 \item aggregates can be used in the body of the rules as well (stratified; see Extension Section \ref{section:aggregates});
 \item the SkASP program has to be stratified; 
-\item the choice rules are not allowed.
+\item choice rules are not allowed.
 \end{itemize}
 %Supporting choice rules is an issue for further research. 
 
@@ -263,7 +263,7 @@ to apply our method to Constraint Programming and Constraint Logic Programming.
 
 %While preferences do not affect the decision version SkASP, they have a great practical value. We propose a simple method how to post-process the solutions $O$, by an optimized version of comparing pairs of solutions $(o,o')$ in $O\times O$. We create a set of non-dominating solutions $N$ and then iterate over pairs $(o,o')$, using the set $N$ to filter out not preferred substitutions. Note, the preferences introduce a partial order on the solutions.
 
-\section{System extension: aggregates and use-case}\label{section:aggregates}
+\section{Sketched aggregates}\label{section:aggregates}
 An aggregate \textit{\#agg} is a function from a set of tuples to an integer. For example,\\$\#\textit{count}\{ Column,Row: \textit{queen}(Column,Row) \}$ counts the number of instances\\\textit{queen(Column,Row)} at the tuple level. Aggregates are often useful for modelling. 
 However, adding aggregates to non-disjunctive ASP raises the complexity of an AS existence check, unless aggregate dependencies are stratified \parencite{aggregates_complexity}. It is possible to add aggregates into our system under the following restrictions: stratified case, aggregates occur in the body in the form ${N = \#\textit{agg}\{ \dots \}}$, sketched with the keyword \verb|?#| , where \textit{\#agg} can be \textit{max}, \textit{min}, \textit{count} and \textit{sum}. This immediately allows us  to model problems such as Equal Subset Sum (for details, see the repository), where one needs to split a list of values, specified as a binary predicate   \verb|val(ID,Value)| into two subsets, such as \verb|subset1(ID)| (and \verb|subset2(ID)| respectively), such that the sum of both subsets is equal. Essentially, we sketch the constraint of the form: 
 
@@ -367,7 +367,7 @@ tried to select examples that carry different information (again as a user of Sk
   Users want in general to provide only a few examples (\qone-\qthree), to obtain a small number of solutions (ideally only one) (\qone-\qtwo), the examples should be small (\qfour), the solutions should be correct (all), want to know whether and when to use preferences (\qtwo), and how robust the technique is to changes in the encoding (\qfive) as it is well known in ASP that small changes in the encoding can have large effects. Finally, they are typically interested in how the learned programs change as the sketches becomes more complex (\qthree).
 With this in mind,} we have designed and investigated the following experimental questions:
 \begin{itemize}
-\item \qone: What is the relationship between the number of examples and the number of solutions? How many examples does it take to converge?
+\item \qone: What is the relationship between the number of examples and the number of solutions? How many examples does it take to converge \pubrev(to a single solution or a small set of equivalent)\pubrevend?
 \item \qtwo: Are preferences useful?
 \item \qthree: What is the effect of the number of sketched variables on the convergence \addedsket{and correctness of the learned programs}?
 \item \addedsket{\qfour: Do models learned on examples with small parameter values generalize to models with larger parameter values?}
@@ -380,62 +380,70 @@ With this in mind,} we have designed and investigated the following experimental
 
 We use the \textit{default preferences} in the experiments for the built-in inequality sketch \sketchedeq: namely $=$ and $\neq$ have equal maximal preference. A user can redefine the preferences by giving them weights. Our experiments indicate that for other sketched types no default preferences are needed.
 
+\renewcommand{\scalefigures}{0.65}
 
 \begin{figure}[!thb]
   \centering
-  \begin{subfigure}[t]{0.49\textwidth}
-    \includegraphics[width=\scalefigures\textwidth]{convergence_without_preferences.png}
+  \begin{subfigure}{\linewidth}
+      \centering
+    \includegraphics[width=\scalefigures\linewidth]{convergence_without_preferences.png}
     \caption{Convergence without preferences (with 5 sketched variables): B\&W Queens (Sketch \ref{lst:queens}) and FAP converge, while Sudoku does not}
     \label{fig:convergence_without_preferences}
   \end{subfigure}
-  \hfill
-  \begin{subfigure}[t]{0.49\textwidth}
+  \begin{subfigure}{\textwidth}
+      \centering
     \includegraphics[width=\scalefigures\textwidth]{average_number_of_solutions.png}
     \caption{Average number of solutions over the dataset, split into the \textit{easy} group converging without preferences and \textit{hard} not converging }
     \label{fig:preferences_effect}
   \end{subfigure}
-  \hfill
-  \begin{subfigure}[t]{0.49\textwidth}
+  \begin{subfigure}{\textwidth}
+      \centering
     \includegraphics[width=\scalefigures\textwidth]{number_of_solutions_all.png}
     \caption{Between 2 and 7 examples are needed to obtain a unique solution (or a small group of equivalent ones) under preferences.}
     \label{fig:number_of_solutions}
   \end{subfigure}
-  \hfill
-  \begin{subfigure}[t]{0.49\textwidth}
-    \includegraphics[width=\scalefigures\textwidth]{fap_different_number_of_vars.png}
-    \caption{The effect of the number of sketched variables on the solutions with preferences}
-    \label{fig:fap_with_preferences}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}[t]{0.49\textwidth}
-    \includegraphics[width=\scalefigures\linewidth]{fap_with_preferences.png}
-    \caption{The effect of the number of sketched variables on the solutions without preferences}
-    \label{fig:fap_without_preferences}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}[t]{0.49\textwidth}
-    \includegraphics[width=\scalefigures\linewidth]{precision_n_queens.png}
-    \caption{\addedsket{Dependency between the number of sketched variables and precision}}
-    \label{fig:precision_n_queens}
-  \end{subfigure}
-  \caption{Addressing experimental questions \qone-\qthree. \qone and \qtwo: convergence without preferences (a), across the dataset (b), for each problem (c). \qthree: the effect of different number of sketched variable on the number of solutions and precision, FAP (d, e); $N$-queens (f). log-scale (a-e)}
+  \caption{Addressing experimental questions \qone-\qtwo. \qone and \qtwo: convergence without preferences (a), across the dataset (b), for each problem (c). Log-scale. }
 \end{figure}
 
 \begin{figure}[!thb]
   \centering
-  \begin{subfigure}[t]{0.49\textwidth}
+\begin{subfigure}{\textwidth}
+      \centering
+    \includegraphics[width=\scalefigures\textwidth]{fap_different_number_of_vars.png}
+    \caption{The effect of the number of sketched variables on the solutions with preferences}
+    \label{fig:fap_with_preferences}
+  \end{subfigure}
+  \begin{subfigure}{\textwidth}
+      \centering
+    \includegraphics[width=\scalefigures\linewidth]{fap_with_preferences.png}
+    \caption{The effect of the number of sketched variables on the solutions without preferences}
+    \label{fig:fap_without_preferences}
+  \end{subfigure}
+  \begin{subfigure}{\textwidth}
+      \centering
+    \includegraphics[width=\scalefigures\linewidth]{precision_n_queens.png}
+    \caption{\addedsket{Dependency between the number of sketched variables and precision}}
+    \label{fig:precision_n_queens}
+  \end{subfigure}
+\caption{\qthree: the effect of different number of sketched variable on the number of solutions and precision, FAP (a, b); $N$-queens (c). Log-scale.}
+\end{figure}
+
+\begin{figure}[!thb]
+  \centering
+  \begin{subfigure}{\textwidth}
+      \centering
     \includegraphics[width=\scalefigures\textwidth]{latin_square_generalization.png}
     \caption{\addedsket{Measuring the generalized accuracy and number of solutions. Latin Square $4 \times 4$.}}
     \label{fig:latin_square_generalization}
   \end{subfigure}
-  \hfill
-  \begin{subfigure}[t]{0.49\textwidth}
+  \begin{subfigure}{\textwidth}
+      \centering
     \includegraphics[width=\scalefigures\linewidth]{n_queens_all_models_number_of_solutions_manual.png}
     \caption{\addedsket{The number of solutions (default preferences) for various $N$-queen encodings}}
     \label{fig:systematic_solutions}
   \end{subfigure}
-  \hfill
-  \begin{subfigure}[t]{0.49\textwidth}
+  \begin{subfigure}{\textwidth}
+      \centering
     \includegraphics[width=\scalefigures\textwidth]{quees_different_precision.png}
     \caption{\addedsket{Correctness for $N$-queens various encodings (precision)}}
     \label{fig:systematic_precision}

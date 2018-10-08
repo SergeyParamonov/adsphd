@@ -623,7 +623,7 @@ This separation of checking the \textit{properties} of input block assignments f
 % Let there be $b$ blocks and let~$s$ have~$n$ arguments, then a simple generate-and-test method would have to test $b^n$ combinations (given that blocks can be repeated), which can grow very rapidly with $b$, depending on $n$.
 
 Given a constraint template~$s$ and the set of all input blocks~\blocks, the goal is to find all combinations of input blocks that are compatible with the constraint signature.
-An argument assignment $(\sbl{1}, ... \sbl{n})$ is \textit{compatible} with the signature of template $s$ if for each block $\sbl{i}$ there exists at least one subblock $\sbl{i}' \sqsubseteq \sbl{i}$ that satisfies the signature.
+An argument assignment $(\sbl{1}, ..., \sbl{n})$ is \textit{compatible} with the signature of template $s$ if for each block $\sbl{i}$ there exists at least one subblock $\sbl{i}' \sqsubseteq \sbl{i}$ that satisfies the signature.
 
 The choice of one argument can influence the possible candidate blocks for the other arguments, for example, if they must have the same length.
 Instead of writing specialized code to generate and test the input block assignments, we make use of the built-in reasoning mechanisms of constraint satisfaction solvers.
@@ -812,7 +812,7 @@ For \textit{LOOKUP}, aggregate constraints and \textit{PROJECT} we use optimized
 Given an input block assignment, the implementation for \eclookup{\sbl{2}}{\sbl{fk}}{\sbl{pk}}{\sbl{1}} first generates candidate vectors for \sbl{pk} and \sbl{1}, then populates a hash table that allows it to quickly look up keys, afterwards it generates candidate vectors for the remaining arguments and, finally, checks which subassignments are valid.
 
 For aggregates (e.g. \textit{SUM}) and \textit{PROJECT}, a custom implementation is used that tries to find maximal subblocks that satisfy the constraint templates.
-Instead of generating all possible subblocks, given an inputblock assignment, these implementations start from an input block and repeatedly generate and test smaller subblocks.
+Instead of generating all possible subblocks, given an input block assignment, these implementations start from an input block and repeatedly generate and test smaller subblocks.
 Therefore, once a match is found, all smaller subblocks do not need to be considered anymore.
 
 Finally, for \textit{FOREIGNKEY} and conditional aggregates, generate-and-test is used, but in combination with caches that store intermediate results and a preparation step to populate some of the caches.
