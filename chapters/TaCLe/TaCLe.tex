@@ -1,13 +1,13 @@
 \chapter{Learning constraints in tabular data}\label{ch:TaCLe}
-This chapter is based on the paper: ''Learning constraints in spreadsheets and tabular data`` by Samuel Kolb (*), Sergey Paramonov (*), Tias Guns, Luc De Raedt\footnote{\url{https://link.springer.com/article/10.1007/s10994-017-5640-x}}. My contribution is in the algorithm design, implementation of the ASP prototype, data collection and writing the results.
+This chapter is based on the paper: ''Learning constraints in spreadsheets and tabular data`` by Samuel Kolb (*), Sergey Paramonov (*), Tias Guns, Luc De Raedt\footnote{\url{https://link.springer.com/article/10.1007/s10994-017-5640-x}}. My contributions are in the algorithm design, implementation of the ASP prototype, data collection, and writing the results.
 
 
 Spreadsheets, comma separated value files and other tabular data representations are in wide use today.
-However, writing, maintaining and identifying good formulas for tabular data and spreadsheets can be time consuming and error-prone.
+However, writing, maintaining and identifying good formulas for tabular data and spreadsheets can be time-consuming and error-prone.
 We investigate the automatic learning of constraints (formulas and relations) in raw tabular data in an unsupervised way.
 We represent common spreadsheet formulas and relations through predicates and expressions whose arguments must satisfy the inherent properties of the constraint. The challenge is to automatically infer the set of constraints that is present in the data, without labeled examples or user feedback. 
 We propose a two-stage generate and test method where the first stage uses constraint solving techniques to efficiently reduce the number of candidates, based on the predicate signatures. 
-Our approach takes inspiration from inductive logic programming, constraint learning and constraint satisfaction.
+Our approach takes inspiration from inductive logic programming, constraint learning, and constraint satisfaction.
 We show that we are able to accurately discover constraints in spreadsheets from various sources.
 
 \section{Introduction}
@@ -26,7 +26,7 @@ For example, the influential Reinhart-Rogoff economical paper ``Growth in a Time
 \added{
 Such issues and mistakes could be overcome through the development of intelligent user-assisting tools that would be able to automatically discover what constraints and formulas hold in a spreadsheet.
 This is the problem we study in this chapter.
-We envision that automatic constraint discovery can enable: auto-completion, error checking, formula suggestion, rich import and data compression.
+We envision that automatic constraint discovery can enable: auto-completion, error checking, formula suggestion, rich import, and data compression.
 Auto-completion can help users quickly populate spreadsheets by suggesting values for unfilled cells based on constraints that have previously been detected within the spreadsheet.
 Error checking can identify erroneous values in spreadsheets, for example, while typing, by noticing that previously discovered constraint are violated by newly entered values, or offline by selectively leaving out values.
 Both of these applications can facilitate the use of spreadsheets even for users who do not explicitly use formulas at all.
@@ -42,13 +42,13 @@ A similar approach could be used to compress the data: instead of storing all da
 To this aim,  we investigate whether machine learning and knowledge discovery techniques can be used to learn constraints (formulas and other relations) in spreadsheet data in an unsupervised way.
 From a machine learning point of view this is an unconventional problem because the data is in tabular form, but the constraints we wish to learn can involve both rows and columns of the table. Being unsupervised, there is no labeled information either, although for every possible function one can verify whether a certain input satisfies the definition.
 %Unlike in other knowledge discovery tasks, such as pattern mining~\parencite{}, there are many different types of formula and constraints we wish to discover, each with their own signature (number and properties of arguments) and definition.
-From a data mining point of view, the data is relational on the one hand, since one can have multiple tables with relationships between them, but also consists of mixed textual and numeric types. More closely related is clausal discovery~\parencite{claudien,lallouet}, learning CSP constraints \parencite{QUACQ,Conacq,modelseeker} and dependency discovery in databases \parencite{savnik}. But an important difference remains that we want to learn constraints on both columns and rows over integer, floating point as well as textual data.
+From a data mining point of view, the data is relational on the one hand, since one can have multiple tables with relationships between them, but also consists of mixed textual and numeric types. More closely related are clausal discovery~\parencite{claudien,lallouet}, learning CSP constraints \parencite{QUACQ,Conacq,modelseeker} and dependency discovery in databases \parencite{savnik}. But an important difference remains that we want to learn constraints on both columns and rows over integer, floating point as well as textual data.
 Our inspiration comes from work on program synthesis, in particular Flashfill \parencite{flashfill}, where the definition of a string-manipulation function is learned in spreadsheet data from very few examples.
 
 
 % Moved up
 The question that we ask in this chapter is: is it possible to learn the set of constraints present in a spreadsheet, from just tabular spreadsheet data? The main challenge is the number of possible constraints and combinations of rows and columns that need to be considered as input to the constraints.
-To answer this challenge we propose a general-purpose method and system, named \acrshort{tacle} (from: \acrlong{tacle}, pronounced ``tackle''), for discovering row-wise and column-wise constraints. \added{Constraints on contiguous rows and columns are most common in spreadsheets, with semantically related items stored in rows or columns and formula's usually ranging over contiguous ranges, as formulas parallel to a table are often \textit{dragged} over its entire span.}
+To answer this challenge we propose a general-purpose method and system, named \acrshort{tacle} (from: \acrlong{tacle}, pronounced ``tackle''), for discovering row-wise and column-wise constraints. \added{Constraints on contiguous rows and columns are most common in spreadsheets, with semantically related items stored in rows or columns and formula's usually ranging over contiguous ranges, as formulas parallel to a table are often \textit{dragged} over its entire span \pubrev (this suggests a potential way to generalize learned constraints: allow user to drag them along the axis)\pubrevend.}
 %
 % contribs
 Our contributions are as follows:
@@ -108,7 +108,7 @@ Third, our work borrows from the seminal work of \textcite{flashfill} on program
 
 Fourth, also related to this line of research is the work on deriving constraints in databases such as functional and multi-valued dependencies \parencite{savnik, Mannila-Raiha} although that line of research has focused on more specialized techniques for specific types of constraints. Many of the discovery techniques rely on the database schema~\parencite{flach_dependency_discovery}, which is not available in our case. Techniques that work directly on the data have been investigated for the discovery of functional dependencies between attributes~\parencite{tane_dependency_discovery}. The constraints and formulas we wish to learn go beyond that, including arithmetic, conditional arithmetic and \textit{fuzzy} lookups, for example.
 
-Finally, worth mentioning is BayesDB \parencite{BayesDB} and Tabular \parencite{tabular}, two recent probabilistic modeling languages that have been specifically designed for dealing with relational data in tabular form and that can, as FlashFill, also automatically fill out missing values in a table.  However, unlike the other mentioned approaches, it is based on an underlying probabilistic graphical model that performs probabilistic inference rather than identify the ``hard'' constraints that hold in spreadsheets.
+Finally, worth mentioning is BayesDB \parencite{BayesDB} and Tabular \parencite{tabular}, two recent probabilistic modelling languages that have been specifically designed for dealing with relational data in tabular form and that can, as FlashFill, also automatically fill out missing values in a table.  However, unlike the other mentioned approaches, it is based on an underlying probabilistic graphical model that performs probabilistic inference rather than identify the ``hard'' constraints that hold in spreadsheets.
 
 
 \begin{figure}[thb]
@@ -413,7 +413,7 @@ Consider, for example, the constraint template for the row-based sum:
 \end{itemize}
 
 $\textit{SUM}_\textit{row}$ and $\textit{SUM}_\textit{col}$ are part of a family of constraints that we refer to as \emph{aggregate constraints} that range over multiple rows or columns and are also available for aggregate operators \textit{MIN}, \textit{MAX}, \textit{AVERAGE}, \textit{PRODUCT} and \textit{COUNT}.
-\textit{SUMIF} is part of a family constraints that we refer to as \emph{conditional aggregate constraints} which aggregate over a vector and only include those cells that satisfy a condition on a related cell in that table, e.g., for the spreadsheet in Figure~\ref{fig:main_example}: $\range{T_1}{\rangeall}{10}$ and the data in $T_5$ for matching salesperson names.
+\textit{SUMIF} is part of a family of constraints that we refer to as \emph{conditional aggregate constraints}, which aggregate over a vector and only include those cells that satisfy a condition on a related cell in that table, e.g., for the spreadsheet in Figure~\ref{fig:main_example}: $\range{T_1}{\rangeall}{10}$ and the data in $T_5$ for matching salesperson names.
 Conditional aggregates are also available for the above aggregate operators, except for product. Note that \textit{SUMPRODUCT} is not considered part of the family of aggregate constraints in this chapter as it is not defined for other aggregate operators. See Section~\ref{sec:which_cons} for a more detailed discussion of the constraints used in \sname.
 \end{example}
 
@@ -588,7 +588,7 @@ The pseudo-code of this approach is shown in Algorithm~\ref{algo:tcl}.
 %In a second step it looks at every superblock assignment and finds subassignments that satisfy the signature and definition of~$s$.
 
 
-This separation of checking the \textit{properties} of input block assignments from checking the \textit{actual data} in the subblock assignment controls the exponential blow-up of combinations to test. Furthermore, we use constraint satisfaction technology in the first step to efficiently enumerate input block assignments that are compatible with the signature. %These are the two key properties of our approach.
+This separation of checking the \textit{properties} of input block assignments from checking the \textit{actual data} in the subblock assignment controls the exponential blow-up of combinations to test. Furthermore, we use constraint satisfaction technology in the first step to efficiently enumerate input block assignments that are compatible with the signature\pubrev\footnote{Note, that input block assignment is dependent on the signature of the constraint template, therefore, an assignment of input blocks cannot be, generally speaking, re-used for other constraint templates. For this reason, we first pick a constraint template and then generate an input block assignment based on its signature. Also, an input block assignment might have a block used multiple times, subblocks in Algorithm \ref{algo:gen-test-subblocks}, however, cannot overlap, e.g., B1 can be used for input and output of \texttt{SUM(X)=Y}, however, in the subblock assignments the first $n-1$ columns would be $X$ and the $n$-th would be $Y$, and they cannot overlap.}\pubrevend. %These are the two key properties of our approach.
 
 \newcommand{\temps}{\ensuremath{S}}
 \begin{algorithm}[t]
@@ -722,7 +722,7 @@ This is inefficient, as such blocks may not even satisfy the signature or just t
 On the other hand, a simple generate-and-test approach, as illustrated in Algorithm~\ref{algo:gen-test-subblocks}, will usually suffice.
 %However, the actual implementation is specified for every constraint template separately, allowing different methods to be used based on the type of template.
 %For this reason, the \sname system uses generate-and-test to implement $\findassignment$ for most constraint templates.
-Given an input block assignment, all disjoint subassignments are generated taking into account the required size, columns or rows.
+Given an input block assignment, all disjoint subassignments \pubrev(in Algorithm~\ref{algo:gen-test-subblocks} this is enforced by the constraint \textit{disjoint})\pubrevend are generated taking into account the required size, columns or rows.
 For every disjoint subassignment the exact signature (e.g. subtypes will not have been checked yet) and definition will be tested and all satisfying subassignments are returned.
 
 
@@ -977,7 +977,7 @@ In the synthetic spreadsheets, the first phase, which looks at properties of inp
 
 \added{In order to compare to the baseline, we had to lower the number of vectors from~$32$ to~$16$.
 Figure~\ref{fig:runtime_analysis} (d) shows that here, too, our system performs better.
-Both approaches profit from lower running times for aggregates and the no-CSP baseline can offset some of the slowdown as the block size grows small.}
+Both approaches profit from lower running times for aggregates and the no-CSP baseline can offset some of the slowdown as the block size grows small.} \pubrev{Note that the synthetic data has been generated to test step 1 only: therefore it is not important if constraints itself are satisfied since this accounts for the runtime in step 2. Our goal here was to measure and determine if there is a significant gap between CSP and no-CSP solutions.}
 
 %therefore, it will be faster to group the same vectors into larger super blocks, generate fewer superblock assignments to test and split these into single vector subassignments in phase~2.
 

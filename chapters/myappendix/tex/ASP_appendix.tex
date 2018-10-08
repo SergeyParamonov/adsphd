@@ -9,7 +9,7 @@ intersect_N(T,Attr) :- guess != Indx, tile(currentI, V, Attr), tile(Indx, V, Att
 intersect(T) :- overlap_level #count{ intersect_N(T,Indx) : col(Indx) }, transaction(T).@\label{line_intersect_noisy}@
 \end{lstlisting}
 
-We see that a slight change of the formulation of property of a solution leads to a small change in the modeling and also to a small change in the implementation.
+We see that a slight change of the formulation of property of a solution leads to a small change in the modelling and also to a small change in the implementation.
 
 \textit{BMF}. Boolean data is a particular case of attribute-value data, and corresponds to the situation when values can be either true or false.  It is straightforward to realize the encoding of tiling for BMF by deleting all the arguments in Listing~\ref{lst:encoding} corresponding to values; we encode only the true facts for \dbbin. Also, as described in Subsection \ref{subsection:bmf}, we remove the rules corresponding to the intersection of tiles. The ASP code is in Listing \ref{bmf}. 
 \begin{lstlisting}[caption=Boolean Matrix Factorization, label=bmf, escapeinside={@}{@}] 

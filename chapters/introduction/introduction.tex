@@ -12,12 +12,12 @@ its general structure.
 \end{addmargin}
 
 \section{Data mining}
-The ability to write down a model and to simply push a button to get the
+The ability to write down a mathematical model and to simply push a button to get the
 answer is an appealing idea. It is one of the holy grails of
 Artificial Intelligence, called Declarative Programming, where one
 specifies what the problem is and not how to solve it. Today in the age of data, we would like
 to state what type of knowledge we are looking for, feed the data in and, as a result,
-(almost magically) find new insights into the data. What we do not really want is to write
+(almost magically) find new insights into the data. What we do not want is to write
 a lot of tedious code. Unsurprisingly, this is a hard challenge. 
 
 
@@ -25,8 +25,10 @@ The \textit{knowledge} extracted from the data can manifest itself in
 multiple forms. For example, an interesting piece of data,
 \textit{typically a substructure}, is referred to as a \textit{pattern} \parencite{han_book}. 
 The most known pattern learning task is 
-\textit{frequent pattern mining}, or pattern mining for short \parencite{survey_han}. 
-At a high level it can be formalized as follows: 
+\textit{frequent pattern mining}, or pattern mining for short
+\parencite{survey_han}. \pubrev
+At a higher and more general level, often referred as \textit{theory
+mining}, \pubrevend it can be formalized as follows: 
 let $D$ be a dataset, $P$ be the language of allowed patterns and
 $\phi$ be a predicate of
 interest, the pattern mining problem is the problem of finding
@@ -44,7 +46,7 @@ problems, are \textbf{combinatorial search problems}, which in turn have two mai
 \end{center}
 
 Therefore, it seems natural to model pattern mining problems 
-using systems designed to perform search in declarative manner, such
+using systems designed to perform search in a declarative manner, such
 as \acrlong{cp} \parencite{handbookcp} or \acrlong{asp}
 \parencite{whatisasp}. %(which we discuss later in detail).
 
@@ -77,8 +79,8 @@ $\phi$ be a satisfaction function,
 then the problem is to find all properties (constraints) $c$ in $C$ such that $\phi(D,c)$ is satisfied.
 \begin{example}[Sudoku constraint learning]
     A well-known Sudoku problem might be hard to model for a person
-    new to constraint programming. A possibility how to obtain a model
-    is to learn from examples. This can be done by providing:
+    new to constraint programming. A possibility to obtain a model
+    is to it learn from examples. This can be done by providing:
     \begin{itemize}
         \item A set of Sudoku solutions
         \item A set of invalid Sudoku combinations
@@ -100,9 +102,11 @@ of interest holds: we find graphs or sequences that occur often enough
 in the data and have certain desired topological properties (for example, being a
 cyclic graph or have ascending characters). And in constraint learning we find interesting
 properties that hold in the data (or its parts): given a set of
-characters, for example, we discovered that the "ascending constraint" holds, i.e.,
+characters, for example, we discovered that the ''ascending
+constraint`` holds, i.e.,
 characters are sorted or we found that givens graphs are all cyclic.
-Therefore, we consider constraint learning and pattern mining to be interconnected, and both problems play a central role in this thesis.
+We consider constraint learning and pattern mining to be interconnected, and both problems play a central role in this thesis.
+\sergey{EXPLAIN AND EXTEND THIS}
 
 \section{Logic programming}
 In his seminal work Robert \textcite{kowalski} proclaimed:
@@ -117,9 +121,9 @@ Why is this important for us? Logic deals with
 relations and relational structures, it is naturally designed to
 work with relational data. Therefore, if we can combine logic
 with computation, we obtain a computational engine that can work in
-our relational learning setting.
+our relational learning setting. \sergey{explain and extend this}
 
-\begin{example}[Modeling Sushi preferences with logic]
+\begin{example}[Modelling Sushi preferences with logic]
 There are three people: Ronald, Peter and
 Alina. We know that people who are not allergic to fish and not vegans like sushi; 
 furthermore, we know that Peter is allergic to fish and Ronald is
@@ -160,7 +164,7 @@ Typical machine learning and data mining systems work with
 propositional representations and logical and relational learning has
 arisen to overcome this limitation by focusing on expressive knowledge representation languages such as first order logic \parencite{luc_book}.
 
-Classical machine learning algorithms such as induction of decision trees
+Classical machine learning algorithms such as the induction of decision trees
 \parencite{decision_trees} or Bayesian networks \parencite{pearl} work
 with limited representations (which correspond to a
 propositional language). This representation does not allow to
@@ -172,6 +176,7 @@ for machine learning. This approach allows to
 represent a non-fixed amount of complex objects together with their
 relationships -- we refer to this problem setting as \textit{relational}.
 
+\sergey{move to earlier}
 Let us indicate why it is important to look into the relational
 machine learning setting. To do so, we will describe a problem where
 the number of entities and relationships between them is not fixed,
@@ -179,8 +184,7 @@ which makes it complicated if not practically impossible to employ the
 standard machine learning techniques based on  fixed feature vectors
 or attribute-value representations, while using logical and relational models appears natural and elegant. Further in the chapters we elaborate on other problems and examples.
 
-A very well familiar to a reader, a schedule is an example
-of relational data. 
+A well familiar example of relational data is an examination schedule 
 \begin{example}[Examination room scheduling]
 To make this example concrete, assume that students need to be assigned to
 auditoria for examinations with professors. Typically, making such a
@@ -196,11 +200,11 @@ legal constraints
     \end{itemize} 
     
     A possible approach is to learn these 
-constraint by recovering them from
+constraints by recovering them from
 a set of positive and negative examples. The number of constraints is
 not set in advance and the constraint language is typically a rich
 relational language, for example, a constraint saying that no room is
-shared by more than three courses at the same time can be expressed in a form of the first
+shared by more than three courses at the same time can be expressed in the first
 order language as
 \begin{equation*}
     \forall X,T: \textit{room(X)} \wedge \textit{time(T)} \implies \{ C : \textit{examination}(X,C,T) \wedge \textit{course(C)} \} \leq 3.
@@ -214,17 +218,18 @@ order language as
 %   them. Also, it combines both textual and numeric data. Furthermore,
 %   formulae and constraints over the tables play a role of relationships
 %   we have described earlier.
-These properties of interconnectedness and expressivity of the constraints make
+These properties of interconnectedness and expressivity of the
+constraints make the
 problem hard to model using traditional propositional approaches,
 while this can be clearly seen as a first order problem. This gives us
-confidence that for a number of important problems it is essential to
+confidence that for a number of important problems \sergey{ELABORATE} it is essential to
 look into richer knowledge representation languages for machine
 learning.
 
 \section{Contributions}
 Given the abundance of relational data (such as spreadsheets, graphs,
 databases and logical structures) for various machine learning and data
-mining problems, and the success in development of declarative solvers (such
+mining problems, and the success in the development of declarative solvers (such
 as \acrshort{asp}, \acrshort{idp}, \acrshort{cp} and \acrshort{lp}) a
 natural question arises: \textit{``How can we declaratively model and
 solve relational data mining problems using logic programming
@@ -238,24 +243,28 @@ modern logic programming languages, such as \acrshort{asp} and
 Concretely, we investigate how the following data mining problems
 can be modelled and solved using a declarative approach based on
 logic programming.
+\pubrev
 \begin{itemize}
-    \item \cone: \textbf{Relational Data Factorization.} What are the challenges and advantages of generalizing
+    \item \cone: What are the challenges and advantages of generalizing
     classic data mining problems, such as the Boolean Matrix
-    Factorization problem, into the relation setting?
-  \item \ctwo: \textbf{Tabular Constraint Learning.} How can the constraint learning problem be formulated
+    Factorization problem, into the relation setting? We address this
+        question by proposing \textbf{Relational Data Factorization.}
+  \item \ctwo: How can the constraint learning problem be formulated
    and modelled in the relational setting, where data is
    represented as spreadsheets, i.e., connected relations, and constraints are
-   tabular Excel-like formulae?
-  \item \cthree: \textbf{ASP Sketching.} How can the problem of ASP
-      Sketching, where one marks certain parts of the
-        program to be uncertain, be modelled and solved using our
-        declarative approach? 
-   \item \cfour: \textbf{Structured Frequent Pattern Mining.}
+   tabular Excel-like formulae? We propose as an answer \textbf{Tabular Constraint Learning.} 
+  \item \cthree: Can we model and complete a partially specified logic program?
+      A partially specified program is the one where one marks certain parts of the
+        program to be uncertain. We propose a declarative approach to
+        this problem, called \textbf{Sketched Answer Set Programming}.
+   \item \cfour:
 %  Similarly to unstructured constraint-based itemset mining: 
     How can we apply declarative relational mining
     techniques, such as logic programming, to structured frequent pattern mining, such as sequence, graph
-    and query mining?
+    and query mining? We introduce \textbf{Structured Frequent Pattern
+        Mining} as a possible solution to this problem.
 \end{itemize}
+\pubrevend
 
 Addressing \cone, \textbf{Chapter} \ref{ch:ReDF} presents the novel problem of Relational Data
 Factorization. It demonstrates how this problem generalizes various
@@ -285,7 +294,7 @@ as the word ``tackle''). The problem setting is straightforward to
 explain: we have an Excel file with formulae. The file is imported as
 CSV. The formulae are lost. Can we reconstruct them? We can already 
 see that the problem setting is different from the standard machine
-learning problem. In a spreadsheet, columns are no longer variables
+learning problem \sergey{ELABORATE}. In a spreadsheet, columns are no longer variables
 and rows are no longer records. Textual and numeric data are mixed.
 Spreadsheet functions, such as Fuzzy-lookup, are unorthodox and unseen in
 the constraint programming and constraint learning research communities.
@@ -342,11 +351,12 @@ to complete sketches.
 
 
 The chapter consists of the research previously published in the following papers:
+\pubrev
 \begin{addmargin}[2em]{2em}
   Sergey Paramonov, Christian Bessiere, Anton Dries, Luc De Raedt:
-  Sketched Answer Set Programming. CoRR abs/1705.07429, 2017.
+  Sketched Answer Set Programming. 30th International Conference on Tools with Artificial Intelligence, IEEE, 2018, International Conference On Tools With Artificial Intelligence, Volos, Greece 
 \end{addmargin}
-
+\pubrevend
 
 
 
@@ -377,13 +387,19 @@ developed for particular pattern mining problems.
 
 The chapter consists of the research previously published in the following papers:
 \begin{addmargin}[2em]{2em}
+\pubrev
+Sergey Paramonov, Daria Stepanova, Pauli Miettinen: Hybrid ASP-based
+    Approach to Pattern Mining. Theory and Practice of Logic
+    Programming, 2018.
+\pubrevend
+
 Sergey Paramonov, Matthijs van Leeuwen, Marc Denecker, Luc De Raedt:
-An Exercise in Declarative Modeling for Relational Query Mining.
+An Exercise in Declarative Modelling for Relational Query Mining.
 Lecture Notes in Computer Science, volume 9575, pages 166-182,
     Springer, Inductive Logic Programming, Kyoto, 20-22 August 2015.
 
 Tias Guns, Sergey Paramonov, Benjamin Negrevergne: On declarative
-    modeling of structured pattern mining, AAAI Workshop on
+    modelling of structured pattern mining, AAAI Workshop on
     Declarative Learning Based Programming, Phoenix, Arizona USA, 13
     February 2016.
 

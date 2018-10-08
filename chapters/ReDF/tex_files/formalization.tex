@@ -5,9 +5,9 @@ Before we formalize the ReDF problem and approach in its full generality, we ill
 \subsection{An example}
 
 Assume we are given 1) a set of tuples for the {\em database} relation \textit{sells(Company, Part, Project)},
-2) a definite {\em shape} clause defining the predicate $\appr\textit{(Company,}$ $\textit{Part, Project)}$, e.g.,
+2) a definite {\em shape} clause defining the predicate $\appr\textit{(Company,}$ $\textit{Part,Project)}$, e.g.,
 \begin{align*}
- \textit{\appr(Com, Pa, Proj)} \leftarrow \textit{offers(Com, Pa), needs(Proj, Pa), deliversto(Com, Proj),}
+ \textit{\appr(Com,Pa,Proj)} \leftarrow \textit{offers(Com,Pa),needs(Proj, Pa),deliversto(Com,Proj)}
 \end{align*}
  which should approximate the database relation \textit{sells(Company, Part, Project)} in
  terms of the (unknown) relations \textit{offers(Company, Part)}, \textit{needs(Project, Part)} and \textit{deliversto(Com, Project)},
@@ -58,12 +58,14 @@ To make this setup operational, we represent ReDF problems at two different leve
 
 We next illustrate this on the {\em sells} example. The high-level description from which we start is given in Listing~\ref{lst:sells:encoding}.
 
+\begin{minipage}{\textwidth}  
 \begin{lstlisting}[style=model,caption=Sells example encoding, label=lst:sells:encoding]
 @\textbf{Input:}@ $\textit{sells(c1,pa1,proj1), sells(c2,pa1,proj2)}$ 
 @\textbf{Shape:}@  $\appr(C,\textit{Pa},\textit{Prj}) \leftarrow \textit{offers(C,Pa), needs(Prj,Pa), deliversto(C,Prj).}$
 @\textbf{Find:}@  @\textit{offers($\cdot$), needs($\cdot$), deliversto($\cdot$)}@
 @\textbf{Minimizing:}@  @$\error(\appr,\textit{sells})$@
 \end{lstlisting}
+\end{minipage}
 
 Next, this high-level formulation can be encoded in and solved using the ASP program given in Listing~\ref{lst:sells} (here, an ASP program can be thought as a conjunction of logical rules, where implication is denoted by ``:-'').
 
@@ -89,18 +91,18 @@ Next, this high-level formulation can be encoded in and solved using the ASP pro
 @\commenttextasp{\%factorization shape}@
 approx(Com,Pa,Proj) :- offers(Com,Pa), needs(Proj,Pa), deliversto(Com,Proj). @\label{lst:sells:1}@
 @\commenttextasp{\%relation generators}@
-0 { offers(Com,Pa)          } 1 :- sells(Com,Pa,Proj). @\label{lst:sells:gen1}@
-0 { needs(Proj,Pa)           } 1 :- sells(Com,Pa,Proj). @\label{lst:sells:gen2}@
+0 { offers(Com,Pa) } 1 :- sells(Com,Pa,Proj). @\label{lst:sells:gen1}@
+0 { needs(Proj,Pa) } 1 :- sells(Com,Pa,Proj). @\label{lst:sells:gen2}@
 0 { deliversto(Com,Proj) } 1 :- sells(Com,Pa,Proj). @\label{lst:sells:gen3}@
 @\commenttextasp{\%optimization function}@
-overcoverage(Com,Pa,Proj)   :-        approx(Com,Pa,Proj), not sells(Com,Pa,Proj). @\label{lst:sells:incorrect1}@
-undercoverage(Com,Pa,Proj) :- not approx(Com,Pa,Proj),        sells(Com,Pa,Proj). @\label{lst:sells:incorrect2}@
+overcoverage(Com,Pa,Proj) :- approx(Com,Pa,Proj), not sells(Com,Pa,Proj). @\label{lst:sells:incorrect1}@
+undercoverage(Com,Pa,Proj) :- not approx(Com,Pa,Proj), sells(Com,Pa,Proj). @\label{lst:sells:incorrect2}@
 error(Com,Pa,Proj) :- undercoverage(Com,Pa,Proj). @\label{lst:sells:e1}@
 error(Com,Pa,Proj) :- overcoverage(Com,Pa,Proj). @\label{lst:selss:e2}@
 @\#@minimize[error(Com,Pa,Proj)]. @\label{lst:sells:minimize}@
 \end{lstlisting}
 
-%The ReDF framework relies on ASP for modeling and solving this type of problem. 
+%The ReDF framework relies on ASP for modelling and solving this type of problem. 
 We introduce ASP in more detail below, but this model is easy to understand if one is familiar with the basics of logic programming. The ASP model basically defines the necessary predicates in ASP using a set of clauses. In addition, the rule in Line \ref{lst:sells:gen1} encodes the constraint that whenever a tuple holds for \textit{sells(Com, Pa, Proj)}
 there should be 0 or 1 corresponding tuples for the predicate \textit{offers(Com, Pa).}
 Furthermore, the minimize statement specifies that we are looking for a model (a set of ground facts or tuples) that minimizes the error.  The encoding in Listing  \ref{lst:sells} together with a set of facts for \textit{sells}
@@ -108,8 +110,8 @@ can be given to an ASP solver such as Clasp \parencite{gebser2011potassco}. % wh
 %that includes the definitions of the factors.  
 
 
-Observe that the relational data factorization approach we propose perfectly fits within the declarative modeling paradigm for machine learning and data mining \parencite{DeRaedtECML12}.  Indeed, the next sections will show that it naturally supports a wide range of popular and well-known factorization problems. 
-Modeling different problems corresponds to specifying different constraints, shapes and optimization functions.
+Observe that the relational data factorization approach we propose perfectly fits within the declarative modelling paradigm for machine learning and data mining \parencite{DeRaedtECML12}.  Indeed, the next sections will show that it naturally supports a wide range of popular and well-known factorization problems. 
+modelling different problems corresponds to specifying different constraints, shapes and optimization functions.
 By doing so, one obtains a deep understanding of the relationships among the many variations of factorization, 
 and one can easily design, prototype and experiment with new variations of factorization problems. 
 Furthermore, the models of factorization are in principle solver-independent and do not depend on a particular ASP solver implementation.   

@@ -22,17 +22,17 @@ by the query \textit{offers(Company,Part), needs(Project, Part), deliversto(Comp
 The question is then how to determine the extensions for the relations \textit{offers}, \textit{needs}, and \textit{delivers}.
 The found solution will generally be imperfect, so in ReDF we want to find the best approximation w.r.t. a scoring function and we allow the user to specify hard constraints. In the example these might specify, e.g., that only tuples in the target relation \textit{sells} may be derivable from the query. 
 
-In this chapter, we develop a modeling and solving approach for ReDF using answer set programming (ASP) \parencite{BrewkaCACM}. This is realized by showing for a number of ReDF problems how they can be tackled with ASP.  
+In this chapter, we develop a modelling and solving approach for ReDF using answer set programming (ASP) \parencite{BrewkaCACM}. This is realized by showing for a number of ReDF problems how they can be tackled with ASP.  
 This leads to the identification of constraints and scoring functions, which we then abstract to an even higher-level declarative language. 
 We show that the resulting ReDF framework is general and generic and is in line with 
-  the declarative modeling approach to machine learning and data mining as 
+  the declarative modelling approach to machine learning and data mining as 
   1) it allows one to easily specify and solve a wide range of well-known data analysis problems (such as tiling, Boolean matrix factorization, discriminative pattern mining, matrix block diagonalization, etcetera),
   2) it is effective for prototyping such tasks (as we show in our experiments), even though it cannot yet compete with optimized special purpose algorithms in terms of efficiency, and 
   3) the constraints and optimization criteria are specified in a declarative and flexible manner. 
   Translating problem definitions in the ReDF framework to ASP models is straightforward, and small changes in the problem definitions generally result in small changes in the model. 
 %
 %that it allows us to model and solve
-%a wide range of well-studied problems in the data mining community, including tiling, Boolean matrix factorization, blockmodeling, and discriminative pattern mining, as well as new types of relational data factorization problems. 
+%a wide range of well-studied problems in the data mining community, including tiling, Boolean matrix factorization, blockmodelling, and discriminative pattern mining, as well as new types of relational data factorization problems. 
 %We provide experimental evidence that the ASP approach is effective in that it can be used to solve some realistic problems even though it is not yet competitive in terms of efficiency with the optimized special purpose algorithms in the data mining literature.
 %Taken together these properties make our ReDF framework well-suited for rapid prototyping of data mining tasks. 
 
