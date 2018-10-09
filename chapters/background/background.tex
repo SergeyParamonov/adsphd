@@ -307,8 +307,8 @@ Algorithm \ref{algo:simple_search} demonstrates how we can solve a \acrshort{csp
 \begin{algorithm}[t]
     \begin{algorithmic}[1]
         \footnotesize
-        \State $D \gets \textit{propagate}(D)$
-        \If{ $\exists v: D_v = \emptyset$}
+        \State $D \gets \textit{propagate}(D)$ \label{line:propagate}
+        \If{ $\exists v: D_v = \emptyset$} \label{line:back}
         \State \Return $\bot$
         \EndIf
         \If{$\exists v \in V: |D_v| > 1$}
@@ -324,6 +324,17 @@ Algorithm \ref{algo:simple_search} demonstrates how we can solve a \acrshort{csp
     \label{algo:simple_search}
 \end{algorithm}
 
+\pubrev
+Let us elaborate on both key steps of the Algorithm \ref{algo:simple_search}.
+\paragraph{Search} Many popular CP frameworks follow the Deep First Search (DFS) strategy as described in the presented algorithm \parencite{cp_propagation,handbookcp}. Other techniques exist as well \parencite{other_search_CP} but we focus only the most popular DFS approach described here.
+
+For a constraint satisfaction problem, its search tree represents an order from more general to more specific domains. The tree root has its original the most general (yet unrestricted) domain. The leaves of a search tree represent actual solutions to the given \acrshort{csp}: each $v \in V$ is mapped to a single value $d$ from $D_v$. Each node represents branching of the search by domain splitting. If a constraint is violated, then Line \ref{line:back} starts the backtracking mechanism (DFS is a form of backtracking search).
+
+\paragraph{Propagation} is a search speed up mechanism. In Algorithm \ref{algo:simple_search} it appears in Line \ref{line:propagate}. The key idea behind this mechanism is in the domain reduction and so called, \textit{local consistency}, i.e., satisfaction or actually violation of a subset (even a single one) constraints. This removes values that definitely cannot be in the solution since they violate one or more constraints. Contrary, \textit{global consistency} ensures that all constraints in the model are satisfied. The latter is indeed hard to achieve, the former is easy to check, since you can check one or several constraints in the isolation, or in the other words, locally. If a certain value violates this constraint, then it definitely cannot be in the solution set. Many various methods to check local consistency exist \parencite{cp_christian_local_consistency}: node consistency, arc consistency and path consistency, etc.
+
+To keep local consistency for constraints, \textit{propagation rules} and \textit{propagators} are applied. Such a rule, takes an original domain $D$ \sergey{finish}
+
+\pubrevend
 \section{\fod and the IDP System}
 The knowledge based language \fod is the extension of First Order Logic with a number of features, such as, inductive definitions and aggregates. The IDP system \parencite{idppaper} is the reasoning system that accepts as input the \fod language and is able to perform a number of reasoning tasks: such as finding logical models, model checking and theorem proving. IDP and its language FO(.) can be seen as executable logic we have discussed before in Section \ref{sec:fol}. 
 
