@@ -12,19 +12,19 @@ We introduce commonly used formalisms and definitions. We start with classic Fir
 In this section, we describe the syntax and semantics of \acrshort{fol},
 for an extensive overview of \acrshort{fol}, we refer to \textcite{fo_overview}.
 
-A formal language is a triple: \textit{vocabulary}, \textit{syntax} and \textit{semantics}. The vocabulary is the set of symbols that can be used. The syntax is the set of rules on how these symbols can be combined together. And the semantics is the way to interpret the statements. We omit the vocabulary, when it is clear from the context.
+A formal language is a triple: \textit{vocabulary}, \textit{syntax} and \textit{semantics}. The vocabulary is the set of symbols that can be used. The syntax is the set of rules on how these symbols can be combined together. And the semantics is how we interpret the statements. We omit the vocabulary, when it is clear from the context.
 
 For each predicate $p$ and each function symbol $f$ in the vocabulary, we assume a natural number $n$ called \textit{arity} to be given, written as $p/n$ and $f/n$. This number indicates the number of parameters it takes; we often omit the arity when it is clear from the context. Propositional symbols are zero-arity predicates and constants are zero-arity functions. 
 We assume propositional symbols \textit{true} and \textit{false}, whose domains are $\top$ and $\bot$ correspondingly, to be always in the vocabulary.
 
 \begin{example}[Predicates and functions]\label{example:predicates_and_functions}
-  Consider the famous problem of coloring a map, as in Figure \ref{fig:petersen_coloring}. The vocabulary would contain a predicate symbol \textit{border/2} and a function \textit{coloring/1}, together with a set of constants representing countries, such as \textit{belgium}, \textit{netherlands}, etc.
+  Consider the famous problem of coloring a map, as in Figure \ref{fig:petersen_coloring}. The vocabulary would contain a predicate symbol \textit{border/2} (indicating if two countries share a border) and a function \textit{coloring/1} (indicating the color of a country), together with a set of constants representing countries, such as \textit{belgium}, \textit{netherlands}, etc.
 \end{example}
 
 A \textit{structure} associates values with the predicates and functions from the vocabulary. A structure $I$ consists of
 
 \begin{itemize}
-  \item A domain $D^I$, which we also refer to as the \textit{universe}. The domain defines what are the possible values to be used.
+  \item A domain $D^I$, which we also refer to as the \textit{universe}. The domain defines the possible values to be used.
   \item For each predicate $p/n$, the set of its values $p^I \subseteq \overbrace{D^I \times \dots \times D^I}^{n}$
   \item For each function symbol $f/n$,  $f^I$ the mapping  $\overbrace{D^I \times \dots \times D^I}^{n} \mapsto D^I$
 \end{itemize}
@@ -90,7 +90,7 @@ The truth assignment of a structure $I$ over formulae is defined inductively as 
   \item $\exists X: \phi$ is true, iff there is $d$ in $D^I$ such that $\phi[X/d]^I$ is true
 \end{itemize}
 
-We say that $I$ is a \textit{model} of or $I$ \textit{satisfies} a sentence $\phi$ iff $\phi^I$ is true, written as $I \models \phi$.
+We say that $I$ is a \textit{model} (in the logical sense) of or $I$ \textit{satisfies} a sentence $\phi$ iff $\phi^I$ is true, written as $I \models \phi$.
 
 \begin{example}[Formula evalution]
   Assume, that the domain contains only two countries \textit{belgium} and \textit{netherlands} and two colors \textit{green} and \textit{red}. Let us show that $I$ with $\textit{border}$ being true for $(\textit{belgium,netherlands})$ and \textit{coloring} mapping \textit{belgium} to \textit{green} and \textit{netherlands} to \textit{red} is a model of the formula in Example \ref{example:formula}.
@@ -127,7 +127,7 @@ where $a_1, \dots, a_n, b_1, \dots, b_k,c_1, \dots c_h$ are atoms of a function-
 If a disjunctive datalog program $P$ has variables, then its semantics are considered to be the same as that of its grounded version, written as \textit{ground(P)}, i.e. all variables are substituted with constants from the Herbrand Universe $H_P$ (the constants occurring in the program). The semantics of a program with variables is defined by the semantics of the corresponding grounded version.
 
 \begin{example}
-Let us demonstrate a simple example of an ASP program, it has four rules with variables and four facts, all predicates here are binary, except for \texttt{drive}, which is an unary predicate. The rule in Line 3 makes the connections undirected, while Lines 6 and 7 compute transitive closure of \texttt{road} predicate that are not blocked. The last route defines unary predicate \texttt{drive} as all cities reachable from \textit{berlin}.
+Let us demonstrate a simple example of an ASP program, which has four rules with variables and four facts. All its predicates are binary, except for the \texttt{drive} predicate, which is an unary predicate. The rule in Line 3 makes the connections undirected, while Lines 6 and 7 compute the transitive closure of the \texttt{road} predicate that are not blocked. The last route defines the unary predicate \texttt{drive} as all cities reachable from \textit{berlin}.
     \begin{lstlisting}[caption=An example of an ASP program (from \textcite{ASPbook}); demonstrate possible route calculations for train connections around Berlin, label=lst:example_asp_program,basicstyle=\ttfamily]
 road(berlin,potsdam).
 road(potsdam,werder).
@@ -195,10 +195,10 @@ We also use a special form of disjunctive rules called \textit{choice rules} \pa
 where $v_1$ and $v_2$ are integer constants. The semantics are as follows: if the body is satisfied, then the number of true atoms in $\{ a_1, a_2 \dots a_n \}$ is from $v_1$ to $v_2$.
 
 An aggregate atom is an atom that has the following form: $l \# \{ a_1, \dots ,a_n \} u$
-where $l$ and $u$ are constant numbers, each $a_i$ is a literal. The atom is true in an answer set $A$ iff there are from $l$ to $u$ literals $a_i$ that are true in $A$.
+where $l$ and $u$ are constant numbers, each $a_i$ is a literal. \pubrev The atom is true in an answer set $A$ iff there are between $l$ and $u$ literals $a_i$ that are true in $A$. 
 
-Another construct is \textit{maximization} \parencite{ASPbook, leone} (\textit{minimization} is defined analogously) stated as $\#\textit{maximize}\{ a_1=k_1, \dots, a_n=k_n \}$, 
-where $a_1, \dots, a_n$ are classic literals and $k_1, \dots, k_n$ are integer constants (possibly negative). The semantics of this constraint are as follows: a model $I$ is selected if the weighted sum of $[a_i]*k_i$ is maximal in $I$, where $[\cdot]$ are Iverson brackets, i.e. $[a]$ is equal to $1$ iff $a$ is true in $I$ and $0$ otherwise.
+\textit{Maximization} is another construct used for modelling in ASP \parencite{ASPbook, leone} (\textit{minimization} is defined analogously), as written as $\#\textit{maximize}\{ a_1=k_1, \dots, a_n=k_n \}$, 
+where $a_1, \dots, a_n$ are classic literals and $k_1, \dots, k_n$ are integer constants (possibly negative). The semantics of this constraint are as follows: a model $I$ is selected if the weighted sum of $[a_i]*k_i$ is maximal in $I$, where $[\cdot]$ are Iverson brackets, i.e. $[a]$ is equal to $1$ iff $a$ is true in $I$ and $0$ otherwise. \pubrevend
 
 \begin{example}
     \pubrev
@@ -230,7 +230,7 @@ We assume that arithmetic operators $\{ +, -, \times, / \}$ are present in the l
 \end{example}
 
 \paragraph{ASP systems: Clasp and Wasp}
-In this thesis we make use of two existing ASP systems Clasp \parencite{clasp} and Wasp \parencite{wasp}. We mostly focus on the former and use the second to provide an experimental comparison on how two different system can execute the models with respect to runtime and memory usage.
+In this thesis we make use of two existing ASP systems Clasp \parencite{clasp} and Wasp \parencite{wasp}. We mostly focus on the former and use the second to provide an experimental comparison on how two different systems can execute the models with respect to runtime and memory usage.
 
 Clasp extends the standard ASP theory described here with a number of features such as incremental grounding, preferences, satisfiability modulo theories, various solving parameters such as brave and cautious reasoning, parallel executions, heuristics and meta-programming \parencite{ASPbook}.
 
@@ -241,7 +241,7 @@ A typical modelling approach in ASP and in actual development with Clasp and Was
     {\bfseries ASP Program = Data + Generator + Tester ( + Optimizer)} \footnote{\url{https://www.cs.uni-potsdam.de/~torsten/potassco/slides/asp.pdf}}
 \end{center}
 
-We follow this modelling paradigm throughout the thesis. To demonstrate it, consider as an example, $n$-queen modelling problem, where one needs to put a number of queens on the board such that no queen attacks another. This can be modelled as in Listing \ref{lst:n_queens_example_modelling}. first we specify data as facts, in Lines \ref{background:line:data1} and \ref{background:line:data2}, then we define the set of possible answer sets using a choice rule in Line \ref{background:line:choice} and finally we validate them in Lines \ref{background:line:int1},\ref{background:line:int2} and \ref{background:line:int3}. 
+We follow this modelling paradigm throughout the thesis. To demonstrate it, consider as an example, the $n$-queen modelling problem, where one needs to put a number of queens on the board such that no queen attacks another. This can be modelled as in Listing \ref{lst:n_queens_example_modelling}. first we specify data as facts, in Lines \ref{background:line:data1} and \ref{background:line:data2}, then we define the set of possible answer sets using a choice rule in Line \ref{background:line:choice} and finally we validate them in Lines \ref{background:line:int1},\ref{background:line:int2} and \ref{background:line:int3}. 
 \pubrev
 In greater detail, we require the number of queens to equal to $k$ by using a cardinality constraint in Line \ref{background:line:choice} then right after this ''guess`` is verified with integrity constraints: no queen is no the same row (Line \ref{background:line:int1}), no queen in the same column (Line \ref{background:line:int2}) or the same diagonal (Line \ref{background:line:int3}). An answer set that has a set of $k$ queens which satisfy the integrity constraints is therefore a solution to $k$-queen problem.
 \pubrevend
@@ -267,7 +267,7 @@ k \{ queen(Row,Col) : col(Col), row(Row) \} k. \label{background:line:choice}
 \section{Constraint programming}
 A detailed introduction to \acrlong{cp}(\acrshort{cp}) can be found in the ''Handbook of Constraint Programming`` \parencite{handbookcp}. A basic concept here is that of a variable $v$ which always has an associated domain $d$, a domain here is simply a set of constants. An example domain is the Boolean domain \{ True, False \}. A constraint $c$ is an expression of the form \textit{name(vars)}, where \textit{vars} is a list of variable names and \textit{name} is the type of constraints from a predefined set of constraint classes. Examples of classes of constraints are comparisons,   arithmetic operations, list and set constraints (all-different, permutations, etc). We denote the set of all variables as $V$, of all domains as $D$ and of constraints as $C$, then a triple $(V,D,C)$ is a constraint programming model and a \acrlong{csp} (\acrshort{csp}) is the problem of finding an assignment $A$ for $V$ over $D$ satisfying all constraints $C$.
 
-Let us demonstrate how it is possible to model the map coloring problem in MiniZinc\footnote{MiniZinc is popular constraint programming language \url{http://www.minizinc.org/}. Based on the encoding from \url{www.hakank.org/minizinc/map.mzn}.}  
+Let us demonstrate how it is possible to model the map coloring problem in MiniZinc\footnote{MiniZinc is a popular constraint programming language \url{http://www.minizinc.org/}. Based on the encoding from \url{www.hakank.org/minizinc/map.mzn}.}  
 \begin{lstlisting}
 % number of countries
 int: n; 
@@ -336,7 +336,7 @@ To keep local consistency for constraints, \textit{propagation rules} and \texti
 
 \pubrevend
 \section{\fod and the IDP System}
-The knowledge based language \fod is the extension of First Order Logic with a number of features, such as, inductive definitions and aggregates. The IDP system \parencite{idppaper} is the reasoning system that accepts as input the \fod language and is able to perform a number of reasoning tasks: such as finding logical models, model checking and theorem proving. IDP and its language FO(.) can be seen as executable logic we have discussed before in Section \ref{sec:fol}. 
+The knowledge based language \fod is the extension of First Order Logic with a number of features, such as, inductive definitions and aggregates. The IDP system \parencite{idppaper} is the reasoning system that accepts as input the \fod language and is able to perform a number of reasoning tasks: such as finding logical models, model checking and theorem proving. \pubrev IDP and its language FO(.) can be seen as the executable logic (i.e., a form of constraint logic programming) we have discussed before in Section \ref{sec:fol}. \pubrevend
 
 Let us illustrate an inductive definition and an IDP program by example, see Listing \ref{lst:idp_reachability}, where Reach(x,y) is an example of an inductive definition, defined via the base case and the inductive step (see the Theory part).
 \begin{lstlisting}[caption=An example of an inductive definition in FO(.) and of an IDP program,label=lst:idp_reachability]
@@ -361,7 +361,7 @@ structure S:V{
 
 An IDP program has three parts: \textit{Vocabulary} that defines the terminology and concepts of a problem, \textit{Structure} that sets certain values to true or false, and \textit{Theory} introduces constraints.
 
-For example the sushi problem can be encoded in IDP as in Listing \ref{lst:idp_sushi}. First, we define vocabulary, which corresponds to vocabulary in first order logic, except for the extra type information. Facts and domains are specified in the structure section, as we see for example with the declaration of the domain for the type person, for which actual values are assigned in the section structure. The theory section defines the actual clauses or constraints, which indeed corresponds to the first order sentences, the only constraint here one to one maps to Eq. \ref{eq:sushi}, which a classical logical implication. The procedure \texttt{main} is a directive to the system to extend the given structure satisfying the constraints in the theory.
+For example the sushi problem can be encoded in IDP as in Listing \ref{lst:idp_sushi}. First, we define the vocabulary, which corresponds to vocabulary in first order logic, except for the extra type information. Facts and domains are specified in the structure section, as we see for example with the declaration of the domain for the type person, for which actual values are assigned in the structure section . The theory section defines the actual clauses or constraints, which indeed corresponds to the first order sentences, the only constraint here maps one-to-one to Eq. \ref{eq:sushi}, which a classical logical implication. The procedure \texttt{main} is a directive to the system to extend the given structure satisfying the constraints in the theory.
 
 \begin{minipage}{\linewidth}
 \begin{lstlisting}[caption=Encoding sushi preferences problem, label=lst:idp_sushi,basicstyle=\ttfamily, basicstyle=\small]
@@ -388,7 +388,7 @@ procedure main(){
 \end{lstlisting}
 \end{minipage}
 
-Therefore, when we write a first order model for a problem, we can always map it to the language of FO(.), furthermore provided language extensions make modelling of relational problems more natural and convenient.
+Therefore, when we write a first order model for a problem, we can always map it to the language of FO(.). Furthermore provided language extensions make modelling of relational problems more natural and convenient.
 
 \pubrev
 FO(.) and the system implementing it, IDP, can be seen a form of constraint logic programming. Where one models a problem using a set of constraints expressed as logical formulae. 
