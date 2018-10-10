@@ -722,7 +722,7 @@ This is inefficient, as such blocks may not even satisfy the signature or just t
 On the other hand, a simple generate-and-test approach, as illustrated in Algorithm~\ref{algo:gen-test-subblocks}, will usually suffice.
 %However, the actual implementation is specified for every constraint template separately, allowing different methods to be used based on the type of template.
 %For this reason, the \sname system uses generate-and-test to implement $\findassignment$ for most constraint templates.
-Given an input block assignment, all disjoint subassignments \pubrev(in Algorithm~\ref{algo:gen-test-subblocks} this is enforced by the constraint \textit{disjoint})\pubrevend are generated taking into account the required size, columns or rows.
+Given an input block assignment, all disjoint subassignments \pubrev(in Algorithm~\ref{algo:gen-test-subblocks} this is enforced by the constraint \textit{disjoint})\pubrevend~are generated taking into account the required size, columns or rows.
 For every disjoint subassignment the exact signature (e.g. subtypes will not have been checked yet) and definition will be tested and all satisfying subassignments are returned.
 
 

@@ -332,7 +332,7 @@ For a constraint satisfaction problem, its search tree represents an order from 
 
 \paragraph{Propagation} is a search speed up mechanism. In Algorithm \ref{algo:simple_search} it appears in Line \ref{line:propagate}. The key idea behind this mechanism is in the domain reduction and so called, \textit{local consistency}, i.e., satisfaction or actually violation of a subset (even a single one) constraints. This removes values that definitely cannot be in the solution since they violate one or more constraints. Contrary, \textit{global consistency} ensures that all constraints in the model are satisfied. The latter is indeed hard to achieve, the former is easy to check, since you can check one or several constraints in the isolation, or in the other words, locally. If a certain value violates this constraint, then it definitely cannot be in the solution set. Many various methods to check local consistency exist \parencite{cp_christian_local_consistency}: node consistency, arc consistency and path consistency, etc.
 
-To keep local consistency for constraints, \textit{propagation rules} and \textit{propagators} are applied. Such a rule, takes an original domain $D$ \sergey{finish}
+To keep local consistency for constraints, \textit{propagation rules} and \textit{propagators} are applied. Such a rule, takes an original domain $D$ and outputs a domain $D'$ from which all impossible values are removed.
 
 \pubrevend
 \section{\fod and the IDP System}
