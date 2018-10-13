@@ -5,7 +5,7 @@
 }{Could be Homer Simpson}
 
 \begin{addmargin}[5em]{5em}
-This thesis links the research fields of data mining, constraint learning
+This thesis is situated in the research fields of data mining, constraint learning
 and logic programming. We introduce each of them in turn and provide an overview of the
 contributions of the thesis and
 its general structure.
@@ -27,7 +27,7 @@ multiple forms. For example, an interesting piece of data,
 The most known pattern learning task is 
 \textit{frequent pattern mining}, or pattern mining for short
 \parencite{survey_han}. \pubrev
-At a higher and more general level, often referred as \textit{theory
+At a higher and more general level, often referred to as \textit{theory
 mining}, \pubrevend it can be formalized as follows: 
 let $D$ be a dataset, $P$ be the language of allowed patterns and
 $\phi$ be a predicate of
@@ -37,6 +37,172 @@ Simply speaking, we enumerate objects that have a certain property of
 interest.
 Various measures of relevance or ``interestingness'' of a pattern exist \parencite{tias_topk}.
 
+
+\section{Propositional and relational data}
+Typical machine learning and data mining systems work with
+propositional representations and logical and relational learning has
+arisen to overcome this limitation by focusing on expressive knowledge representation languages such as first order logic \parencite{luc_book}.
+
+\pubrev
+\begin{figure}[thb]
+  \begin{center}
+    \includegraphics[width=0.75\textwidth]{fisher.png}
+  \end{center}
+  \caption{the famous fisher's dataset with first three columns being numeric properties of irises and the last column being its class. A typical problem then is to predict the class in the last column based on the given numeric values in the first three columns}
+  \label{fig:iris}
+\end{figure}
+
+
+To illustrate this idea, let us consider one of the most classic datasets in statistics and machine learning -- Fisher's Iris data set\footnote{\url{https://en.wikipedia.org/wiki/Iris_flower_data_set}}. In Figure \ref{fig:iris}, we demonstrate a sample of data in the dataset. One of the most common tasks in machine learning is of the supervised learning: can we train a model such that it can predict the Iris class based on its numeric properties (in the first three columns). Looking carefully at this data, we can establish the following: 1) it is single table data 2) rows are independent of each other 3) we are looking for a function mapping an $R^n$ into $\{-1,0,1\}$ (or into probabilities of being in a particular class, etc) 
+
+Contrary to this classic machine learning setting, relational learning is looking into a more complex and interconnected relational data. A real-world example and, probably very well familiar to a reader, a \textit{spreadsheet} with its formulae is an
+excellent example of relational data: it contains a number of
+relations or \textit{tables}, and their number is never fixed in
+advance, since a spreadsheet might contain an arbitrary number of
+them. Also, it combines both textual and numeric data. Furthermore,
+formulae and constraints over the tables play a role of relationships.
+
+\begin{figure}[thb]
+  \begin{center}
+    \includegraphics[width=0.75\textwidth]{spreadsheet.png}
+  \end{center}
+  \caption{A spreadsheet is an example of relational data: it has multiple connected tables, constraints between tables, formulae over columns and rows, numeric and non-numeric entries}
+  \label{fig:spreadsheet_example_intro}
+\end{figure}
+
+Figure \ref{fig:spreadsheet_example_intro} demonstrates this idea: there are multiple tables connected to each other, the table on the right has aggregated data over rows in the left table, which means that generally speaking rows cannot be seen as independent: adding a row to the first table should update the values in of the right table; there are various data types present here numeric, categorical and might have been textual as well. Furthermore, constraints that hold in a spreadsheet do not have to be functional, i.e., having a form of $f(\bar x) = y$, where given input $\bar x$ you can always compute $y$. An example of a non-functional constraint, as we called it here, is a foreign key: simply speaking a foreign key constraint enforces the subset relation: in Figure \ref{fig:spreadsheet_example_intro}, we see that the right table has an aggregated information over the left table, namely a \texttt{SUMIF} \footnote{\url{https://support.office.com/en-us/article/sumif-function-169b8c99-c05c-4483-a712-1697a653039b}}, then there is a subset relationship between the column \textbf{Product} in the right table and in the left -- it cannot be the case that aggregated information contains a product not listed in the table on the left.
+\pubrevend
+\sergey{some words on how it affects different types of problems}
+
+
+\section{Types of mining problems}
+\sergey{insert: predictive models, pattern mining, constraint learning
+and BMF here}
+
+\sergey{explain that are important types of problems in data mining}
+
+\subsection{Predictive models} Classical machine learning algorithms such as the induction of decision trees
+\parencite{decision_trees} or Bayesian networks \parencite{pearl} work
+with limited representations (which correspond to a
+propositional language). This representation does not allow to
+represent naturally problems involving multiple complex objects
+together with the relationships that hold between them. This limitation has been
+pointed out by a number of researchers, e.g., in the seminal work of
+\textcite{plotkin}, who has introduced  the use of first order logic
+for machine learning. This approach allows to
+represent a non-fixed amount of complex objects together with their
+relationships -- we refer to this problem setting as \textit{relational}.
+\sergey{ we do not do predicitve models and now going to describe a
+relational problem that we do}
+ 
+Let us indicate why it is important to look into the relational
+machine learning setting. To do so, we will describe a relational problem where
+the number of entities and relationships between them is not fixed,
+which makes it complicated if not practically impossible to employ the
+standard machine learning techniques based on  fixed feature vectors
+or attribute-value representations, while using logical and relational models appears natural and elegant. 
+
+%   \pubrev
+%   A schedule is another example of relational data, which often involves complex constraints.
+%   \pubrevend
+
+%   \begin{example}[Examination room scheduling]
+%   To make this example concrete, assume that students need to be assigned to
+%   auditoria for examinations with professors. Typically, making such a
+%   schedule involves dealing with interconnected constraints:
+%       \begin{itemize} 
+%       \item certain exams
+%   must have enough gap time between them 
+%       \item rooms can be shared by at most
+%       a few courses 
+%   \item professors might have their own personal preferences
+%   \item university administration might enforce certain administrative and 
+%   legal constraints 
+%       \end{itemize} 
+%       
+%   A possible approach is to learn these 
+%   constraints by recovering them from
+%   a set of positive and negative examples. The number of constraints is
+%   not set in advance and the constraint language is typically a rich
+%   relational language, for example, a constraint saying that no room is
+%   shared by more than three courses at the same time can be expressed in the first
+%   order language as
+%   \begin{equation*}
+%       \forall X,T: \textit{room(X)} \wedge \textit{time(T)} \implies \{ C : \textit{examination}(X,C,T) \wedge \textit{course(C)} \} \leq 3.
+%   \end{equation*}
+%   \end{example}
+
+
+
+\section{Constraint learning} \label{sec:intro_constraint_learning}
+\sergey{say that it's of great importance to us}
+Constraint Learning is the research field concerned with finding
+constraints that hold in data \parencite{constraint_learning,QUACQ,Conacq}.
+%Let us outline in simple terms, what constraint learning is about.
+Similar to the pattern matching problem, we can define 
+the constraint learning problem as follows:
+%Explaining what constraint learning in term of the previous section:
+let $D$ be a dataset, $C$ be a set of interesting properties (constraints), and
+$\phi$ be a satisfaction function, 
+then the problem is to find all properties (constraints) $c$ in $C$ such that $\phi(D,c)$ is satisfied.
+%   \begin{example}[Sudoku constraint learning]
+%       A well-known Sudoku problem might be hard to model for a person
+%       new to constraint programming. A possibility to obtain a model
+%       is to it learn from examples. This can be done by providing:
+%       \begin{itemize}
+%           \item A set of Sudoku solutions
+%           \item A set of invalid Sudoku combinations
+%           \item An expressive constraint language 
+%       \end{itemize}
+%   Then, a property of interest is a constraint that holds for all
+%       positive Sudoku combinations (all solutions) and for none of
+%       the invalid combinations. For example, this can be a constraint of
+%       the form
+%   \begin{equation*}
+%       \forall i: \sum_j x_{ij} = 45
+%   \end{equation*}
+%       Which shows that the sum of elements in each column is equal to 45
+%       (simply the sum of numbers from 1 to 9).
+%   \end{example}
+
+In case of pattern mining, we enumerate objects on which the property
+of interest holds: we find graphs or sequences that occur often enough
+in the data and have certain desired topological properties (for example, being a
+cyclic graph or have ascending characters). And in constraint learning we find interesting
+properties that hold in the data (or its parts): given a set of
+characters, for example, we discovered that the ''ascending
+constraint`` holds, i.e.,
+characters are sorted or we found that givens graphs are all cyclic. This shows how two problems are essentially connected.
+
+
+\pubrev
+\begin{figure}[thb]
+  \begin{center}
+    \includegraphics[width=0.75\textwidth]{recomputed.png}
+  \end{center}
+  \caption{A financial report that had certain values originally computed with a software, then if we want to change a cell (in blue), we need to establish all dependencies (i.e., constraints) of this cell and then recompute values that depend upon it (indicated in red), otherwise, data becomes inconsistent with respect to its intended meaning}
+  \label{fig:report_spreadsheet}
+\end{figure}
+
+Let us illustrate this idea on a real-world example of a spreadsheet. Imagine, we have downloaded a financial report in a CSV format, presented in Figure \ref{fig:report_spreadsheet}, from a business management software and wanted to change a number in it (indicated in blue). As many financial reports, this had certain values computed automatically in the software used by its original creator (who might be unavailable at the moment). Then, if we only change one value, the whole data becomes inconsistent, since there are certain dependencies in the spreadsheet to be met, e.g., the column \textbf{Total}, in the column \textbf{G}, is the sum over rows. Then, we would like to, first, discover all constraints in the data. Second, update the cell we are interested in (indicated in blue) and then, third, recompute the values (indicated in red). 
+
+This practical problem is a clear constraint learning problem in a relational setting: we need to enumerate interesting properties, i.e., various spreadsheet constraints, having a form of first order statements and being able to carry out inference on top of a learned model and of relational data (multi-table, interconnected data containing multiple data types). And this is, indeed, the kind of problem that is problematic for classic machine learning and data mining algorithms and require relational methods we develop and investigate here.
+
+For technical details we refer to Chapter \ref{ch:TaCLe} and the work of \textcite{tacle_demo}.
+\pubrevend
+
+In general not in this example, these properties of interconnectedness and expressivity of the constraints make the problem hard to model using traditional propositional approaches, while this can be clearly seen as a first order problem. This gives us confidence that for a number of important problems (such as recovering formulae in spreadsheets, factorizing relational data and mining frequent structures in relational data) it is essential to look into richer knowledge representation languages for machine learning.
+
+\subsection{Relational Pattern Mining}
+\sergey{explain graph mining under constraints refer to our graph
+mining paper with Matthias here}
+
+\subsection{Factorizations}
+
+
+
+
+\section{Declarative Approach}
 
 Many Data Mining problems, and especially pattern mining
 problems, are \textbf{combinatorial search problems}, which in turn have two main components, namely problem modelling and search: 
@@ -65,98 +231,6 @@ The declarative approach can be schematically depicted in Figure \ref{fig:declar
 \pubrevend
 
 
-\section{Relational and logical learning}
-Typical machine learning and data mining systems work with
-propositional representations and logical and relational learning has
-arisen to overcome this limitation by focusing on expressive knowledge representation languages such as first order logic \parencite{luc_book}.
-
-\pubrev
-\begin{figure}[thb]
-  \begin{center}
-    \includegraphics[width=0.75\textwidth]{fisher.png}
-  \end{center}
-  \caption{the famous fisher's dataset with first three columns being numeric properties of irises and the last column being its class. a typical problem then is to predict the class in the last column based on the given numeric values in the first three columns}
-  \label{fig:iris}
-\end{figure}
-
-
-To illustrate this idea, let us consider one of the most classic datasets in statistics and machine learning -- Fisher's Iris data set\footnote{\url{https://en.wikipedia.org/wiki/Iris_flower_data_set}}. In Figure \ref{fig:iris}, we demonstrate a sample of data in the dataset. One of the most common tasks in machine learning is of the supervised learning: can we train a model such that it can predict the Iris class based on its numeric properties (in the first three columns). Looking carefully at this data, we can establish the following: 1) it is single table data 2) rows are independent of each other 3) we are looking for a function mapping an $R^n$ into $\{-1,0,1\}$ (or into probabilities of being in a particular class, etc) 
-
-Contrary to this classic machine learning setting, relational learning is looking into a more complex and interconnected relational data. A real-world example and, probably very well familiar to a reader, a \textit{spreadsheet} with its formulae is an
-excellent example of relational data: it contains a number of
-relations or \textit{tables}, and their number is never fixed in
-advance, since a spreadsheet might contain an arbitrary number of
-them. Also, it combines both textual and numeric data. Furthermore,
-formulae and constraints over the tables play a role of relationships.
-
-\begin{figure}[thb]
-  \begin{center}
-    \includegraphics[width=0.75\textwidth]{spreadsheet.png}
-  \end{center}
-  \caption{A spreadsheet is an example of relational data: it has multiple connected tables, constraints between tables, formulae over columns and rows, numeric and non-numeric entries}
-  \label{fig:spreadsheet_example_intro}
-\end{figure}
-
-Figure \ref{fig:spreadsheet_example_intro} demonstrates this idea: there are multiple tables connected to each other, the table on the right has aggregated data over rows in the left table, which means that generally speaking rows cannot be seen as independent: adding a row to the first table should update the values in of the right table; there are various data types present here numeric, categorical and might have been textual as well. Furthermore, constraints that hold in a spreadsheet do not have to be functional, i.e., having a form of $f(\bar x) = y$, where given input $\bar x$ you can always compute $y$. An example of a non-functional constraint, as we called it here, is a foreign key: simply speaking a foreign key constraint enforces the subset relation: in Figure \ref{fig:spreadsheet_example_intro}, we see that the right table has an aggregated information over the left table, namely a \texttt{SUMIF} \footnote{\url{https://support.office.com/en-us/article/sumif-function-169b8c99-c05c-4483-a712-1697a653039b}}, then there is a subset relationship between the column \textbf{Product} in the right table and in the left -- it cannot be the case that aggregated information contains a product not listed in the table on the left.
-\pubrevend
-
-
-Classical machine learning algorithms such as the induction of decision trees
-\parencite{decision_trees} or Bayesian networks \parencite{pearl} work
-with limited representations (which correspond to a
-propositional language). This representation does not allow to
-represent naturally problems involving multiple complex objects
-together with the relationships that hold between them. This limitation has been
-pointed out by a number of researchers, e.g., in the seminal work of
-\textcite{plotkin}, who has introduced  the use of first order logic
-for machine learning. This approach allows to
-represent a non-fixed amount of complex objects together with their
-relationships -- we refer to this problem setting as \textit{relational}.
-
-Let us indicate why it is important to look into the relational
-machine learning setting. To do so, we will describe a relational problem where
-the number of entities and relationships between them is not fixed,
-which makes it complicated if not practically impossible to employ the
-standard machine learning techniques based on  fixed feature vectors
-or attribute-value representations, while using logical and relational models appears natural and elegant. 
-
-\pubrev
-A schedule is another example of relational data, which often involves complex constraints.
-\pubrevend
-
-\begin{example}[Examination room scheduling]
-To make this example concrete, assume that students need to be assigned to
-auditoria for examinations with professors. Typically, making such a
-schedule involves dealing with interconnected constraints:
-    \begin{itemize} 
-    \item certain exams
-must have enough gap time between them 
-    \item rooms can be shared by at most
-    a few courses 
-\item professors might have their own personal preferences
-\item university administration might enforce certain administrative and 
-legal constraints 
-    \end{itemize} 
-    
-A possible approach is to learn these 
-constraints by recovering them from
-a set of positive and negative examples. The number of constraints is
-not set in advance and the constraint language is typically a rich
-relational language, for example, a constraint saying that no room is
-shared by more than three courses at the same time can be expressed in the first
-order language as
-\begin{equation*}
-    \forall X,T: \textit{room(X)} \wedge \textit{time(T)} \implies \{ C : \textit{examination}(X,C,T) \wedge \textit{course(C)} \} \leq 3.
-\end{equation*}
-\end{example}
-
-These properties of interconnectedness and expressivity of the
-constraints make the
-problem hard to model using traditional propositional approaches,
-while this can be clearly seen as a first order problem. This gives us
-confidence that for a number of important problems (such as recovering formulae in spreadsheets, factorizing relational data and mining frequent structures in relational data) it is essential to
-look into richer knowledge representation languages for machine
-learning.
 
 \section{Logic programming}
 \pubrev
@@ -219,7 +293,17 @@ that naturally support constraints and various types of logical
 inference.
 
 \pubrev
-\acrshort{asp} and \acrshort{idp} are declarative logic programming formalisms. Contrary to Prolog, which is essentially a full programming language based on logical inference and provides full control on the execution flow, both systems fully decouple  a problem specification from the execution flow. In this sense they are closer to \acrlong{cp} and to Constrained Logic Programming. This makes them an ideal candidate for our general solver in the schema in Figure \ref{fig:declarative_schema}, since both of them support relational data natively and can solve problems declaratively based on a form of the first order logic specifications. We often refer to both systems as \textit{modern logic programming}.
+\acrshort{asp} and \acrshort{idp} are declarative logic programming
+formalisms. Contrary to Prolog, which is essentially a full
+programming language based on logical inference and provides full
+control on the execution flow,  both \acrshort{asp} and \acrshort{idp}
+systems fully decouple  a problem specification from the execution
+flow. In this sense they are closer to \acrlong{cp}. This makes them
+an ideal candidate for our general solver in the schema in Figure
+\ref{fig:declarative_schema}, since both of them support relational
+data natively and can solve problems declaratively based on a form of
+first order logic. We often refer to both paradigms (and to systems,
+associated with them) as \textit{modern logic programming}.
 
 Let us briefly demonstrate the power of \acrshort{asp} on the graph colouring problem (or map coloring problem, as it is known in the popular culture) \parencite{ASPbook}. We assume that \texttt{node/1} encodes nodes of the input graph and \texttt{edge/2} encodes edges of the given graph. First, we declare colours to be used for graph colouring as \texttt{colour(red). colour(green). colour(blue).}, the colors to be used in the \texttt{colouring/2} predicate, then we introduce the following constraint (called a \textit{choice rule}):
 \begin{verbatim}
@@ -255,79 +339,79 @@ to figure out \textit{how} to find a solution, while it is the user's
 responsibility to specify \textit{what} the problem is in terms of
 writing these constraints.
 
+\begin{example}[MiniZinc CP program]
+    Let us illustrate how constraint programming can solve problems on
+    a small example of the subset sum problem using the MiniZinc
+    system.\footnote{\url{https://github.com/MiniZinc}, see Examples} 
+
+The problem is the following: given a list of numbers and a target
+    value, we need to find a subset of these numbers that sum up to
+    the target value.
+    \begin{minipage}{\linewidth}
+    \begin{lstlisting}[caption=An example of a MiniZinc program, label=lst:example_asp_program,basicstyle=\ttfamily]
+array[int] of int: number;
+int: target;
+
+set of int: NUMBER = index_set(number);
+var set of NUMBER: selected;
+
+constraint sum(i in selected)
+              (number[i]) = target;
+solve satisfy;
+
+output [show(selected)];
+\end{lstlisting}
+\end{minipage}
+The most important part of program in the \texttt{constraint}
+part, where we state that the sum of selected numbers is equal to
+the target value. The rest is variable declaration and the index
+set computation -- technical details at this point.
+\end{example}
+
 \pubrev
 In this thesis, we mostly focus on \textit{learning constraints} than on \textit{constraint satisfaction search}, therefore, for us, it is natural to look not only into constraint programming itself but also into the constraint learning field.
 \pubrevend
 
-\section{Constraint learning} \label{sec:intro_constraint_learning}
-Constraint Learning is the research field concerned with finding
-constraints that hold in data \parencite{constraint_learning,QUACQ,Conacq}.
-%Let us outline in simple terms, what constraint learning is about.
-Similar to the pattern matching problem, we can define 
-the constraint learning problem as follows:
-%Explaining what constraint learning in term of the previous section:
-let $D$ be a dataset, $C$ be a set of interesting properties (constraints), and
-$\phi$ be a satisfaction function, 
-then the problem is to find all properties (constraints) $c$ in $C$ such that $\phi(D,c)$ is satisfied.
-\begin{example}[Sudoku constraint learning]
-    A well-known Sudoku problem might be hard to model for a person
-    new to constraint programming. A possibility to obtain a model
-    is to it learn from examples. This can be done by providing:
-    \begin{itemize}
-        \item A set of Sudoku solutions
-        \item A set of invalid Sudoku combinations
-        \item An expressive constraint language 
-    \end{itemize}
-Then, a property of interest is a constraint that holds for all
-    positive Sudoku combinations (all solutions) and for none of
-    the invalid combinations. For example, this can be a constraint of
-    the form
-\begin{equation*}
-    \forall i: \sum_j x_{ij} = 45
-\end{equation*}
-    Which shows that the sum of elements in each column is equal to 45
-    (simply the sum of numbers from 1 to 9).
-\end{example}
-
-In case of pattern mining, we enumerate objects on which the property
-of interest holds: we find graphs or sequences that occur often enough
-in the data and have certain desired topological properties (for example, being a
-cyclic graph or have ascending characters). And in constraint learning we find interesting
-properties that hold in the data (or its parts): given a set of
-characters, for example, we discovered that the ''ascending
-constraint`` holds, i.e.,
-characters are sorted or we found that givens graphs are all cyclic. This shows how two problems are essentially connected.
-
 
 \pubrev
-\begin{figure}[thb]
-  \begin{center}
-    \includegraphics[width=0.75\textwidth]{recomputed.png}
-  \end{center}
-  \caption{A financial report that had certain values originally computed with a software, then if we want to change a cell (in blue), we need to establish all dependencies (i.e., constraints) of this cell and then recompute values that depend upon it (indicated in red), otherwise, data becomes inconsistent with respect to its intended meaning}
-  \label{fig:report_spreadsheet}
-\end{figure}
+\section{Unifying declarative view}
+There is a number of common traits and assumption that problems, we
+investigate in the thesis, share. Typical machine learning algorithm
+make use of the, so called, single-tuple single-table assumption. This
+assumption states that the data can be represented using
+attribute-value pairs. As we have demonstrated the problems we
+consider break this assumption. This indicates, the first, common
+feature -- they are all relational data  mining problems. 
 
-Let us illustrate this idea on a real-world example of a spreadsheet. Imagine, we have downloaded a financial report in a CSV format, presented in Figure \ref{fig:report_spreadsheet}, from a business management software and wanted to change a number in it (indicated in blue). As many financial reports, this had certain values computed automatically in the software used by its original creator (who might be unavailable at the moment). Then, if we only change one value, the whole data becomes inconsistent, since there are certain dependencies in the spreadsheet to be met, e.g., the column \textbf{Total}, in the column \textbf{G}, is the sum over rows. Then, we would like to, first, discover all constraints in the data. Second, update the cell we are interested in (indicated in blue) and then, third, recompute the values (indicated in red). 
-
-This practical problem is a clear constraint learning problem in a relational setting: we need to enumerate interesting properties, i.e., various spreadsheet constraints, having a form of first order statements and being able to carry out inference on top of a learned model and of relational data (multi-table, interconnected data containing multiple data types). And this is, indeed, the kind of problem that is problematic for classic machine learning and data mining algorithms and require relational methods we develop and investigate here.
-
-For technical details we refer to Chapter \ref{ch:TaCLe} and the work of \textcite{tacle_demo}.
-\pubrevend
-
-
-\pubrev
-\section{Unifying declarative logical approach}
-There is a number of common traits and assumption that problems, we investigate in the thesis, share. Typical machine learning algorithm make use of the, so called, single-tuple single-table assumption. This assumption states that the data can be represented using attribute-value pairs. As we have demonstrated the problems we consider break this assumption. This indicates, the first, common feature -- they are all relational data problems. 
-
-Second, the problems we investigate are a form of logical search and enumeration problems: we are looking for certain interesting logical expressions that hold in the data under constraints, e.g., all maximal (in size) conjunctive queries that hold in the data frequently enough.
+Second, the problems we investigate are a form of combinatorial search and
+enumeration problems: we are looking for certain interesting logical
+expressions that hold in the data under constraints, e.g., all maximal
+(in size) conjunctive queries that hold in the data frequently enough
+or in case of tabular constraint learning we enumerate all spreadsheet
+formulae (which can be viewed as constraints) that hold between
+spreadsheet tables.
 
 
-Third, all of these problem, we investigate, are generic problems under constraints, i.e., in fact each of them is not a particular problem but a whole class of parameterized problems: discovering constraints in tabular data is not limited to only the list of specified constraints but it is designed to support the whole \textit{language} of tabular constraints, i.e., new constraints can be added there in a declarative manner in the accordance with the \textit{elaboration tolerance} principle by \textcite{elaboration_tolerance}.
+Third, all of these problem, we investigate, are relational problems under a
+broad variety of constraints, e.g., discovering constraints in tabular
+data is not limited to only the list of specified constraints but it
+is designed to support the whole \textit{language} of tabular
+constraints, i.e., new constraints can be added there in a declarative
+manner in the accordance with the \textit{elaboration tolerance}
+principle by \textcite{elaboration_tolerance}. In the same way
+relational pattern mining is not limited only to its core version of
+finding frequent patterns (such as graphs, queries, sequences or
+itemsets) but also in finding its \textit{condensed} (such as maximal,
+closed, free, etc) representations
+under various constraints (such as length, size, or topological
+constraints)
 
-Fourth, as we have just indicated, our solutions are generic and declarative in its nature, as indicated in Figure \ref{fig:declarative_schema} Once we modify the problem by adding an extra constraint or feature, we do not have to modify algorithm completely (like this often happens in the imperative approach \parencite{gspan,clospan}).
+Fourth, as we have just indicated, our solutions are declarative in its nature, as indicated in Figure \ref{fig:declarative_schema} Once we modify the problem by adding an extra constraint or feature, we do not have to modify algorithm completely (like this often happens in the imperative approach \parencite{gspan,clospan}).
 
-Last but not least is the way we approach them, our approach is based on declarative (constraint) logic programming. We demonstrate how these important and interesting problems can be modelled using modern logic programming systems such as \acrshort{asp} and \acrshort{idp}. Besides of purely mathematical models for the relational problems, we provide an extensive experimental evidence on the behaviour of such systems. To the best of our knowledge, this is the first empirical study of such scale investigation applications of modern logic programming to relational data mining problems.
+Last but not least is the way we approach them, our approach is based
+on declarative constraint and logic programming. We demonstrate how
+these important and interesting problems can be modelled using modern
+logic and constraint programming systems such as \acrshort{asp} and \acrshort{idp}. Besides of purely mathematical models for the relational problems, we provide an extensive experimental evidence on the behaviour of such systems. To the best of our knowledge, this is the first empirical study of such scale investigation applications of modern logic programming to relational data mining problems.
 \pubrevend
 
 \section{Contributions}
