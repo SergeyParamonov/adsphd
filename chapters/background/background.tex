@@ -199,12 +199,12 @@ where $v_1$ and $v_2$ are integer constants. The semantics are as follows: if th
 An aggregate atom is an atom that has the following form: $l \# \{ a_1, \dots ,a_n \} u$
 where $l$ and $u$ are constant numbers, each $a_i$ is a literal. \pubrev The atom is true in an answer set $A$ iff there are between $l$ and $u$ literals $a_i$ that are true in $A$. 
 
-\textit{Maximization} is another construct used for modelling in ASP \parencite{ASPbook, leone} (\textit{minimization} is defined analogously), as written as $\#\textit{maximize}\{ a_1=k_1, \dots, a_n=k_n \}$, 
+\textit{Maximization} is another construct used for modelling in ASP \parencite{ASPbook, leone} (\textit{minimization} is defined analogously), written as $\#\textit{maximize}\{ a_1=k_1, \dots, a_n=k_n \}$, 
 where $a_1, \dots, a_n$ are classic literals and $k_1, \dots, k_n$ are integer constants (possibly negative). The semantics of this constraint are as follows: a model $I$ is selected if the weighted sum of $[a_i]*k_i$ is maximal in $I$, where $[\cdot]$ are Iverson brackets, i.e. $[a]$ is equal to $1$ iff $a$ is true in $I$ and $0$ otherwise. \pubrevend
 
 \begin{example}
     \pubrev
-    Let us demonstrate how the \textit{minimization} statement can be used in an ASP program. We use a standard problem of finding a Hamiltonian cycle, where the predicate \texttt{cost(X,Y,C)} is added and \texttt{C} represent the cost of picking a particular edge to be present in the cycle. Then the program not only finds a Hamiltonian cycle, but also minimizes its costs. In actual ASP encodings, we use \texttt{:-} for logical implication $\leftarrow$, as for the optimization statement a weight $C$ of an atom \texttt{cycle(X,Y)} is indicated as \texttt{cycle(X,Y) = C}.
+    Let us demonstrate how the \textit{minimization} statement can be used in an ASP program. We use a standard problem of finding a Hamiltonian cycle, where the predicate \texttt{cost(X,Y,C)} is added and \texttt{C} represent the cost of picking a particular edge to be present in the cycle. Then the program not only finds a Hamiltonian cycle, but also minimizes its costs. In actual ASP encodings, we use ''\texttt{:-}`` for logical implication ''$\leftarrow$``, as for the optimization statement a weight $C$ of an atom \texttt{cycle(X,Y)} is indicated as \texttt{cycle(X,Y) = C}.
 \begin{minipage}{\linewidth}
     \begin{lstlisting}[caption=ASP encoding of the Hamiltonian cycle problem (due to \textcite{ASPbook}), label=lst:example_asp_coloring,basicstyle=\ttfamily]
 1 { cycle(X,Y) : edge(X,Y) } 1 :- node(X). 
