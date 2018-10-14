@@ -245,7 +245,7 @@ A typical modelling approach in ASP and in actual development with Clasp and Was
 
 We follow this modelling paradigm throughout the thesis. To demonstrate it, consider as an example, the $n$-queen modelling problem, where one needs to put a number of queens on the board such that no queen attacks another. This can be modelled as in Listing \ref{lst:n_queens_example_modelling}. first we specify data as facts, in Lines \ref{background:line:data1} and \ref{background:line:data2}, then we define the set of possible answer sets using a choice rule in Line \ref{background:line:choice} and finally we validate them in Lines \ref{background:line:int1},\ref{background:line:int2} and \ref{background:line:int3}. 
 \pubrev
-In greater detail, we require the number of queens to equal to $k$ by using a cardinality constraint in Line \ref{background:line:choice} then right after this ''guess`` is verified with integrity constraints: no queen is no the same row (Line \ref{background:line:int1}), no queen in the same column (Line \ref{background:line:int2}) or the same diagonal (Line \ref{background:line:int3}). An answer set that has a set of $k$ queens which satisfy the integrity constraints is therefore a solution to $k$-queen problem.
+In greater detail, we require the number of queens to be equal to $k$ by using a cardinality constraint in Line \ref{background:line:choice} then right after this ''guess`` is verified with integrity constraints: no queen is on the same row (Line \ref{background:line:int1}), no queen is in the same column (Line \ref{background:line:int2}) or on the same diagonal (Line \ref{background:line:int3}). An answer set that has a set of $k$ queens which satisfies the integrity constraints is therefore a solution to $k$-queen problem.
 \pubrevend
 
 \begin{figure}[H] 
@@ -328,9 +328,9 @@ Algorithm \ref{algo:simple_search} demonstrates how we can solve a \acrshort{csp
 
 \pubrev
 Let us elaborate on both key steps of the Algorithm \ref{algo:simple_search}.
-\paragraph{Search} Many popular CP frameworks follow the Deep First Search (DFS) strategy as described in the presented algorithm \parencite{cp_propagation,handbookcp}. Other techniques exist as well \parencite{other_search_CP} but we focus only the most popular DFS approach described here.
+\paragraph{Search} Many popular CP frameworks follow the Depth First Search (DFS) strategy as described in the presented algorithm \parencite{cp_propagation,handbookcp}. Other techniques exist as well \parencite{other_search_CP} but we focus only the most popular DFS approach described here.
 
-For a constraint satisfaction problem, its search tree represents an order from more general to more specific domains. The tree root has its original the most general (yet unrestricted) domain. The leaves of a search tree represent actual solutions to the given \acrshort{csp}: each $v \in V$ is mapped to a single value $d$ from $D_v$. Each node represents branching of the search by domain splitting. If a constraint is violated, then Line \ref{line:back} starts the backtracking mechanism (DFS is a form of backtracking search).
+For a constraint satisfaction problem, its search tree represents an order from more general to more specific domains. The tree root has the the most general (yet unrestricted) domain. The leaves of a search tree represent actual solutions to the given \acrshort{csp}: each $v \in V$ is mapped to a single value $d$ from $D_v$. Each node represents branching of the search by domain splitting. If a constraint is violated, then Line \ref{line:back} starts the backtracking mechanism (DFS is a form of backtracking search).
 
 \paragraph{Propagation} is a search speed up mechanism. In Algorithm \ref{algo:simple_search} it appears in Line \ref{line:propagate}. The key idea behind this mechanism is in the domain reduction and so called, \textit{local consistency}, i.e., satisfaction or actually violation of a subset (even a single one) constraints. This removes values that definitely cannot be in the solution since they violate one or more constraints. Contrary, \textit{global consistency} ensures that all constraints in the model are satisfied. The latter is indeed hard to achieve, the former is easy to check, since you can check one or several constraints in the isolation, or in the other words, locally. If a certain value violates this constraint, then it definitely cannot be in the solution set. Many various methods to check local consistency exist \parencite{cp_christian_local_consistency}: node consistency, arc consistency and path consistency, etc.
 
@@ -393,7 +393,7 @@ procedure main(){
 Therefore, when we write a first order model for a problem, we can always map it to the language of FO(.). Furthermore provided language extensions make modelling of relational problems more natural and convenient.
 
 \pubrev
-FO(.) and the system implementing it, IDP, can be seen a form of constraint logic programming. Where one models a problem using a set of constraints expressed as logical formulae. 
+FO(.) and the system implementing it, IDP, can be seen a form of constraint logic programming, where one models a problem using a set of constraints expressed as logical formulae. 
 Let us demonstrate this on an example. 
 \begin{example}[Constrained Pizza Selection Problem]\label{example:pizza}
 	Peter, Alina, Ronald and Sergey decided to order three pizzas in a trattoria: margarita, veggie and meat-lovers -- each pizza can be shared by at most two people and everyone specified pizzas they can eat, together with their preferences for the selected pizzas on the scale from one to ten. Can we help them to share the pizzas in an optimal way?
@@ -431,7 +431,7 @@ What are the constraints and how do we model them? First, we know that each pers
 // each person eats a pizza 
 !s[person]: ?p[pizza]: can_eat(s,p) & eats(s,p). 
 \end{verbatim}
-Since IDP supports types, this is essentially a direct formalization of: for each person, there must exist a pizza such that this person can eat this pizza and he eats it. Similarly, we formulate it for pizzas. The no-sharing constraint is modelled in a bit of different manner: we say that if two people eat a pizza, there cannot be a third person that is different from these two (see \texttt{Theory} in Listing \ref{lst:pizza_selection}).
+Since IDP supports types, this is essentially a direct formalization of: for each person, there must exist a pizza such that this person can eat this pizza and he eats it. Similarly, we formulate it for pizzas. The no-sharing constraint is modelled in a slightly different manner: we say that if two people eat a pizza, there cannot be a third person that is different from these two (see \texttt{Theory} in Listing \ref{lst:pizza_selection}).
 
 Then, to obtain \textit{an optimal} solution, we introduce an optimization statement:
 \begin{verbatim}
