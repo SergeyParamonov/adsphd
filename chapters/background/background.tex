@@ -431,7 +431,7 @@ What are the constraints and how do we model them? First, we know that each pers
 // each person eats a pizza 
 !s[person]: ?p[pizza]: can_eat(s,p) & eats(s,p). 
 \end{verbatim}
-Since IDP supports types, this is essentially a direct formalization of: for each person, there must exist a pizza such that this person can eat this pizza and he eats it. Similarly, we formulate it for pizzas. The no-sharing constraint is modelled in a slightly different manner: we say that if two people eat a pizza, there cannot be a third person that is different from these two (see \texttt{Theory} in Listing \ref{lst:pizza_selection}).
+Since IDP supports types, this is essentially a direct formalization of: for each person, there must exist a pizza such that this person can eat this pizza and he eats it. Similarly, we formulate it for pizzas. The no-sharing constraint is modelled in a slightlyferent manner: we say that if two people eat a pizza, there cannot be a third person that is different from these two (see \texttt{Theory} in Listing \ref{lst:pizza_selection}).
 
 Then, to obtain \textit{an optimal} solution, we introduce an optimization statement:
 \begin{verbatim}
