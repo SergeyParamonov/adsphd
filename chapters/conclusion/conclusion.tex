@@ -5,6 +5,54 @@ future work opportunities.
 \end{addmargin}
 
 \section{Summary and conclusions}
+Purely declarative machine learning and data mining, the holy grail of
+artificial intelligence, is yet a long way ahead of us but today we
+have made a step.
+
+First, we have introduced two types of data used in data mining:
+propositional and relational data. We have contrasted their
+differences and their use in various problems. Namely, we have
+indicated that propositional data is common for predictive models (that
+we do not investigate in this thesis), while relational data is common
+for problems like constraint learning or pattern mining. We have also
+demonstrated how the Boolean Factorization problem can be generalized
+to Relational Data Factorization, once we consider relational data.
+As we have demonstrated these problems can be clearly seen as
+relational data problems and require first order languages for
+modelling.
+
+More specifically, we have showed that the problems such as tabular
+constraint learning are relational in its nature due to the data used
+in it and due to the constraints connecting multiple tables and
+breaking single-tuple representation, when rows and columns become not
+independent anymore.
+
+To solve these relational problems we have used a declarative approach,
+where one specifies what the problem is and not how to solve it. For
+the problems we have described this declarative approach is natural, since many
+data mining problems are combinatorial search problems, i.e., they
+can be represented as ''Model + Search``. To solve these relational
+models under a variety of constraints, we used general solvers based
+on constraint and logic programing such as Answer Set Programming and
+FO(.) IDP. Since logic is designed to work with relations and both ASP
+and IDP support first order statements, they both allow for a natural
+representation of relational data mining models and data associated
+with them. A large body of the experimental evidence, presented here, shows efficiency of
+these systems in solving relational data mining problems.
+
+Furthermore, as we have seen, relational data is so widespread that it is
+impossible to ignore, This implies that relational mining problems
+would affect many industries, where for example, spreadsheets are
+an essential part of business processes, as in finance or auditing.
+This gives us confidence not only in that relational problems are a
+crucial part of data mining but also in that we should investigate
+applications of general solvers, such as ASP and IDP, for data mining
+and machine learning. In fact, it provides solver developer community
+with important benchmarks and problems to improve solvers. The inverse
+process is also happening, once solvers get better, new types of problems
+can be tackled.
+
+\section{Contributions and key questions}
 In the introduction chapter we have identified the key research
 question and key problems we were going to apply our approach to. Now
 we are going to review these applications and to analyze the outcome.
@@ -24,6 +72,15 @@ also clear that specialized methods must be significantly modified in
 order to be used in a new setting. Our extensive experimental study
 also demonstrates that general relational methods are well-suited for
 system prototyping.
+
+Namely, we have demonstrate that not only tiling and Boolean matrix
+factorization can be solved declaratively using ASP, but also
+factorizations with multiple tables under constraints, which allowed
+us to visualize and clusterize relational groups of co-authors of a
+number known data mining researchers. Finally, this demonstrate how a
+broad variety of mining problems can be modelled using relational
+factorization view and solved using modern logic programming
+techniques.
 
 \begin{description}
     \item[\ctwo] \textit{\textbf{Tabular Constraint Learning.} How can the constraint learning problem be formulated
@@ -46,6 +103,15 @@ applicability in practice, potentially, it can be turned into a plugin
 for Excel or Google Spreadsheets (any other spreadsheet software),
 which as shown in the chapter can help a broad audience of users.
 
+Furthermore, we have introduced the first tabular constraint dataset
+and provided a large experimental evidence on the efficiency of the TaCLe
+algorithm, which is inspired by the classical Inductive Logic
+Programming methods. Also, we have studied limitations of the method
+such as sensitivity to noise, nested constraints and richer type
+systems. As a result, we have proposed a modification of the existing
+system, a second generation TaCLe system, that would potentially
+overcome these issues.
+
 \begin{description}
     \item[\cthree] \textit{\textbf{ASP Sketching.} How can the problem of ASP
       Sketching, where one marks certain parts of the
@@ -63,10 +129,17 @@ converge to a correct solution. Furthermore, we were able to detect
 errors in publicly available encodings, we have contacted the authors
 and the models were updated.
 
+The general rewriting schema we have proposed is general and not
+limited to the ASP used in the chapter for solving. The same algorithm
+    and schema can be applied to Constraint Programming or FO(.) IDP.
+    In fact, this schema also allows developing some other practical
+    applications such as spreadsheet formula sketching.
+
 
 \begin{description}
-    \item[\cfour]  \textit{ \textbf{Structured Frequent Pattern Mining.}
-    How can we apply declarative relational mining techniques, such as logic programming, to structured frequent pattern mining, such as sequence, graph and query mining?
+    \item[\cfour]  \textit{ \textbf{ASP-based Relational Pattern Mining.}
+    How can we apply declarative relational mining techniques, such as
+        logic programming, to relational pattern mining, such as sequence, graph and query mining?
 }
 \end{description}
 
@@ -89,8 +162,7 @@ while in this chapter we describe possible future directions from the
 perspective of the thesis as a whole.
 
 
-
-\section{Relational data mining in future years}
+\paragraph{Relational data mining in future years}
 It is important to outline not only particular applications developed
 or inspiring with this thesis but also to give a perspective on the
 development of the overall research direction and the field as a
