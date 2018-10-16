@@ -11,7 +11,7 @@ contributions of the thesis and
 its general structure.
 \end{addmargin}
 
-\section{Data mining}
+\section{Data mining}\label{sec:data_mining}
 The ability to write down a mathematical model and to simply push a button to get the
 answer is an appealing idea. It is one of the holy grails of
 Artificial Intelligence, called Declarative Programming, where one
@@ -26,24 +26,45 @@ multiple forms. For example, an interesting piece of data,
 \textit{typically a substructure}, is referred to as a \textit{pattern} \parencite{han_book}. 
 The most known pattern learning task is 
 \textit{frequent pattern mining}, or pattern mining for short
-\parencite{survey_han}. \pubrev
+\parencite{survey_han}.
 At a higher and more general level, often referred to as \textit{theory
-mining}, \pubrevend it can be formalized as follows: 
-let $D$ be a dataset, $P$ be the language of allowed patterns and
+mining}, it can be formalized as follows: \\
+
+\newtheorem*{definition*}{Definition}
+
+\begin{definition*}[Theory Mining]
+\begin{mdframed}
+Let $D$ be a dataset, $P$ be the language of allowed patterns and
 $\phi$ be a predicate of
-interest, the pattern mining problem is the problem of finding
+interest, the mining problem is then the problem of finding
 all patterns $p$ in $P$ such that $\phi(p,D)$ holds.
+\end{mdframed}
+    %\label{def:mining}
+\end{definition*}
+
 Simply speaking, we enumerate objects that have a certain property of
-interest.
-Various measures of relevance or ``interestingness'' of a pattern exist \parencite{tias_topk}.
+interest. Various measures of relevance or ``interestingness'' of a pattern exist \parencite{tias_topk}.
+
+The rest of the chapter is structured as follows. In Section
+\ref{sec:data} we introduce two types of data used in data mining.
+Then, in Section \ref{sec:rel_problems} we present types of relational pattern
+mining problems that we investigate in this thesis. In Section
+\ref{sec:declarative_intro}, we propose an approach to these problems,
+while in Sections \ref{sec:logic_programming} and \ref{sec:cp_intro},
+we present techniques for this approach to work. In Section
+\ref{sec:common}, we demonstrate similarities and common traits of the
+problems we investigate. We conclude with contributions in Section
+\ref{sec:contributions} and links to experimental data and code in
+Section \ref{sec:datasets}
 
 
-\section{Propositional and relational data}
+\section{Propositional and relational data}\label{sec:data}
 There are two common types of data in data mining: propositional and
-relational. Propositional data is a single-tuple single-table format.
-It is commonly used in machine learning and data mining for training
-models. Relational data is a multiple-table format with
-constraints and dependencies between tables. This format is typically
+relational. Propositional data is a in, so called, single-tuple
+single-table format, where each row is an independent record and each
+column is an attribute. It is commonly used in machine learning and data mining for training
+models. Relational data, on the other hand, consists of  multiple
+tables and there are constraints and dependencies between tables. This format is typically
 more complex.
 
 \pubrev
@@ -61,78 +82,73 @@ more complex.
 
 To illustrate propositional data, let us consider one of the most
 classic datasets in statistics and machine learning -- Fisher's Iris
-data
-set\footnote{\url{https://en.wikipedia.org/wiki/Iris_flower_data_set}}.
-In Figure \ref{fig:iris}, we demonstrate a sample of data in the
+data set\footnote{\url{https://en.wikipedia.org/wiki/Iris_flower_data_set}}.
+Figure \ref{fig:iris} depicts a sample of data in the
 dataset. Looking carefully at this data, we can establish the
-following: it is single table data and rows are independent of each other. 
+following: every rows is an example and every column is an attribute.
+We can also easily see what kind of problem it suggests:
+based on the number of values (in the first four columns), a tuple from $R^n$, we need to predict
+the class of Iris (in the last column). Many machine learning algorithms
+are predictive models. In this thesis we do not work with predictive models.
 
-Typical machine learning algorithms and data mining systems work with
-this kind of propositional data and representations. Logical and relational learning has
-arisen to overcome this limitation by focusing on expressive knowledge
+Classical machine learning algorithms such as the induction of decision trees
+\parencite{decision_trees} or Bayesian networks \parencite{pearl} work
+with this kind of propositional data and representations.  Propositional representations do not allow to
+represent naturally problems involving multiple complex objects
+together with the relationships that hold between them. This limitation has been
+pointed out by a number of researchers, e.g., in the seminal work of
+\textcite{plotkin}, who has introduced  the use of first order logic
+for machine learning. Logical and relational learning 
+overcomes this limitation by focusing on expressive knowledge
 representation languages such as first order logic to handle
-relational data \parencite{luc_book}.
+relational data \parencite{luc_book}. This approach allows to represent a variable amount of complex objects together with their
+relationships -- we refer to this problem setting as \textit{relational}.
 
+
+Typical machine learning algorithms and data mining systems 
 Contrary to this classic machine learning setting with propositional
-data, relational learning is looking into a more complex and interconnected relational data. A real-world example and, probably very well familiar to a reader, a \textit{spreadsheet} with its formulae is an
+data, relational learning is looking into a more complex and
+interconnected relational data. A real-world example and, probably
+very well familiar to the reader, a \textit{spreadsheet} with its formulae is an
 excellent example of relational data: it contains a number of
 relations or \textit{tables}, and their number is never fixed in
 advance, since a spreadsheet might contain an arbitrary number of
-them. Also, it combines both textual and numeric data. Furthermore,
-formulae and constraints over the tables play a role of relationships.
+them. Also, spreadsheets combine both textual and numeric data. Furthermore,
+formulae and constraints over the tables play the role of relationships.
 
 \begin{figure}[thb]
   \begin{center}
     \includegraphics[width=0.75\textwidth]{spreadsheet.png}
   \end{center}
-  \caption{A spreadsheet is an example of relational data: it has multiple connected tables, constraints between tables, formulae over columns and rows, numeric and non-numeric entries}
+  \caption{A spreadsheet is an example of relational dataset: it has multiple connected tables, constraints between tables, formulae over columns and rows, numeric and non-numeric entries}
   \label{fig:spreadsheet_example_intro}
 \end{figure}
 
-Figure \ref{fig:spreadsheet_example_intro} demonstrates this idea: there are multiple tables connected to each other, the table on the right has aggregated data over rows in the left table, which means that generally speaking rows cannot be seen as independent: adding a row to the first table should update the values in of the right table; there are various data types present here numeric, categorical and might have been textual as well. Furthermore, constraints that hold in a spreadsheet do not have to be functional, i.e., having a form of $f(\bar x) = y$, where given input $\bar x$ you can always compute $y$. An example of a non-functional constraint, as we called it here, is a foreign key: simply speaking a foreign key constraint enforces the subset relation: in Figure \ref{fig:spreadsheet_example_intro}, we see that the right table has an aggregated information over the left table, namely a \texttt{SUMIF} \footnote{\url{https://support.office.com/en-us/article/sumif-function-169b8c99-c05c-4483-a712-1697a653039b}}, then there is a subset relationship between the column \textbf{Product} in the right table and in the left -- it cannot be the case that aggregated information contains a product not listed in the table on the left.
+Figure \ref{fig:spreadsheet_example_intro} demonstrates this idea:
+there are multiple tables connected to each other, the table on the
+right has aggregated data over rows in the left table, which means
+that generally speaking rows cannot be seen as independent: adding a
+row to the first table should update the values in of the right table;
+there are various data types present here numeric; categorical and
+might have been textual as well. Furthermore, constraints that hold in
+a spreadsheet do not have to be functional, i.e., having a form of
+$f(\bar x) = y$, where given input $\bar x$ you can always compute
+$y$. An example of a non-functional constraint, as we called it here,
+is a foreign key. Simply speaking a foreign key constraint enforces
+the subset relation. In Figure \ref{fig:spreadsheet_example_intro}, we
+see that the right table has an aggregated information over the left
+table. Namely there is a \texttt{SUMIF} constraint \footnote{\url{https://support.office.com/en-us/article/sumif-function-169b8c99-c05c-4483-a712-1697a653039b}}, then there is a subset relationship between the column \textit{Product} in the right table and in the left -- it cannot be the case that aggregated information contains a product not listed in the table on the left.
 \pubrevend
 
-Different types of data mining problems typically require different
-types of data. Now we are going to elaborate on what kind of data is
-required for what type of data mining problems.
+Depending on the data, one can consider different types of pattern
+mining tasks, which we now introduce.
 
-\section{Types of mining problems}
-In this section we discuss a number of common problems
-in data mining and machine learning such as predictive models, pattern mining, constraint learning
-and the Boolean matrix factorization.
+\section{Types of relational mining problems}\label{sec:rel_problems}
+In this section we discuss main relational data mining problems that
+we investigate in this thesis: relational pattern mining, constraint learning
+and relational data factorization.
 
 
-\paragraph{Propositional data. Predictive models} If we revisit the Iris dataset in
-Figure \ref{fig:iris}, we can easily see what kind of problem it
-suggests:
-based on the number of values (in the first four columns), a tuple from $R^n$, we need to predict
-the class of Iris (in the last column). Many machine learning algorithms
-are predictive models.
-
-Classical machine learning algorithms such as the induction of decision trees
-\parencite{decision_trees} or Bayesian networks \parencite{pearl} work
-with limited representations (which correspond to a
-propositional language). This representation does not allow to
-represent naturally problems involving multiple complex objects
-together with the relationships that hold between them. This limitation has been
-pointed out by a number of researchers, e.g., in the seminal work of
-\textcite{plotkin}, who has introduced  the use of first order logic
-for machine learning. This approach allows to
-represent a non-fixed amount of complex objects together with their
-relationships -- we refer to this problem setting as \textit{relational}.
-
-In this thesis we do not work with predictive models.
- 
-\paragraph{Relational data problems} Let us indicate why it is important to look into the relational
-machine learning setting. To do so, we are going to describe
-relational problems where
-the number of entities and relationships between them is not fixed,
-which makes it complicated if not practically impossible to employ the
-standard machine learning techniques based on  fixed feature vectors
-or attribute-value representations (as most of the predictive models
-use), while using logical and relational
-models appears natural and elegant.  These are the types of problems
-we are interested in the thesis.
 
 %   \pubrev
 %   A schedule is another example of relational data, which often involves complex constraints.
@@ -166,7 +182,7 @@ we are interested in the thesis.
 
 
 
-\paragraph{Constraint learning} 
+\paragraph{Constraint learning} \label{sec:constraint_learning}
 Constraint Learning is the research field concerned with finding 
 constraints that hold in data
 \parencite{constraint_learning,QUACQ,Conacq}. Constraint learning in
@@ -174,12 +190,28 @@ relational data is of a great importance to us as we will demonstrate
 here.
 
 %Let us outline in simple terms, what constraint learning is about.
-Similar to the pattern matching problem, we can define 
-the constraint learning problem as follows:
-%Explaining what constraint learning in term of the previous section:
-let $D$ be a dataset, $C$ be a set of interesting properties (constraints), and
-$\phi$ be a satisfaction function, 
-then the problem is to find all properties (constraints) $c$ in $C$ such that $\phi(D,c)$ is satisfied.
+%   Similar to the pattern matching problem, we can define 
+%   the constraint learning problem as a special case of theory mining:
+%   the language of patterns is the set $C$ of possible constraints and
+
+Constraint learning can be formulated in terms of theory mining from
+ Section \ref{sec:data_mining} as follows:\\
+\begin{definition*}[Constraint Learning]
+\begin{mdframed}
+ Let $D$ be a dataset, the language of patterns $P$ be the set of
+ interesting constraints $C$, 
+ $\phi$ be the constraint satisfaction function, 
+ then the problem is to find all constraints $c$ in $C$
+ such that $\phi(D,c)$ is satisfied, i.e., $c(D)$ holds.
+\end{mdframed}
+    %\label{def:mining}
+\end{definition*}
+Simply speaking, constraint learning is pattern mining where patterns
+are constraints and the predicate of interest is that the constraints
+are satisfied by data.
+
+\sergey{clean up}
+
 %   \begin{example}[Sudoku constraint learning]
 %       A well-known Sudoku problem might be hard to model for a person
 %       new to constraint programming. A possibility to obtain a model
@@ -200,26 +232,36 @@ then the problem is to find all properties (constraints) $c$ in $C$ such that $\
 %       (simply the sum of numbers from 1 to 9).
 %   \end{example}
 
-In case of pattern mining, we enumerate objects on which the property
-of interest holds: we find graphs or sequences that occur often enough
-in the data and have certain desired topological properties (for example, being a
-cyclic graph or have ascending characters). And in constraint learning we find interesting
-properties that hold in the data (or its parts): given a set of
-characters, for example, we discovered that the ''ascending
-constraint`` holds, i.e.,
-characters are sorted or we found that givens graphs are all cyclic. This shows how two problems are essentially connected.
+%   In case of pattern mining, we enumerate objects on which the property
+%   of interest holds: we find graphs or sequences that occur often enough
+%   in the data and have certain desired topological properties (for example, being a
+%   cyclic graph or have ascending characters). And in constraint learning we find interesting
+%   properties that hold in the data (or its parts): given a set of
+%   characters, for example, we discovered that the ''ascending
+%   constraint`` holds, i.e.,
+%   characters are sorted or we found that givens graphs are all cyclic. This shows how two problems are essentially connected.
 
 
-\pubrev
-\begin{figure}[thb]
-  \begin{center}
-    \includegraphics[width=0.75\textwidth]{recomputed.png}
-  \end{center}
-  \caption{A financial report that had certain values originally computed with a software, then if we want to change a cell (in blue), we need to establish all dependencies (i.e., constraints) of this cell and then recompute values that depend upon it (indicated in red), otherwise, data becomes inconsistent with respect to its intended meaning}
-  \label{fig:report_spreadsheet}
-\end{figure}
+%   \pubrev
+%   \begin{figure}[thb]
+%     \begin{center}
+%       \includegraphics[width=0.75\textwidth]{recomputed.png}
+%     \end{center}
+%     \caption{A financial report that had certain values originally computed with a software, then if we want to change a cell (in blue), we need to establish all dependencies (i.e., constraints) of this cell and then recompute values that depend upon it (indicated in red), otherwise, data becomes inconsistent with respect to its intended meaning}
+%     \label{fig:report_spreadsheet}
+%   \end{figure}
 
-Let us illustrate this idea on a real-world example of a spreadsheet. Imagine, we have downloaded a financial report in a CSV format, presented in Figure \ref{fig:report_spreadsheet}, from a business management software and wanted to change a number in it (indicated in blue). As many financial reports, this had certain values computed automatically in the software used by its original creator (who might be unavailable at the moment). Then, if we only change one value, the whole data becomes inconsistent, since there are certain dependencies in the spreadsheet to be met, e.g., the column \textbf{Total}, in the column \textbf{G}, is the sum over rows. Then, we would like to, first, discover all constraints in the data. Second, update the cell we are interested in (indicated in blue) and then, third, recompute the values (indicated in red). 
+Let us illustrate this idea on a spreadsheet in Figure
+\ref{fig:spreadsheet_example_intro}. There are two constraints to be
+found \texttt{ROWSUM} and \texttt{SUMIF}: the former sums values in rows
+in the left table (for columns \textit{Sep}, \textit{Oct} and
+\textit{Nov}) and the latter aggregates values (column \textit{Sales}) by category (column
+\textit{Product}) in the
+right table. Let us indicate why it might be
+an important practical problem. Imagine, if we only change one value, the whole data becomes
+inconsistent, since there are dependencies in the spreadsheet
+to be met, e.g., for example the last column in the left table must be
+updated, as well the corresponding category value in the right table. Then, we would like to, first, discover all constraints in the data. Second, update the cell we are interested in and then, third, recompute the values. 
 
 This practical problem is a clear constraint learning problem in a relational setting: we need to enumerate interesting properties, i.e., various spreadsheet constraints, having a form of first order statements and being able to carry out inference on top of a learned model and of relational data (multi-table, interconnected data containing multiple data types). And this is, indeed, the kind of problem that is problematic for classic machine learning and data mining algorithms and require relational methods we develop and investigate here.
 
@@ -228,44 +270,124 @@ For technical details we refer to Chapter \ref{ch:TaCLe} and the work of \textci
 
 
 \paragraph{Relational Pattern Mining}
-Let us start with a particular case of relational pattern mining,
-called \textit{frequent pattern mining}, and then introduce its
-general version.  The problem of frequent pattern mining can be formulated as follows:
-given a database $D$ of complex structures, such as queries, graphs,
-sequences or itemsets, and a frequency threshold $t$, we need to find
-all \textit{substructures} that occur frequently enough, above the
-threshold $t$, in the database $D$. Often we interested not only in
-frequent substructures, but also substructures that have certain
+Let us formulate relational pattern mining problem in terms of theory
+mining from Section \ref{sec:data_mining}.\\
+
+\begin{definition*}[Relational Pattern Mining]
+\begin{mdframed}
+    Let relational data be a relational database $D$, the language of
+    patterns $P$ be the set of relational queries $Q$, and 
+    $\phi$ be a query satisfaction relation, then the task is to find
+    all queries $q$ in $Q$ such that $\phi(q(D))$ evaluates to true.
+\end{mdframed}
+    %\label{def:mining}
+\end{definition*}
+A special case of relational pattern mining is 
+\textit{frequent pattern mining}. The problem of frequent pattern
+mining has as a query satisfaction relation \textit{the minimum frequency
+constraint}. Given a frequency threshold $t$ and a predicate of
+interest, i.e., what we count, we need to find
+all \textit{queries} that occur frequently enough, above the
+threshold $t$, in the database $D$. Often we are interested not only in
+frequent substructures, but also in substructures that have certain
 interesting properties, such as being maximal in size or restricted in
-its length or having certain topological properties such as, for example,
-being cyclic graphs.
+its length or having certain topological properties.
 
 For example, let us assume there is a school database $D$ with three
 tables \textit{pupil(PId,FName,LName)},
-\textit{class(PId,ClassID,Subject)}, \\
-\textit{takes\_test(PId,ClassID,Date,Result)}, which contains
+\textit{class(PId,ClassId,Subject)}, \\
+\textit{takes\_test(PId,ClassId,Date,Result)}, which contains
 information about pupils, classes they are in and tests they have
 taken. Typically, in frequent query mining, we have a target value we
 count, in this case, it can be for example PId (Pupil Id), then our
 task would be to enumerate the queries that match $D$ often enough.
 Let us give a couple of examples how a typical output might look like:
 
+ \begin{figure}[htb]
+        
+        \begin{tabular}{|c c c|}
+            \multicolumn{3}{c}{\textbf{Pupil}}\\
+      \hline
+            \textbf{PId} & \textbf{Fname} & \textbf{LName}\\ \hline
+        p1 &  Nick  & Mason\\
+        p2 &  David & Gilmour\\
+        p3 &  Syd   & Barret\\
+        p4 &  Roger & Waters\\
+        p5 &  Richard & Wright \\\hline
+    \end{tabular}
+     \hfill
+        \begin{tabular}{|c c c|}
+            \multicolumn{3}{c}{\textbf{Class}}\\
+      \hline
+            \textbf{PId} & \textbf{ClassId} & \textbf{Subject}\\ \hline
+       p1 & c1& drums \\
+       p2 & c2& singing \\
+       p2 & c3& guitar\\
+       p2 & c4& bass \\
+       p3 & c2& singing\\
+       p3 & c3& guitar\\
+       p3 & c5& piano\\
+       p4 & c2& singing\\
+       p4 & c4& bass\\
+       p5 & c2& singing \\\hline
+        \end{tabular}
+        \hfill
+        \begin{tabular}{|c c c|}
+            \multicolumn{3}{c}{\textbf{Takes test}}\\
+      \hline
+            \textbf{PId} & \textbf{ClassId} & \textbf{LName}\\ \hline
+        p1 & c1 & 1965\\
+        p2 & c2 & 1965\\
+        p2 & c3 & 1965\\
+        p5 & c3 & 1965\\\hline
+    \end{tabular}
+    \caption{An example of relational database: music school}
+    \label{fig:relational_database_school}
+    \end{figure}
+
 \begin{equation*}
 \begin{aligned}
-Q(\textit{PId})&\leftarrow \textit{pupil(PId,FName,LName)}.\\
-Q(\textit{PId})&\leftarrow \textit{class(PId,ClassID,Subject)}. \\
-Q(\textit{PId})&\leftarrow \textit{pupil(PId,FName,LName), class(PId,ClassID,Subject)}.\\
-Q(\textit{PId})&\leftarrow \textit{class(PId,ClassID,Subject), takes\_test(PId,ClassID,Date,Result)}.
+q_1(\textit{PId})&\leftarrow \textit{pupil(PId,FName,LName)}.\\
+q_2(\textit{PId})&\leftarrow \textit{class(PId,ClassId,Subject)}. \\
+q_3(\textit{PId})&\leftarrow \textit{pupil(PId,FName,LName), takes\_test(PId,ClassId,Date,Result)}.\\
+q_4(\textit{PId})&\leftarrow \textit{class(PId,ClassId,Subject), takes\_test(PId,ClassId,Date,Result)}.
 \end{aligned}
 \end{equation*}
+The first query $q_1$ is simply taking the table pupil and projecting
+on its first column \textit{PId}, $q_2$ does the same for the
+\textit{class} table and $q_3$ is making a join between \textit{pupil}
+and \textit{takes\_test} on the column \textit{PiD}, $q_4$ is doing the same
+but with the tables \textit{class} and \textit{takes\_test}.
 
-In the general case, we have a certain function of interest $\phi$,
-which is the frequency constraint in case of frequent pattern mining,
-and we would like to enumerate all patterns $p$ from a language bias
-$P$ (for example, queries or graphs) such that the property of
-interest holds for $p$ in $D$, i.e., $\phi(p,D)$ evaluates to true.
+Assume our school schema is populated with a data from a music school,
+as in Figure \ref{fig:relational_database_school} and we have the
+frequency threshold $t=4$, then the queries return corresponding
+values:
+\begin{equation*}
+\begin{aligned}
+    q_1(D) = \{ p1, p2, p3, p4, p5 \} \\
+    q_2(D) = \{ p1, p2, p3, p4, p5 \} \\
+    q_3(D) = \{ p1, p2, p5 \} \\
+    q_4(D) = \{ p1, p2, p5 \} 
+\end{aligned}
+\end{equation*}
+Then frequencies of the $q_1$ and of $q_2$ are above the threshold $t=4$
+and the frequencies of $q_3$ and $q_4$ are below. That makes $q_1$ and
+$q_2$ frequent queries and $q_3,q_4$ are not.
 
-\paragraph{Factorizations}
+Looking in Figure
+\ref{fig:relational_database_school} at the relational data represented
+as a relational database, we can contrast this representation of
+relational data with a spreadsheet in Figure
+\ref{fig:spreadsheet_example_intro}. They are both examples of
+relational data but their representations are different. 
+Relational databases have a strict schema and structures, while
+spreadsheets might have records in columns and rows, it does not
+enforce types consistency, constrains and dependecies can be across
+multiple tables mixing columns and rows, etc.
+
+\paragraph{Relational Data Factorization}\label{sec:intro_redf}
+\sergey{remove BMF formalization, add relational}
 Another type of problems that is important for this thesis: is that of
 matrix and tensor factorizations. Factorizing matrices has a long
 history \parencite{matrix_book}, in this thesis we do not focus on
@@ -317,7 +439,7 @@ properties of interconnectedness and expressivity of the constraints
 make relational problems hard to model using traditional propositional
 approaches, while they can be clearly seen as a first order problem. This gives us confidence that for a number of important problems such as recovering formulae in spreadsheets, factorizing relational data and mining frequent structures in relational data, it is essential to look into richer knowledge representation languages for machine learning.
 
-\section{Declarative approach}
+\section{Declarative approach}\label{sec:declarative_intro}
 Many Data Mining problems, and especially pattern mining
 problems, are \textbf{combinatorial search problems}, which in turn
 have two main components, namely a model and search, which can be
@@ -343,20 +465,25 @@ we deal with the imperative approach, even a slight change in the
 specification of a problem typically leads to a significant change in
 the implementation of the algorithm solving this new problem
 variation. Contrary to that in the declarative paradigm, we translate
-problem specification into an executable declarative language that can
-handle various rules and constraints, as a result, a slight change in
+problem specification into a model in an executable declarative language that can
+handle various rules and constraints. As a result, a slight change in
 the specification translates, ideally, into an additional constraint
 being added or a constraint being changed. The key advantage of this
-approach is that we solve the problems under a variety of constraints instead of
-solving its particular version. In our setting, we can think of data
+approach is it is easy to solve  closely related problems by varying
+the consraints. In our setting, we can think of data
 mining problem formulated using mathematical constraints as a
-model and \acrshort{cp} or \acrshort{asp} engines
-as general solvers.
-\pubrevend
+model and \acrlong{cp} (\acrshort{cp}) or \acrlong{asp}
+(\acrshort{asp}) engines
+as general solvers. In the two following sections we introduce both
+formalisms \acrshort{asp} and \acrshort{cp} and their corresponding systems respectively.
 
 
 
-\section{Logic programming}
+\section{Logic programming}\label{sec:logic_programming}
+In this section we introduce Logic Programming and \acrlong{asp} that
+we have discussed in the context of the declarative approach.
+
+
 \pubrev
 In Eq. \ref{eq:declarative_schema}, we indicate that \textit{a solver}
 is going to take care of computing a specification describing the
@@ -401,7 +528,7 @@ simple logical implication:
 \end{equation*}
 
 The following notation in Prolog (Programming in logic)
-\parencite{prolog_original} mimics the logical implication:
+\parencite{birth_of_prolog} mimics the logical implication:
 
 \begin{equation}\label{eq:sushi}
   \forall X: \textit{person}(X) \wedge \text{not }
@@ -424,7 +551,7 @@ inference.
 formalisms. Contrary to Prolog, which is essentially a full
 programming language based on logical inference and provides full
 control on the execution flow,  both \acrshort{asp} and \acrshort{idp}
-systems fully decouple a problem specification from the execution
+systems fully decouple the problem specification from the execution
 flow. In this sense they are closer to \acrlong{cp}. This makes them
 an ideal candidate for our general solver in Eq. 
 \ref{eq:declarative_schema}, since both of them support relational
@@ -445,7 +572,7 @@ Then, we need to define a constraint that is saying what mapping is acceptable, 
 If there is an edge between two nodes (countries) \texttt{X} and \texttt{Y} and they are mapped to the same colour \texttt{C}, then it is not a valid solution. As a result, we obtain solutions, where all neighboring nodes of a graph (or neighboring countries) have different colours.
 \pubrevend
 
-\section{Constraint programming} 
+\section{Constraint programming} \label{sec:cp_intro}
 \pubrev
 \acrlong{cp} is a declarative methodology for solving combinatorial
 problems that also can be used in Eq. \ref{eq:declarative_schema}. The
@@ -467,7 +594,7 @@ a model is an assignment, as for example, the one we just indicated, that satisf
 \textit{all} constraints. This general methodology is declarative,
 since a user writes a set of constraints corresponding to the
 properties of her problem and a \acrshort{cp} solver is looking for a
-solution: this clearly demonstrates that it is a task of the solver
+solution: this clearly demonstrates that it is the task of the solver
 to figure out \textit{how} to find a solution, while it is the user's
 responsibility to specify \textit{what} the problem is in terms of
 writing these constraints.
@@ -503,8 +630,8 @@ set computation -- technical details at this point.
 
 
 \pubrev
-\section{Unifying declarative view}
-There is a number of common traits and assumption that problems, we
+\section{Common traits}\label{sec:common}
+There is a number of common traits and assumptions that the problems, we
 investigate in the thesis, share. Typical machine learning algorithm
 make use of the, so called, single-tuple single-table assumption. This
 assumption states that the data can be represented using
@@ -512,16 +639,16 @@ attribute-value pairs. As we have demonstrated the problems we
 consider break this assumption. This indicates, the first, common
 feature -- they are all relational data  mining problems. 
 
-Second, the problems we investigate are a form of combinatorial search and
-enumeration problems: we are looking for certain interesting logical
-expressions that hold in the data under constraints, e.g., all maximal
+Second, the pattern minng problems we investigate are a form of combinatorial search and
+enumeration problems: we are looking for certain interesting patterns that hold in the data under constraints, e.g., all maximal
 (in size) conjunctive queries that hold in the data frequently enough
 or in case of tabular constraint learning we enumerate all spreadsheet
-formulae (which can be viewed as constraints) that hold between
+formulae (which can be viewed as constraints, see Theory Mining in
+Section \ref{sec:data_mining}) that hold between
 spreadsheet tables.
 
 
-Third, all of these problem, we investigate, are relational problems under a
+Third, all of these problems, we investigate, are relational problems under a
 broad variety of constraints, e.g., discovering constraints in tabular
 data is not limited to only the list of specified constraints but it
 is designed to support the whole \textit{language} of tabular
@@ -536,7 +663,9 @@ under various constraints (such as length, size, or topological
 constraints)
 
 Fourth, as we have just indicated, our solutions are declarative in
-its nature, as indicated in Eq. \ref{eq:declarative_schema} Once we modify the problem by adding an extra constraint or feature, we do not have to modify algorithm completely (like this often happens in the imperative approach \parencite{gspan,clospan}).
+nature, as indicated in Eq. \ref{eq:declarative_schema} Once we modify
+the problem by adding an extra constraint or feature, we do not have
+to modify the algorithm completely (like this often happens in the imperative approach \parencite{gspan,clospan}).
 
 Last but not least is the way we approach them, our approach is based
 on declarative constraint and logic programming. We demonstrate how
@@ -544,13 +673,13 @@ these important and interesting problems can be modelled using modern
 logic and constraint programming systems such as \acrshort{asp} and \acrshort{idp}. Besides of purely mathematical models for the relational problems, we provide an extensive experimental evidence on the behaviour of such systems. To the best of our knowledge, this is the first empirical study of such scale investigation applications of modern logic programming to relational data mining problems.
 \pubrevend
 
-\section{Contributions}
+\section{Contributions}\label{sec:contributions}
 Given the abundance of relational data (such as spreadsheets, graphs,
 databases and logical structures) for various machine learning and data
 mining problems, and the success in the development of declarative solvers (such
 as \acrshort{asp}, \acrshort{idp} and \acrshort{cp}) a
 natural question arises: \textit{``How can we declaratively model and
-solve relational data mining problems using logic programming
+solve relational data mining problems using declarative programming
 techniques?''}. 
 
 The \textbf{main contribution} of this thesis is in the application of
@@ -761,7 +890,7 @@ Matthias van der Hallen, Sergey Paramonov, Michael Leuschel, Gerda
 \textbf{Chapter} \ref{ch:conclusions} summarizes the thesis and
 discusses future work possibilities.
 
-\section{Datasets, code and experimental results}
+\section{Datasets, code and experimental results}\label{sec:datasets}
 In order to make results repeatable and to follow the Open Source
 spirit, we have opened and published the datasets, use-cases,
 meta-data and other useful information.
