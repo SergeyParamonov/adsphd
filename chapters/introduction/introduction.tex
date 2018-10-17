@@ -210,7 +210,6 @@ Simply speaking, constraint learning is pattern mining where patterns
 are constraints and the predicate of interest is that the constraints
 are satisfied by data.
 
-\sergey{clean up}
 
 %   \begin{example}[Sudoku constraint learning]
 %       A well-known Sudoku problem might be hard to model for a person
@@ -332,14 +331,15 @@ Let us give a couple of examples how a typical output might look like:
        p5 & c2& singing \\\hline
         \end{tabular}
         \hfill
-        \begin{tabular}{|c c c|}
-            \multicolumn{3}{c}{\textbf{Takes test}}\\
+        \begin{tabular}{|c c c c|}
+            \multicolumn{4}{c}{\textbf{Takes test}}\\
       \hline
-            \textbf{PId} & \textbf{ClassId} & \textbf{LName}\\ \hline
-        p1 & c1 & 1965\\
-        p2 & c2 & 1965\\
-        p2 & c3 & 1965\\
-        p5 & c3 & 1965\\\hline
+            \textbf{PId} & \textbf{ClassId} & \textbf{Date} &
+            \textbf{Result}\\ \hline
+            p1 & c1 & 1965 & passed\\
+            p2 & c2 & 1965 & passed\\
+            p2 & c3 & 1965 & passed\\
+            p5 & c3 & 1965 & passed\\\hline
     \end{tabular}
     \caption{An example of relational database: music school}
     \label{fig:relational_database_school}
@@ -353,7 +353,7 @@ q_3(\textit{PId})&\leftarrow \textit{pupil(PId,FName,LName), takes\_test(PId,Cla
 q_4(\textit{PId})&\leftarrow \textit{class(PId,ClassId,Subject), takes\_test(PId,ClassId,Date,Result)}.
 \end{aligned}
 \end{equation*}
-The first query $q_1$ is simply taking the table pupil and projecting
+The first query $q_1$ is simply taking the table \textit{pupil} and projecting
 on its first column \textit{PId}, $q_2$ does the same for the
 \textit{class} table and $q_3$ is making a join between \textit{pupil}
 and \textit{takes\_test} on the column \textit{PiD}, $q_4$ is doing the same
@@ -371,9 +371,9 @@ values:
     q_4(D) = \{ p1, p2, p5 \} 
 \end{aligned}
 \end{equation*}
-Then frequencies of the $q_1$ and of $q_2$ are above the threshold $t=4$
+Then the frequencies of the $q_1$ and of $q_2$ are above the threshold $t=4$
 and the frequencies of $q_3$ and $q_4$ are below. That makes $q_1$ and
-$q_2$ frequent queries and $q_3,q_4$ are not.
+$q_2$ frequent queries, while $q_3,q_4$ are not.
 
 Looking in Figure
 \ref{fig:relational_database_school} at the relational data represented
@@ -397,6 +397,18 @@ we are going to deal with relational data and non-numeric data in this
 thesis. We work with the relational version of BMF under constraints,
 we call this problem \textit{Relational Data Factorization}.
 
+For example, we can be given a relation
+\textit{coauthor(Name,Uni,Venue)} (shortened below as $(N,U,V)$) and we would like to decompose it
+into three binary relations joined by a latent (hidden) variable, that
+can be interpreted as a potential topic ($T$) that binds them together:
+
+\begin{equation*}
+\textit{decomposed}(N,U,V) \leftarrow \textit{interestedIn}(N, \textit{T}), \textit{specializedIn}(U, \textit{T}), \textit{inField}(V, \textit{T}).
+\end{equation*}
+Of course, the relations we obtain can be subject to constraints such
+as ''a university cannot specialize more than in $n$ subjects`` or ``there
+must be at least two venues in a topic'', etc. For details we refer to
+Chapter \ref{ch:ReDF}.
 
 
 In general and not only in the examples presented in this section, the

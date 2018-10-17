@@ -459,6 +459,7 @@
 % practice only the string given in the \chapter{.} command in the
 % included tex file will be used!
 \newcommand{\prefname}{Preface}
+\newcommand{\acknowledgement}{Acknowledgements}
 \newcommand{\prefnlname}{Dankwoord}
 \newcommand{\abstname}{Abstract}
 \newcommand{\abstnlname}{Beknopte samenvatting}
@@ -805,6 +806,13 @@
   \IncludeUnnumberedChapterIfExists{#1}{\prefname}{\instructionspreface}%
       {\phantomsection}
 }
+
+\newcommand{\includeack}[1]{%
+  \IncludeUnnumberedChapterIfExists{#1}{\acknowledgement}{}%
+      {\phantomsection}
+}
+
+
 
 \newcommand{\includeprefacenl}[1]{%
   \selectlanguage{dutch}
