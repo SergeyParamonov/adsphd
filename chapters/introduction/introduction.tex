@@ -383,11 +383,10 @@ relational data with a spreadsheet in Figure
 relational data but their representations are different. 
 Relational databases have a strict schema and structures, while
 spreadsheets might have records in columns and rows, it does not
-enforce types consistency, constrains and dependecies can be across
+enforce types consistency, constrains and dependencies can be across
 multiple tables mixing columns and rows, etc.
 
 \paragraph{Relational Data Factorization}\label{sec:intro_redf}
-\sergey{remove BMF formalization, add relational}
 Another type of problems that is important for this thesis: is that of
 matrix and tensor factorizations. Factorizing matrices has a long
 history \parencite{matrix_book}, in this thesis we do not focus on
@@ -395,43 +394,9 @@ classical continuous decompositions such as SVD or LU, but on its
 Boolean version, called \textit{Boolean Matrix
 Factorization} \parencite{phd_miettinen}. The main reason for that is
 we are going to deal with relational data and non-numeric data in this
-thesis.
+thesis. We work with the relational version of BMF under constraints,
+we call this problem \textit{Relational Data Factorization}.
 
-
-Let us illustrate the problem of Boolean Matrix Factorization on a
-simple example, given a Boolean Matrix $\mathbf{A}$, we would like to find two
-matrices of smaller size $\mathbf{B}$ and $\mathbf{C}$ such that
-$\mathbf{A} = \mathbf{B} \times \mathbf{C}$.
-
-
-\def\Amtrx{\begin{bmatrix}
-    1   & 1 & 0 \\
-    1   & 1 & 0 \\
-    0   & 1 & 0 \\
-\end{bmatrix}}
-
-\def\Bmtrx{\begin{bmatrix}
-1   &0  \\
-1   &1  \\
-0   &1  \\
-\end{bmatrix}}
-
-\def\Cmtrx{\begin{bmatrix}
-1   &1  & 0 \\
-0   &1  & 0 \\
-\end{bmatrix}}
-
-\begin{equation*}
-    \Amtrx =  \Bmtrx \times \Cmtrx
-\end{equation*}
-
-Note, that this decomposition is exact. Generally speaking, we a
-looking not for an exact decomposition but given an n-by-m binary
-matrix $\mathbf{A}$ and non-negative integer $k$, find n-by-k binary
-matrix $\mathbf{B}$ and k-by-m binary matrix $\mathbf{C}$ such that they minimize
-\begin{equation*}
-    \sum_{i,j} | a_{ij} - (B\times C)_{ij}|
-\end{equation*}
 
 
 In general and not only in the examples presented in this section, the
@@ -665,12 +630,14 @@ constraints)
 Fourth, as we have just indicated, our solutions are declarative in
 nature, as indicated in Eq. \ref{eq:declarative_schema} Once we modify
 the problem by adding an extra constraint or feature, we do not have
-to modify the algorithm completely (like this often happens in the imperative approach \parencite{gspan,clospan}).
+to modify the algorithm completely (as so often happens in the imperative approach \parencite{gspan,clospan}).
 
 Last but not least is the way we approach them, our approach is based
 on declarative constraint and logic programming. We demonstrate how
-these important and interesting problems can be modelled using modern
-logic and constraint programming systems such as \acrshort{asp} and \acrshort{idp}. Besides of purely mathematical models for the relational problems, we provide an extensive experimental evidence on the behaviour of such systems. To the best of our knowledge, this is the first empirical study of such scale investigation applications of modern logic programming to relational data mining problems.
+our pattern mining problems can be modelled using modern
+logic and constraint programming systems such as \acrshort{asp} and \acrshort{idp}. In addition to the mathematical models
+of the relational problems, we provide an evaluation of the
+ performance of the resulting systems using an extensive experimental evidence on the behaviour of such systems. To the best of our knowledge, this is the first empirical study of such scale investigation applications of modern logic programming to relational data mining problems.
 \pubrevend
 
 \section{Contributions}\label{sec:contributions}
@@ -700,9 +667,9 @@ logic programming.
    and modelled in the relational setting, where data is
    represented as spreadsheets, i.e., connected relations, and constraints are
    tabular Excel-like formulae? We propose as an answer \textbf{Tabular Constraint Learning.} 
-  \item \cthree: Can we model and complete a partially specified logic program?
-      A partially specified program is the one where one marks certain parts of the
-        program to be uncertain. We propose a declarative approach to
+  \item \cthree: Can we model and automatically complete a partially specified logic program?
+      A partially specified program is a program where certain
+        parts are marked as uncertain. We propose a declarative approach to
         this problem, called \textbf{Sketched Answer Set Programming}.
    \item \cfour:
 %  Similarly to unstructured constraint-based itemset mining: 

@@ -6,7 +6,7 @@ future work opportunities.
 
 \section{Summary and conclusions}
 Purely declarative machine learning and data mining, the holy grail of
-artificial intelligence, is yet a long way ahead of us but today we
+data analysis, is yet a long way ahead of us but today we
 have made a step.
 
 First, we have introduced two types of data used in data mining:
@@ -18,36 +18,37 @@ for problems like constraint learning or pattern mining. We have also
 demonstrated how the Boolean Factorization problem can be generalized
 to Relational Data Factorization, once we consider relational data.
 As we have demonstrated these problems can be clearly seen as
-relational data problems and require first order languages for
+relational data mining problems and require first order languages for
 modelling.
 
 More specifically, we have showed that the problems such as tabular
 constraint learning are relational in its nature due to the data used
 in it and due to the constraints connecting multiple tables and
-breaking single-tuple representation, when rows and columns become not
-independent anymore.
+breaking single-tuple single-table representation, when rows and
+columns are no longer independent.
 
 To solve these relational problems we have used a declarative approach,
 where one specifies what the problem is and not how to solve it. For
 the problems we have described this declarative approach is natural, since many
 data mining problems are combinatorial search problems, i.e., they
-can be represented as ''Model + Search``. To solve these relational
+can be phrased in terms of ''Model + Search``. To solve these relational
 models under a variety of constraints, we used general solvers based
 on constraint and logic programing such as Answer Set Programming and
 FO(.) IDP. Since logic is designed to work with relations and both ASP
 and IDP support first order statements, they both allow for a natural
 representation of relational data mining models and data associated
-with them. A large body of the experimental evidence, presented here, shows efficiency of
+with them. The experimental evidence, presented here,
+shows the efficiency of
 these systems in solving relational data mining problems.
 
 Furthermore, as we have seen, relational data is so widespread that it is
-impossible to ignore, This implies that relational mining problems
+impossible to ignore. This implies that relational mining problems
 would affect many industries, where for example, spreadsheets are
 an essential part of business processes, as in finance or auditing.
 This gives us confidence not only in that relational problems are a
 crucial part of data mining but also in that we should investigate
 applications of general solvers, such as ASP and IDP, for data mining
-and machine learning. In fact, it provides solver developer community
+and machine learning. In fact, it provides the solver developer community
 with important benchmarks and problems to improve solvers. The inverse
 process is also happening, once solvers get better, new types of problems
 can be tackled.
@@ -66,20 +67,21 @@ As we see in Chapter \ref{ch:ReDF}, the key advantage is the
 generality and flexibility of the approach, however, it often comes at
 the cost of longer runtimes of the method. There are a number of ways
 as has been indicated to handle this problem but it should not come as
-a surprise that general methods cannot compete out-of-the-box in the efficiency with
+a surprise that general methods cannot compete the out-of-the-box in
+terms of the efficiency with
 a specialized method devoted to only one particular problem. It is
 also clear that specialized methods must be significantly modified in
 order to be used in a new setting. Our extensive experimental study
 also demonstrates that general relational methods are well-suited for
 system prototyping.
 
-Namely, we have demonstrate that not only tiling and Boolean matrix
+Namely, we have demonstrated that not only tiling and Boolean matrix
 factorization can be solved declaratively using ASP, but also
 factorizations with multiple tables under constraints, which allowed
-us to visualize and clusterize relational groups of co-authors of a
-number known data mining researchers. Finally, this demonstrate how a
+us to visualize relational groups of co-authors of a
+number of known data mining researchers. Finally, this showed that a
 broad variety of mining problems can be modelled using relational
-factorization view and solved using modern logic programming
+factorization and solved using modern logic programming
 techniques.
 
 \begin{description}
@@ -97,16 +99,15 @@ them. We have introduced the system called \acrlong{tacle}, based on
 classic \acrshort{ilp} ideas, to work in this setting. The systems
 enumerates the Excel-like constraints by working on them in the same
 manner as clause-learning systems do. It is able to detect the most
-popular Excel function in the spreadsheet data as within a table as
-well as between multiple tables. This indicates \acrlong{tacle}
+popular Excel functions in spreadsheet data within a table as
+well as between multiple tables. This indicates \acrlong{tacle}'s
 applicability in practice, potentially, it can be turned into a plugin
-for Excel or Google Spreadsheets (any other spreadsheet software),
-which as shown in the chapter can help a broad audience of users.
+for Excel or Google Spreadsheets,
+which can help a broad audience of users.
 
 Furthermore, we have introduced the first tabular constraint dataset
-and provided a large experimental evidence on the efficiency of the TaCLe
-algorithm, which is inspired by the classical Inductive Logic
-Programming methods. Also, we have studied limitations of the method
+and provided an experimental evidence on the efficiency of the TaCLe
+algorithm. Also, we have studied limitations of the method
 such as sensitivity to noise, nested constraints and richer type
 systems. As a result, we have proposed a modification of the existing
 system, a second generation TaCLe system, that would potentially
@@ -124,7 +125,8 @@ As we have demonstrated in Chapter \ref{ch:sketching}, given a
 partially complete specification of an ASP program, \acrshort{asp}
 can successfully learn relational programs based on a few examples
 provided. We have extensively analyzed the learned programs and
-discovered that on average only few, typically between 2-5, examples needed to
+discovered that on average only few, typically between 2-5, examples
+are needed to
 converge to a correct solution. Furthermore, we were able to detect
 errors in publicly available encodings, we have contacted the authors
 and the models were updated.
@@ -132,7 +134,7 @@ and the models were updated.
 The general rewriting schema we have proposed is general and not
 limited to the ASP used in the chapter for solving. The same algorithm
     and schema can be applied to Constraint Programming or FO(.) IDP.
-    In fact, this schema also allows developing some other practical
+    In fact, this schema also allows for developing some other practical
     applications such as spreadsheet formula sketching.
 
 
@@ -152,7 +154,7 @@ models efficiently. Then, to overcome this issue, we have proposed a hybrid mode
 first applies a standard pattern mining algorithm and then uses a
 logic programming engine. This has lead to an order of magnitude
 efficiency jump and, from the practical point of view, it seems to be
-the most fruitful direction of future research in declarative pattern
+a ruitful direction of future research in declarative pattern
 mining.
 
 \section{Discussion and future work}
@@ -163,29 +165,25 @@ perspective of the thesis as a whole.
 
 
 \paragraph{Relational data mining in future years}
-It is important to outline not only particular applications developed
-or inspiring with this thesis but also to give a perspective on the
-development of the overall research direction and the field as a
-whole.
-
 As indicated in Chapter \ref{ch:StructuredMining}, hybridization of
-declarative models is promising and fruitful research direction. It
+declarative models is a promising and fruitful research direction. It
 allows one to combine highly efficient specialized algorithms with
 general solvers to create, on the one hand, efficient and scalable
-systems; and on the other hand, general system that can handle not
-only particular restricted problem but the whole class of pattern
+systems; and on the other hand, general systems that can handle not
+only particular restricted problems but suitable for the whole class of pattern
 mining problems. Similar to the dominance programming for itemset
 mining \parencite{dominanceprogramming} and our hybridization approach
-to structured pattern mining \parencite{ruleml_hybrid}, we can foresee creation of 
+to structured pattern mining \parencite{ruleml_hybrid}, we can foresee
+a creation of 
 general mining languages that handle various types of data and
-multiple types condensed representations, while demonstrating close to
+multiple types of condensed representations, while demonstrating close to
 state-of-art performance. These languages would allow a user to
 specify all needed building blocks to generate an executable model
 that can find all condensed patterns within reasonable time.
 
 On the relational learning side, inspired by the results of TaCLe
 \parencite{tacle} in Chapter \ref{ch:TaCLe} and Flashfill \parencite{flashfill}, we envision an intelligent
-assistant that can help user by analyzing tabular data in a
+assistant that can help the user by analyzing tabular data in a
 spreadsheet and suggest possible cleaning transformations, usage of
 Excel-like formulae and data compression. The later idea of data
 compression, which can be seen as a form of cleaning, connects to the
@@ -195,7 +193,7 @@ formulae or constraints, while leaving certain parts open. Then, the
 system can infer possible substitutions from the given tabular data.
 
 Furthermore, the development of applications would drive  the
-development of the solvers as well. We can imagine support of
+development of the solvers as well. We can imagine the support of
 sketching techniques from Chapter \ref{ch:sketching} being implemented
 on the solver level directly. Richer constraint languages might come
 into the learning process, when a model satisfies a negative example
@@ -205,10 +203,9 @@ examples.
 
 Finally, we can imagine a fully automated tool able to analyze and
 clean data in a standard format, such as a spreadsheet. Such a system
-can work in the unsupervised setting and would not require a user interaction
+can work in the unsupervised setting and would not require  user interaction
 or only to check if a suggestion looks ok, or which transformation looks better.
-We regards a creation of such a tool as a holy grail (or simply a
-target, as a long term research direction) for
+We regards a creation of such a tool as a long term research direction for
 the future developments of the ideas, tools and models, presented in
 this thesis.
 
