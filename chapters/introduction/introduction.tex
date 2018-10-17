@@ -47,12 +47,12 @@ interest. Various measures of relevance or ``interestingness'' of a pattern exis
 
 The rest of the chapter is structured as follows. In Section
 \ref{sec:data} we introduce two types of data used in data mining.
-Then, in Section \ref{sec:rel_problems} we present types of relational pattern
+Then, in Section \ref{sec:rel_problems} we present the types of relational pattern
 mining problems that we investigate in this thesis. In Section
 \ref{sec:declarative_intro}, we propose an approach to these problems,
 while in Sections \ref{sec:logic_programming} and \ref{sec:cp_intro},
 we present techniques for this approach to work. In Section
-\ref{sec:common}, we demonstrate similarities and common traits of the
+\ref{sec:common}, we demonstrate the similarities and common traits of the
 problems we investigate. We conclude with contributions in Section
 \ref{sec:contributions} and links to experimental data and code in
 Section \ref{sec:datasets}
@@ -85,7 +85,7 @@ classic datasets in statistics and machine learning -- Fisher's Iris
 data set\footnote{\url{https://en.wikipedia.org/wiki/Iris_flower_data_set}}.
 Figure \ref{fig:iris} depicts a sample of data in the
 dataset. Looking carefully at this data, we can establish the
-following: every rows is an example and every column is an attribute.
+following: every row is an example and every column is an attribute.
 We can also easily see what kind of problem it suggests:
 based on the number of values (in the first four columns), a tuple from $R^n$, we need to predict
 the class of Iris (in the last column). Many machine learning algorithms
@@ -105,7 +105,6 @@ relational data \parencite{luc_book}. This approach allows to represent a variab
 relationships -- we refer to this problem setting as \textit{relational}.
 
 
-Typical machine learning algorithms and data mining systems 
 Contrary to this classic machine learning setting with propositional
 data, relational learning is looking into a more complex and
 interconnected relational data. A real-world example and, probably
@@ -120,7 +119,7 @@ formulae and constraints over the tables play the role of relationships.
   \begin{center}
     \includegraphics[width=0.75\textwidth]{spreadsheet.png}
   \end{center}
-  \caption{A spreadsheet is an example of relational dataset: it has multiple connected tables, constraints between tables, formulae over columns and rows, numeric and non-numeric entries}
+  \caption{A spreadsheet is an example of a relational dataset: it has multiple connected tables, constraints between tables, formulae over columns and rows, numeric and non-numeric entries}
   \label{fig:spreadsheet_example_intro}
 \end{figure}
 
@@ -128,8 +127,8 @@ Figure \ref{fig:spreadsheet_example_intro} demonstrates this idea:
 there are multiple tables connected to each other, the table on the
 right has aggregated data over rows in the left table, which means
 that generally speaking rows cannot be seen as independent: adding a
-row to the first table should update the values in of the right table;
-there are various data types present here numeric; categorical and
+row to the first table should update the values in the right table.
+There are various data types present here numeric, categorical and
 might have been textual as well. Furthermore, constraints that hold in
 a spreadsheet do not have to be functional, i.e., having a form of
 $f(\bar x) = y$, where given input $\bar x$ you can always compute
@@ -252,17 +251,23 @@ are satisfied by data.
 
 Let us illustrate this idea on a spreadsheet in Figure
 \ref{fig:spreadsheet_example_intro}. There are two constraints to be
-found \texttt{ROWSUM} and \texttt{SUMIF}: the former sums values in rows
-in the left table (for columns \textit{Sep}, \textit{Oct} and
-\textit{Nov}) and the latter aggregates values (column \textit{Sales}) by category (column
+found: \texttt{ROWSUM} and \texttt{SUMIF}. The former sums values in rows
+in the left table (for the columns \textit{Sep}, \textit{Oct} and
+\textit{Nov}) and the latter aggregates values (the column
+\textit{Sales}) by category (the column
 \textit{Product}) in the
 right table. Let us indicate why it might be
-an important practical problem. Imagine, if we only change one value, the whole data becomes
+an important practical problem. Imagine, if we only change one value,
+the whole dataset becomes
 inconsistent, since there are dependencies in the spreadsheet
-to be met, e.g., for example the last column in the left table must be
-updated, as well the corresponding category value in the right table. Then, we would like to, first, discover all constraints in the data. Second, update the cell we are interested in and then, third, recompute the values. 
+to be met, e.g., for example, the last column in the left table must be
+updated, as well the corresponding category value in the right table.
+Then, we would like to, first, discover all constraints in the data.
+Second, update the cell we are interested in and then, third,
+recompute the values. As a result, we would obtain an updated and
+consistent spreadsheet.
 
-This practical problem is a clear constraint learning problem in a relational setting: we need to enumerate interesting properties, i.e., various spreadsheet constraints, having a form of first order statements and being able to carry out inference on top of a learned model and of relational data (multi-table, interconnected data containing multiple data types). And this is, indeed, the kind of problem that is problematic for classic machine learning and data mining algorithms and require relational methods we develop and investigate here.
+This practical problem is a clear constraint learning problem in a relational setting: we need to enumerate interesting properties, i.e., various spreadsheet constraints, having a form of first order statements and being able to carry out inference on top of a learned model and of relational data (multi-table, interconnected data containing multiple data types). And this is, indeed, the kind of problem that is problematic for classic data mining algorithms and require relational methods we develop and investigate here.
 
 For technical details we refer to Chapter \ref{ch:TaCLe} and the work of \textcite{tacle_demo}.
 \pubrevend
@@ -276,14 +281,14 @@ mining from Section \ref{sec:data_mining}.\\
 \begin{mdframed}
     Let relational data be a relational database $D$, the language of
     patterns $P$ be the set of relational queries $Q$, and 
-    $\phi$ be a query satisfaction relation, then the task is to find
+    $\phi$ be the query satisfaction relation, then the task is to find
     all queries $q$ in $Q$ such that $\phi(q(D))$ evaluates to true.
 \end{mdframed}
     %\label{def:mining}
 \end{definition*}
 A special case of relational pattern mining is 
 \textit{frequent pattern mining}. The problem of frequent pattern
-mining has as a query satisfaction relation \textit{the minimum frequency
+mining has as the query satisfaction relation \textit{the minimum frequency
 constraint}. Given a frequency threshold $t$ and a predicate of
 interest, i.e., what we count, we need to find
 all \textit{queries} that occur frequently enough, above the
@@ -299,7 +304,7 @@ tables \textit{pupil(PId,FName,LName)},
 information about pupils, classes they are in and tests they have
 taken. Typically, in frequent query mining, we have a target value we
 count, in this case, it can be for example PId (Pupil Id), then our
-task would be to enumerate the queries that match $D$ often enough.
+task would be to enumerate all queries that match $D$ often enough.
 Let us give a couple of examples how a typical output might look like:
 
  \begin{figure}[htb]
@@ -341,7 +346,7 @@ Let us give a couple of examples how a typical output might look like:
             p2 & c3 & 1965 & passed\\
             p5 & c3 & 1965 & passed\\\hline
     \end{tabular}
-    \caption{An example of relational database: music school}
+    \caption{An example of a relational database: music school}
     \label{fig:relational_database_school}
     \end{figure}
 
@@ -356,7 +361,7 @@ q_4(\textit{PId})&\leftarrow \textit{class(PId,ClassId,Subject), takes\_test(PId
 The first query $q_1$ is simply taking the table \textit{pupil} and projecting
 on its first column \textit{PId}, $q_2$ does the same for the
 \textit{class} table and $q_3$ is making a join between \textit{pupil}
-and \textit{takes\_test} on the column \textit{PiD}, $q_4$ is doing the same
+and \textit{takes\_test} on the column \textit{PId}, $q_4$ is doing the same
 but with the tables \textit{class} and \textit{takes\_test}.
 
 Assume our school schema is populated with a data from a music school,
@@ -371,9 +376,9 @@ values:
     q_4(D) = \{ p1, p2, p5 \} 
 \end{aligned}
 \end{equation*}
-Then the frequencies of the $q_1$ and of $q_2$ are above the threshold $t=4$
+Then the frequencies of $q_1$ and $q_2$ are above the threshold $t=4$
 and the frequencies of $q_3$ and $q_4$ are below. That makes $q_1$ and
-$q_2$ frequent queries, while $q_3,q_4$ are not.
+$q_2$ frequent queries, while $q_3,q_4$ are not frequent.
 
 Looking in Figure
 \ref{fig:relational_database_school} at the relational data represented
@@ -381,9 +386,9 @@ as a relational database, we can contrast this representation of
 relational data with a spreadsheet in Figure
 \ref{fig:spreadsheet_example_intro}. They are both examples of
 relational data but their representations are different. 
-Relational databases have a strict schema and structures, while
+Relational databases have a strict schema and structure, while
 spreadsheets might have records in columns and rows, it does not
-enforce types consistency, constrains and dependencies can be across
+enforce type consistency, constrains and dependencies can be across
 multiple tables mixing columns and rows, etc.
 
 \paragraph{Relational Data Factorization}\label{sec:intro_redf}
@@ -464,7 +469,7 @@ we have discussed in the context of the declarative approach.
 \pubrev
 In Eq. \ref{eq:declarative_schema}, we indicate that \textit{a solver}
 is going to take care of computing a specification describing the
-problem. Also, we already know that \textbf{Data} are relational, i.e., represented as relations. We know that \textit{Logic} naturally can represent relations and relational data in general, then it is logical and natural to use \textit{Logic Programming} as the solving technique in our declarative approach.
+problem. Also, we already know that \textbf{data} is relational, i.e., represented as relations. We know that \textit{Logic} naturally can represent relations and relational data in general, then it is logical and natural to use \textit{Logic Programming} as the solving technique in our declarative approach.
 \pubrev
 
 In his seminal work Robert \textcite{kowalski} proclaimed:
@@ -536,7 +541,12 @@ data natively and can solve problems declaratively based on a form of
 first order logic. We often refer to both paradigms (and to the systems,
 associated with them) as \textit{modern logic programming}.
 
-Let us briefly demonstrate the power of \acrshort{asp} on the graph colouring problem (or map coloring problem, as it is known in the popular culture) \parencite{ASPbook}. We assume that \texttt{node/1} encodes nodes of the input graph and \texttt{edge/2} encodes edges of the given graph. First, we declare colours to be used for graph colouring as \texttt{colour(red). colour(green). colour(blue).}, the colors to be used in the \texttt{colouring/2} predicate, then we introduce the following constraint (called a \textit{choice rule}):
+Let us briefly demonstrate the power of \acrshort{asp} on the graph
+colouring problem (or the map coloring problem, as it is known in the popular culture) \parencite{ASPbook}. We assume that \texttt{node/1} encodes nodes of the input graph and \texttt{edge/2} encodes edges of the given graph. First, we declare colours to be used for graph colouring as 
+\begin{verbatim}
+\texttt{colour(red). colour(green). colour(blue).}, 
+\end{verbatim}
+the colors to be used in the \texttt{colouring/2} predicate, then we introduce the following constraint (called a \textit{choice rule}):
 \begin{verbatim}
 1 {colouring(X,C) : colour(C)} 1 :- node(X).
 \end{verbatim}
@@ -657,18 +667,18 @@ Given the abundance of relational data (such as spreadsheets, graphs,
 databases and logical structures) for various machine learning and data
 mining problems, and the success in the development of declarative solvers (such
 as \acrshort{asp}, \acrshort{idp} and \acrshort{cp}) a
-natural question arises: \textit{``How can we declaratively model and
+natural question arises: \textit{``How can we model and
 solve relational data mining problems using declarative programming
 techniques?''}. 
 
 The \textbf{main contribution} of this thesis is in the application of
-modern logic programming languages, such as \acrshort{asp} and
+modern logic programming and constraint programming languages, such as \acrshort{asp} and
 \acrshort{idp}, to these novel relational data mining problems.
 
 
 Concretely, we investigate how the following data mining problems
 can be modelled and solved using a declarative approach based on
-logic programming.
+logic and constraint programming.
 \pubrev
 \begin{itemize}
     \item \cone: What are the challenges and advantages of generalizing
